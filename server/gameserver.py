@@ -348,7 +348,8 @@ def pickNewTarget(consoleip):
 def showLives():
     if lifeDisplay:
         lives = playerstats['game']['lives']
-        if 0 <= lives <= 9:
+	print "Lives remaining: " + str(lives)
+	if 0 <= lives <= 9:
             sev.displayDigit(lives)
             if lives == 0:
                 led.solid(led.CODE_Col_White)
@@ -399,27 +400,30 @@ def checkTimeouts():
                     warningsound.play(-1)
                     
 def increaseCorruption(consoleip, ctrlid):
-    """Introduce text corruptions to control names as artificial 'malfunctions'"""
-    ctrldef = currentsetup[consoleip]['controls'][ctrlid]
-    if 'corruptedname' in ctrldef:
-        corruptednamelist = list(ctrldef['corruptedname'])
-    else:
-        corruptednamelist = list(ctrldef['name'])
-    count = 3
-    while count > 0:
-        #Try to get a printable character, this is different for HD44780 than Nokia but I just use the HD44780 here
-        ascii = random.choice(range(12 * 16))
-        ascii += 32
-        if ascii > 128:
+    try:
+        """Introduce text corruptions to control names as artificial 'malfunctions'"""
+        ctrldef = currentsetup[consoleip]['controls'][ctrlid]
+        if 'corruptedname' in ctrldef:
+            corruptednamelist = list(ctrldef['corruptedname'])
+        else:
+            corruptednamelist = list(ctrldef['name'])
+        count = 3
+        while count > 0:
+            #Try to get a printable character, this is different for HD44780 than Nokia but I just use the HD44780 here
+            ascii = random.choice(range(12 * 16))
             ascii += 32
-        #Position to change - avoid spaces so corrupt name prints the same
-        pos = random.choice(range(len(corruptednamelist)))
-        if corruptednamelist[pos] != ' ':
-            corruptednamelist[pos] = chr(ascii)
-            count -= 1
-    corruptedname = ''.join(corruptednamelist)
-    ctrldef['corruptedname'] = corruptedname
-    client.publish("clients/" + consoleip + "/" + ctrlid + "/name", corruptedname)
+            if ascii > 128:
+                ascii += 32
+            #Position to change - avoid spaces so corrupt name prints the same
+            pos = random.choice(range(len(corruptednamelist)))
+            if corruptednamelist[pos] != ' ':
+                corruptednamelist[pos] = chr(ascii)
+                count -= 1
+        corruptedname = ''.join(corruptednamelist)
+        ctrldef['corruptedname'] = corruptedname
+        client.publish("clients/" + consoleip + "/" + ctrlid + "/name", corruptedname)
+    except:
+        pass
         
 def clearCorruption(consoleip, ctrlid):
     """Reset the corrupted control name when the player gets it right"""

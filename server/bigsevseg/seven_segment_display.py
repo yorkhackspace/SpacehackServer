@@ -53,3 +53,9 @@ def digit(digit):
 def displayDigit(num):
     clear()
     digit(digits[num])
+
+if __name__ == "__main__":
+    while True:
+        for i in range(10):
+            time.sleep(1)
+            displayDigit(i)
