@@ -1,5 +1,5 @@
 #import Adafruit_BBIO.GPIO as GPIO
-import sh_gpio as GPIO
+from controls import sh_gpio as GPIO
 
 GPIO.init_smbus(1)
 
