@@ -268,7 +268,7 @@ class SHControlBargraphPot(SHControlPot):
         state = ctrlstate
         pot = ADC.read(self.pins['POT'])
         #Only check the new value if it is far enough away from the last value
-        if abs(pot - self.lastValue) > 0.01:
+        if abs(pot - self.lastValue) > 0.001:
             self.lastValue = pot
             #Interpretation varies by control type
             if ctrltype == 'toggle':
