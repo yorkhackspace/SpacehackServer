@@ -20,6 +20,9 @@ segment = SevenSegment(address=0x70)
 
 #Three HD44780 LCDs - 20x4 instructions display and two 16x2 control labels
 lcd = [Adafruit_CharLCD(), Adafruit_CharLCD(), Adafruit_CharLCD()]
+lcdpins = ["P8_9", "P8_16", "P8_10"]
+
+#Bar graph - didn't use a shift register because of space on breadboard
 bar = ["P9_11", "P9_12", "P9_13", "P9_14", "P9_15", "P9_16", "P9_21", "P9_22", "P9_23", "P9_24"]
 
 #Pretty print to the LCDs taking into account width
@@ -75,26 +78,18 @@ def on_message(mosq, obj, msg):
     if msg.topic == "digit2":
         barGraph(int(str(msg.payload)))
 
-#Setup MQTT
-client.on_message = on_message
-client.connect(server)
-
-client.subscribe("control1")
-client.subscribe("control2")
-client.subscribe("instruction")
-client.subscribe("digit1")
-client.subscribe("digit2")
-
 #Setup displays
 displayDigits('0000')
 #LCDs share a data bus but have different enable pins
-lcd[0].pin_e="P8_9"
+for i in range(3):
+	lcd[i].pin_e = lcdpins[i]
+	GPIO.setup(lcdpins[i], GPIO.OUT)
+	GPIO.output(lcdpins[i], GPIO.LOW)
+	
 lcd[0].begin(20, 4)
 display("Awaiting instructions!", 20, 0)
-lcd[1].pin_e="P8_16"
 lcd[1].begin(16, 2)
 display("Ready control 1!", 16, 1)
-lcd[2].pin_e="P8_10"
 lcd[2].begin(16, 2)
 display("Ready control 2!", 16, 2)
 
@@ -107,5 +102,15 @@ for pin in bar:
 
 #Setup button
 	
+#Setup MQTT
+client.on_message = on_message
+client.connect(server)
+
+client.subscribe("control1")
+client.subscribe("control2")
+client.subscribe("instruction")
+client.subscribe("digit1")
+client.subscribe("digit2")
+
 #Set MQTT listening
 client.loop_forever()
