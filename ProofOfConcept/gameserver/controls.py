@@ -23,6 +23,26 @@ suffixtoothed = readWordList('suffixtoothed.txt')
 verbs = readWordList('verbs.txt')
 onwords = readWordList('onwords.txt')
 offwords = readWordList('offwords.txt')
+colours = readWordList('colours.txt')
+
+#Letters that can work on a 7-segment
+safeletters = ['A','B','C','D','E','F','G','H','I','J','L','N',
+               'O','P','Q','R','S','T','U','Y']
+
+#Check if a word can be displayed on a 4-digit 7-seg
+def checkSafeWord(word):
+    if len(word)>4:
+        return False
+    else:
+        for i in range(len(word)):
+            if word[i].upper() not in safeletters:
+                return False
+    return True
+
+safewords = []
+for word in adjectives + baseparts + elements + nouns + greekletters + verbs + colours + onwords + offwords:
+    if checkSafeWord(word):
+        safewords.append(word)
 
 # Used to see how many lines a label will take up on a fixed-width
 # display without splitting words over line breaks, for instance on
@@ -49,7 +69,7 @@ def getControlName():
     finished=False
     while not finished:
         ret = (random.choice(['','',random.choice(adjectives).lower()+' ',
-                random.choice(adjectives).lower()+' ',
+                random.choice(adjectives).lower()+' ', random.choice(adjectives).lower()+' ',
                 random.choice(prefixtoothed).lower() +random.choice(suffixtoothed)+ ' '])
                 +random.choice(['','',random.choice(letters), 
                 random.choice(greekletters).lower()])+random.choice(baseparts).lower()
@@ -89,9 +109,29 @@ def getSelectorAction(control):
             finished = True
     return ret
 
+# Generate a random action suitable for a colour
+def getColourAction(control):
+    finished=False
+    while not finished:
+        ret = 'Set ' + control + ' to ' + random.choice(['','','','code ', 'condition ', 'status ']) + random.choice(colours).split(',')[0] + random.choice(['','','',' alert'])
+        if countLines(ret, 20) <= 3:
+            finished = True
+    return ret
+
+#Generate a random action suitable for a 7-seg word
+def get7segAction(control):
+    finished = False
+    while not finished:
+        ret = 'Set ' + control + ' to ' + random.choice(safewords)
+        if countLines(ret, 20) <= 3:
+            finished = True
+    return ret
+    
 # Generate a random action
 def getRandomAction(control):
-    return random.choice([getButtonAction(control), getToggleAction(control), getSelectorAction(control)])
+    return random.choice([getButtonAction(control), getToggleAction(control),
+                          getSelectorAction(control), getColourAction(control),
+                          get7segAction(control)])
 
 # Get 50 controls
 def get50Controls():
