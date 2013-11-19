@@ -17,6 +17,18 @@ server = "192.168.1.30" #fixed IP address of server
 
 #Adafruit I2C 7-segment
 segment = SevenSegment(address=0x70)
+lookup7segchar = {'0': 0x3F, '1': 0x06, '2': 0x5B, '3': 0x4F, '4': 0x66, '5': 0x6D,
+                  '6': 0x7D, '7': 0x07, '8': 0x7F, '9': 0x6F, ' ': 0x00, '_': 0x08,
+                  'a': 0x5F, 'A': 0x77, 'b': 0x7C, 'B': 0x7C, 'c': 0x58, 'C': 0x39,
+                  'd': 0x5E, 'D': 0x5E, 'e': 0x7B, 'E': 0x79, 'f': 0x71, 'F': 0x71,
+                  'g': 0x6F, 'G': 0x3D, 'h': 0x74, 'H': 0x76, 'i': 0x04, 'I': 0x06,
+                  'j': 0x1E, 'J': 0x1E, 'k': 0x08, 'K': 0x08, 'l': 0x06, 'L': 0x38,
+                  'm': 0x08, 'M': 0x08, 'n': 0x54, 'N': 0x37, 'o': 0x5C, 'O': 0x3F,
+                  'p': 0x73, 'P': 0x73, 'q': 0x67, 'Q': 0x67, 'r': 0x50, 'R': 0x31,
+                  's': 0x6D, 'S': 0x6D, 't': 0x78, 'T': 0x78, 'u': 0x1C, 'U': 0x3E,
+                  'v': 0x08, 'V': 0x07, 'w': 0x08, 'W': 0x08, 'x': 0x08, 'X': 0x08,
+                  'y': 0x6E, 'Y': 0x6E, 'z': 0x5B, 'Z': 0x5B, '-': 0x40
+                  }
 
 #Three HD44780 LCDs - 20x4 instructions display and two 16x2 control labels
 lcd = [Adafruit_CharLCD(), Adafruit_CharLCD(), Adafruit_CharLCD()]
@@ -51,11 +63,8 @@ def displayDigits(digits):
             idx = i
         else:
             idx = i+1
-        if digit==' ':
-            segment.writeDigitRaw(idx,0x0)
-        if digit >= '0' and digit <= '9':
-            segment.writeDigit(idx, ord(digit) - ord('0'))
-
+        segment.writeDigitRaw(idx,lookup7segchar[digit])
+        
 #Bar graph
 def barGraph(digit):
     for i in range(10):
