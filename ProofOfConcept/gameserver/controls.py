@@ -6,7 +6,7 @@ import random
 
 def readWordList(filename):
     f=open('words/' + filename)
-    ret = f.read().replace('\r','').split('\n')
+    ret = f.read().replace('\r','').split('\n').remove('')
     f.close
     return ret
 
