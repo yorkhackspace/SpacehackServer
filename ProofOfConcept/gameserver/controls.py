@@ -8,6 +8,7 @@ def readWordList(filename):
     f=open('words/' + filename)
     ret = f.read().replace('\r','').split('\n')
     f.close
+    if '' in ret: ret.remove('')
     return ret
 
 #read word lists
