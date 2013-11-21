@@ -31,7 +31,7 @@ while(client.loop() == 0):
         control1=controls.getControlName()
         control2=controls.getControlName()
         instruction = controls.getRandomAction(random.choice([control1,control2]))
-        digit1 = str(random.choice(range(11)))
+        digit1 = random.choice([str(random.choice(range(11))), random.choice(controls.safewords).upper()])
         digit2 = str(random.choice(range(11)))
 
         client.publish("control1", control1, 0)
