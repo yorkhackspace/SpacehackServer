@@ -18,7 +18,7 @@ Eigen
 Spin
 Flip
 Infra
-Iono-
+Iono
 Prime
 Quasi
 Pseudo
