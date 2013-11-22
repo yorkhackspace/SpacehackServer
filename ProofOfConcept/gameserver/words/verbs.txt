@@ -1,3 +1,11 @@
+Blit
+Chip
+Pin
+Rig
+Trip
+Trap
+Punt
+Prep
 Push
 Pull
 Mate
