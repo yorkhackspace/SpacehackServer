@@ -8,7 +8,7 @@ Punt
 Prep
 Push
 Pull
-Mate
+Rate
 Tag
 Dab
 Tap
