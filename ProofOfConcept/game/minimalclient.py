@@ -4,10 +4,10 @@
 #This is a minimal version with all the hardware interaction taken out.
 
 import mosquitto
-import socket
+import commands
 
 #Who am I?
-ipaddress = socket.gethostbyname(socket.gethostname())
+ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 
 #MQTT client
 client = mosquitto.Mosquitto("Game-" + ipaddress) #client ID
