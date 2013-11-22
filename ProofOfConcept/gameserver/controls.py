@@ -42,10 +42,8 @@ def checkSafeWord(word):
                 return False
     return True
 
-safewords = []
-for word in adjectives + baseparts + elements + nouns + greekletters + verbs + colours + onwords + offwords:
-    if checkSafeWord(word):
-        safewords.append(word)
+safewords = list(set([word for word in adjectives + baseparts + elements + nouns + greekletters + 
+                                    verbs + colours + onwords + offwords if checkSafeWord(word)]))
 
 # Used to see how many lines a label will take up on a fixed-width
 # display without splitting words over line breaks, for instance on
