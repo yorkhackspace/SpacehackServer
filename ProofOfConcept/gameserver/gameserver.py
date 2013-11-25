@@ -20,7 +20,7 @@ pilite = PiLiteLib.PiLiteBoard()
 def on_connect(mosq, obj, rc):
     if rc == 0:
         print("Connected to MQTT")
-        pilite.write("Connected to MQTT")	
+        pilite.write("Ready!")	
     else:
         print("Failed - return code is " + rc)
 
@@ -50,6 +50,8 @@ while(client.loop() == 0):
         print("instruction = " + instruction)
         print("digit1 = " + digit1)
         print("digit2 = " + digit2)
+	
+        pilite.write(digit1)
 
         lastgenerated = time.time()
 
