@@ -24,7 +24,9 @@ suffixtoothed = readWordList('suffixtoothed.txt')
 verbs = readWordList('verbs.txt')
 onwords = readWordList('onwords.txt')
 offwords = readWordList('offwords.txt')
-colours = readWordList('colours.txt')
+rawcols = [c.split(',') for c in readWordList('colours.txt')]
+colours = [c[0] for c in rawcols]
+colourlookup = {c[0]: (int(c[1]), int(c[2]), int(c[3])) for c in rawcols}
 
 #Letters that can work on a 7-segment
 safeletters = ['A','B','C','D','E','F','G','H','I','J','L','N',
@@ -40,10 +42,8 @@ def checkSafeWord(word):
                 return False
     return True
 
-safewords = []
-for word in adjectives + baseparts + elements + nouns + greekletters + verbs + colours + onwords + offwords:
-    if checkSafeWord(word):
-        safewords.append(word)
+safewords = list(set([word for word in adjectives + baseparts + elements + nouns + greekletters + 
+                                    verbs + colours + onwords + offwords if checkSafeWord(word)]))
 
 # Used to see how many lines a label will take up on a fixed-width
 # display without splitting words over line breaks, for instance on

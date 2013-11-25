@@ -6,10 +6,10 @@ import mosquitto
 import Adafruit_BBIO.GPIO as GPIO
 from Adafruit_7Segment import SevenSegment
 from Adafruit_CharLCD import Adafruit_CharLCD
-import socket
+import commands
 
 #Who am I?
-ipaddress = socket.gethostbyname(socket.gethostname())
+ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 
 #MQTT client
 client = mosquitto.Mosquitto("Game-" + ipaddress) #client ID
