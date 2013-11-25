@@ -6,16 +6,21 @@ import controls
 import mosquitto
 import time
 import random
+import PiLiteLib
 
 #MQTT client to allow publishing
 client = mosquitto.Mosquitto("PiServer") #ID shown to the broker
 lastgenerated = 0
 server = "127.0.0.1" #Mosquitto MQTT broker running locally
 
+#PiLite for notifications
+pilite = PiLiteLib.PiLiteBoard()
+
 #Show when we've connected
 def on_connect(mosq, obj, rc):
     if rc == 0:
         print("Connected to MQTT")
+        pilite.write("Connected to MQTT")	
     else:
         print("Failed - return code is " + rc)
 
@@ -31,7 +36,7 @@ while(client.loop() == 0):
         control1=controls.getControlName()
         control2=controls.getControlName()
         instruction = controls.getRandomAction(random.choice([control1,control2]))
-        digit1 = str(random.choice(range(11)))
+        digit1 = random.choice([str(random.choice(range(11))), random.choice(controls.safewords).upper()])
         digit2 = str(random.choice(range(11)))
 
         client.publish("control1", control1, 0)
