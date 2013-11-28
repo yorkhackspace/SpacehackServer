@@ -4,8 +4,8 @@
 
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
+import Adafruit_BBIO.SPI as SPI
 import time
-import spidev
 from PIL import Image,ImageDraw,ImageFont
 from nokiafont import FONT
 
@@ -19,14 +19,14 @@ ON = 1
 OFF = 0
 
 #gpio's :
-DC   = 4 # gpio pin 16 = wiringpi no. 4 (BCM 23)
-RST  = 5 # gpio pin 18 = wiringpi no. 5 (BCM 24)
-LED  = 1 # gpio pin 12 = wiringpi no. 1 (BCM 18)
+DC   = "P9_32"
+RST  = "P9_33"
+LED  = "P9_34"
 
 # SPI connection
-SCE  = 10 # gpio pin 24 = wiringpi no. 10 (CE0 BCM 8) 
-SCLK = 14 # gpio pin 23 = wiringpi no. 14 (SCLK BCM 11)
-DIN  = 12 # gpio pin 19 = wiringpi no. 12 (MOSI BCM 10)
+SCE  = "P9_28"
+SCLK = "P9_31"
+DIN  = "P9_30"
 
 
 CLSBUF=[0]*(ROWS * COLUMNS * PIXELS_PER_ROW)
@@ -43,7 +43,7 @@ def bit_reverse(value, width=8):
 
 BITREVERSE = map(bit_reverse, xrange(256))
 
-spi = spidev.SpiDev()
+spi = SPI(1,0)
 
 def init(dev=(0,0),speed=4000000, brightness=256, contrast=CONTRAST):
     spi.open(dev[0],dev[1])
