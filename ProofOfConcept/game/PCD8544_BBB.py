@@ -66,7 +66,7 @@ def writebytes(value):
 def init(dev=(0,0),speed=4000000, brightness=256, contrast=CONTRAST):
     if BITBANG:
         for pin in [SCE, SCLK, DIN]:
-            GPIO.setup(pi, GPIO.OUT)
+            GPIO.setup(pin, GPIO.OUT)
     else:
         spi.open(dev[0],dev[1])
         #spi.max_speed_hz=speed
