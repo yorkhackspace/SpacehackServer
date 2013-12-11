@@ -17,6 +17,7 @@ COLUMNS = 14
 PIXELS_PER_ROW = 6
 ON = 1
 OFF = 0
+BITBANG = True
 
 #gpio's :
 DC   = "P9_26"
@@ -45,9 +46,30 @@ BITREVERSE = map(bit_reverse, xrange(256))
 
 spi = SPI(0,0)
 
+def writebytes(value):
+    if BITBANG:
+      for byte in value:
+        bits = bin(byte)[2:]
+        bits = '0' * (8 - len(bits)) + bits
+        GPIO.output(SCE, GPIO.HIGH)
+        for bit in bits:
+            if bit=='0':
+                GPIO.output(DIN, GPIO.LOW)
+            else:
+                GPIO.output(DIN, GPIO.HIGH)
+            GPIO.output(SCLK, GPIO.LOW)
+            GPIO.output(SCLK, GPIO.HIGH)
+        GPIO.output(SCE, GPIO.LOW)
+    else:
+        spi.writebytes(value)
+        
 def init(dev=(0,0),speed=4000000, brightness=256, contrast=CONTRAST):
-    spi.open(dev[0],dev[1])
-    #spi.max_speed_hz=speed
+    if BITBANG:
+        for pin in [SCE, SCLK, DIN]:
+            GPIO.setup(pi, GPIO.OUT)
+    else:
+        spi.open(dev[0],dev[1])
+        #spi.max_speed_hz=speed
 
     # Set pin directions.
     for pin in [DC, RST]:
@@ -71,18 +93,18 @@ def init(dev=(0,0),speed=4000000, brightness=256, contrast=CONTRAST):
 
 def lcd_cmd(value):
     GPIO.output(DC, GPIO.LOW)
-    spi.writebytes([value])
+    writebytes([value])
 
 
 def lcd_data(value):
     GPIO.output(DC, GPIO.HIGH)
-    spi.writebytes([value])
+    writebytes([value])
 
 
 def cls():
     gotoxy(0, 0)
     GPIO.output(DC, GPIO.HIGH)
-    spi.writebytes(CLSBUF)
+    writebytes(CLSBUF)
 
 
 def backlight(value):
@@ -103,13 +125,13 @@ def set_brightness(led_value):
 def set_contrast(contrast):
     if ( 0x80 <= contrast < 0xFF):
         GPIO.output(DC, GPIO.LOW)
-        spi.writebytes([0x21, 0x14, contrast, 0x20, 0x0c])
+        writebytes([0x21, 0x14, contrast, 0x20, 0x0c])
 
 
 def gotoxy(x, y):
     if ( (0 <= x < COLUMNS) and (0 <= y < ROWS)):
         GPIO.output(DC, GPIO.LOW)
-        spi.writebytes([x+128,y+64])
+        writebytes([x+128,y+64])
 
 
 def gotorc(r, c):
@@ -149,7 +171,7 @@ def pi_custom_char():
 def display_char(char, font=FONT):
     try:
         GPIO.output(DC, GPIO.HIGH)
-        spi.writebytes(font[char]+[0])
+        writebytes(font[char]+[0])
 
     except KeyError:
         pass # Ignore undefined characters.
@@ -171,14 +193,14 @@ def show_image(im):
 
     # Change display to vertical write mode for graphics
     GPIO.output(DC, GPIO.LOW)
-    spi.writebytes([0x22])
+    writebytes([0x22])
 
     # Start at upper left corner
     gotoxy(0, 0)
     # Put on display with reversed bit order
     GPIO.output(DC, GPIO.HIGH)
-    spi.writebytes( [ BITREVERSE[ord(x)] for x in list(rim.tostring()) ] )
+    writebytes( [ BITREVERSE[ord(x)] for x in list(rim.tostring()) ] )
 
     # Switch back to horizontal write mode for text
     GPIO.output(DC, GPIO.LOW)
-    spi.writebytes([0x20])
+    writebytes([0x20])
