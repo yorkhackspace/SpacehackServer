@@ -25,9 +25,9 @@ RST  = "P9_25"
 LED  = "P9_27"
 
 # SPI connection
-SCE  = "P9_17"
-SCLK = "P9_22"
-DIN  = "P9_18"
+SCE  = "P9_11"
+SCLK = "P9_14"
+DIN  = "P9_12"
 
 
 CLSBUF=[0]*(ROWS * COLUMNS * PIXELS_PER_ROW)
@@ -48,10 +48,10 @@ spi = SPI(0,0)
 
 def writebytes(value):
     if BITBANG:
+      GPIO.output(SCE, GPIO.LOW)
       for byte in value:
         bits = bin(byte)[2:]
         bits = '0' * (8 - len(bits)) + bits
-        GPIO.output(SCE, GPIO.HIGH)
         for bit in bits:
             if bit=='0':
                 GPIO.output(DIN, GPIO.LOW)
@@ -59,7 +59,7 @@ def writebytes(value):
                 GPIO.output(DIN, GPIO.HIGH)
             GPIO.output(SCLK, GPIO.LOW)
             GPIO.output(SCLK, GPIO.HIGH)
-        GPIO.output(SCE, GPIO.LOW)
+      GPIO.output(SCE, GPIO.HIGH)
     else:
         spi.writebytes(value)
         
