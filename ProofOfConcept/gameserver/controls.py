@@ -1,6 +1,5 @@
-# Simple demo for reverse-engineered technobabble control and action generation.
-# This is probably a bit too wordy at the minute as I've not got any weightings
-# in the choices.
+# SpaceHack control text generation - York Hackspace December 2013
+# Provides text generation for control names and various control type actions
 
 import random
 
@@ -24,17 +23,26 @@ suffixtoothed = readWordList('suffixtoothed.txt')
 verbs = readWordList('verbs.txt')
 onwords = readWordList('onwords.txt')
 offwords = readWordList('offwords.txt')
+bannedpasswd = readWordList('bannedpasswd.txt')
+
 rawcols = [c.split(',') for c in readWordList('colours.txt')]
 colours = [c[0] for c in rawcols]
 colourlookup = {c[0]: (int(c[1]), int(c[2]), int(c[3])) for c in rawcols}
 
-#Letters that can work on a 7-segment
-safeletters = ['A','B','C','D','E','F','G','H','I','J','L','N',
+allcontrolwords = adjectives + baseparts + elements + nouns + greekletters + verbs + colours + onwords + offwords
+allgeneralwords = readWordList('words.txt')
+
+# Letters that can work on a 7-segment
+sevensegletters = ['A','B','C','D','E','F','G','H','I','J','L','N',
                'O','P','Q','R','S','T','U','Y']
 
+# Letters which can be used on the 4x4 keypad via password letter substitutions
+# (A, B, C and D are on the keypad, plus 1=I, 0=O, 3=E, 5=S)
+passwdletters = ['A', 'B', 'C', 'D', 'E', 'I', 'O', 'S']
+
 #Check if a word can be displayed on a 4-digit 7-seg
-def checkSafeWord(word):
-    if len(word)>4:
+def checkSafeWord(word, minlen, maxlen, safeletters):
+    if len(word)>maxlen or len(word) < minlen:
         return False
     else:
         for i in range(len(word)):
@@ -42,8 +50,11 @@ def checkSafeWord(word):
                 return False
     return True
 
-safewords = list(set([word for word in adjectives + baseparts + elements + nouns + greekletters + 
-                                    verbs + colours + onwords + offwords if checkSafeWord(word)]))
+def getSafeWords(wordlist, minlen, maxlen, safeletters):
+    return list(set([word for word in wordlist if checkSafeWord(word, minlen, maxlen, safeletters)]))
+
+safewords = getSafeWords(allcontrolwords, 3, 4, sevensegletters)
+passwd = list(set(getSafeWords(allgeneralwords, 4, 10, passwdletters)) - set(bannedpasswd))
 
 # Used to see how many lines a label will take up on a fixed-width
 # display without splitting words over line breaks, for instance on
@@ -66,7 +77,7 @@ def countLines(control, width):
     return lines
 
 # Generate a random control name
-def getControlName():
+def getControlName(maxwidth, maxlines, minlen):
     finished=False
     while not finished:
         ret = (random.choice(['','',random.choice(adjectives).lower()+' ',
@@ -75,11 +86,11 @@ def getControlName():
                 +random.choice(['','',random.choice(letters), 
                 random.choice(greekletters).lower()])+random.choice(baseparts).lower()
                 +random.choice(['','','',' '+random.choice(baseparts).lower()]))
-        if countLines(ret, 16) <= 2 and len(ret) >= 12:
+        if countLines(ret, maxwidth) <= maxlines and len(ret) >= minlen:
             finished=True
     return ret
 
-# Generate a random action suitable for a button
+# Describe an action suitable for a button
 def getButtonAction(control):
     finished=False
     while not finished:
@@ -88,61 +99,90 @@ def getButtonAction(control):
             finished = True
     return ret
 
-# Generate a random action suitable for a toggle
-def getToggleAction(control):
+# Describe an action suitable for a toggle
+def getToggleAction(control, targetstate):
     finished=False
     while not finished:
-        ret = (random.choice([random.choice(onwords),random.choice(offwords)])
-                + ' the ' + control)
+        if targetstate:
+            ret = random.choice(onwords)
+        else:
+            ret = random.choice(offwords)
+        ret += ' the ' + control
         if countLines(ret, 20) <= 3:
             finished = True
     return ret
 
-# Generate a random action suitable for a selector
-def getSelectorAction(control):
+# Describe an action suitable for a selector
+def getSelectorAction(control, numrange, targetnum, currentnum):
     finished=False
     while not finished:
-        ret = (random.choice([random.choice(['Set ','']) + control + ' to '
-                   + random.choice([str(random.choice(range(11))), 'full power', 'maximum', '50%']),
-                   'Increase ' + control + ' to ' + str(random.choice(range(11))),
-                   'Decrease ' + control + ' to ' + str(random.choice(range(11)))]))
+        choices = ['Set ' + control + ' to ' + str(targetnum)]
+        if targetnum > currentnum:
+            changeword = 'Increase'
+        else:
+            changeword = 'Decrease'
+        choices.append(changeword + ' ' + control + ' to ' + str(targetnum))
+        if targetnum == max(numrange):
+            choices.append(random.choice(['Set ','Increase ']) + control + ' to ' + random.choice(['maximum', '100%', 'full power']))
+        if targetnum == min(numrange):
+            choices.append(random.choice(['Set ','Decrease ']) + control + ' to ' + random.choice(['minimum', '0%', 'off']))
+        ret = random.choice(choices)
         if countLines(ret, 20) <= 3:
             finished = True
     return ret
 
-# Generate a random action suitable for a colour
-def getColourAction(control):
+# Describe an action suitable for a colour
+def getColourAction(control, targetcolour):
     finished=False
     while not finished:
-        ret = 'Set ' + control + ' to ' + random.choice(['','','','code ', 'condition ', 'status ']) + random.choice(colours).split(',')[0] + random.choice(['','','',' alert'])
+        ret = 'Set ' + control + ' to ' + random.choice(['','','','code ', 'condition ', 'status ']) + targetcolour + random.choice(['','','',' alert'])
         if countLines(ret, 20) <= 3:
             finished = True
     return ret
 
-#Generate a random action suitable for a 7-seg word
-def get7segAction(control):
+# Describe an action suitable for a verb list choice
+def getVerbListAction(control, targetverb):
+    return targetverb + ' the ' + control
+
+# Describe an action suitable for a 7-seg word
+def get7segAction(control, targetword):
     finished = False
     while not finished:
-        ret = 'Set ' + control + ' to ' + random.choice(safewords)
+        ret = (random.choice(['Set ' + control + ' to \'' + targetword + '\'',
+                              'Select \'' + targetword + '\' on ' + control]))
         if countLines(ret, 20) <= 3:
             finished = True
     return ret
-    
+
+# Describe an action suitable for a numpad password action
+def getPasswdAction(control, targetpasswd):
+    finished = False
+    while not finished:
+        ret = (random.choice(['Set ' + control + ' to \'' + targetpasswd + '\'',
+                              'Type \'' + targetpasswd + random.choice(['\' on ','\' into ','\' onto ']) + control,
+                              'Key \'' + targetpasswd + '\' into ' + control,
+                              control + ' password is \'' + targetpasswd + '\'']))
+        if countLines(ret, 20) <= 3:
+            finished = True
+    return ret
+
 # Generate a random action
 def getRandomAction(control):
-    return random.choice([getButtonAction(control), getToggleAction(control),
-                          getSelectorAction(control), getColourAction(control),
-                          get7segAction(control)])
+    return random.choice([getButtonAction(control), getToggleAction(control, random.choice(range(2))),
+                          getSelectorAction(control, range(11), random.choice(range(11)),random.choice(range(11))),
+                          getColourAction(control, random.choice(colours)),
+                          get7segAction(control, random.choice(safewords)),
+                          getPasswdAction(control, random.choice(passwd))])
 
 # Get 50 controls
 def get50Controls():
     for i in range(50):
-        print(getControlName())
+        print(getControlName(16,2,12))
         
 # Get 50 actions
 def get50Actions():
     for i in range(50):
-        print(getRandomAction(getControlName()))
+        print(getRandomAction(getControlName(16,2,12)))
         
 
 #get50Actions()
