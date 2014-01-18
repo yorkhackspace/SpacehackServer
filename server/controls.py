@@ -40,6 +40,9 @@ sevensegletters = ['A','B','C','D','E','F','G','H','I','J','L','N',
 # (A, B, C and D are on the keypad, plus 1=I, 0=O, 3=E, 5=S)
 passwdletters = ['A', 'B', 'C', 'D', 'E', 'I', 'O', 'S']
 
+# Letters which can be used on an 'upside down calculator'
+upsidedowncalcletters = ['O', 'I', 'Z', 'E', 'H', 'S', 'G', 'L', 'B']
+
 #Check if a word can be displayed on a 4-digit 7-seg
 def checkSafeWord(word, minlen, maxlen, safeletters):
     if len(word)>maxlen or len(word) < minlen:
@@ -54,7 +57,8 @@ def getSafeWords(wordlist, minlen, maxlen, safeletters):
     return list(set([word for word in wordlist if checkSafeWord(word, minlen, maxlen, safeletters)]))
 
 safewords = getSafeWords(allcontrolwords, 3, 4, sevensegletters)
-passwd = list(set(getSafeWords(allgeneralwords, 4, 10, passwdletters)) - set(bannedpasswd))
+passwd = list(set(getSafeWords(allgeneralwords, 4, 8, passwdletters)) - set(bannedpasswd))
+upsidedowncalc = list(set(getSafeWords(allgeneralwords, 3, 4, upsidedowncalcletters)) - set(bannedpasswd))
 
 # Used to see how many lines a label will take up on a fixed-width
 # display without splitting words over line breaks, for instance on
@@ -90,6 +94,10 @@ def getControlName(maxwidth, maxlines, minlen):
             finished=True
     return ret
 
+# Describe an action suitable for a verb choice
+def getVerbChoiceAction(control, verb):
+    return verb + " the " + control
+    
 # Describe an action suitable for a button
 def getButtonAction(control):
     finished=False

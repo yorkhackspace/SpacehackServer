@@ -1,5 +1,5 @@
-#Console game client - proof of concept demo
-#York Hackspace - Bob November 2013
+# SpaceHack! Game client main module
+#York Hackspace January 2014
 #This runs on a Beaglebone Black
 
 import mosquitto
@@ -7,13 +7,21 @@ import Adafruit_BBIO.GPIO as GPIO
 from Adafruit_7Segment import SevenSegment
 from Adafruit_CharLCD import Adafruit_CharLCD
 import commands
+import json
 
 #Who am I?
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 
+#Config
+f=open('game-' + ipaddress +'.config')
+config=json.loads(f.read())
+f.close()
+roundconfig={}
+controlids = [control['id'] for control in config['interface']['controls']]
+
 #MQTT client
 client = mosquitto.Mosquitto("Game-" + ipaddress) #client ID
-server = "192.168.1.30" #fixed IP address of server
+server = config['local']['server']
 
 #Adafruit I2C 7-segment
 segment = SevenSegment(address=0x70)
@@ -73,10 +81,24 @@ def barGraph(digit):
         else:
             GPIO.output(bar[i], GPIO.LOW)
 
+def lcdwrite(text, ctrlid):
+    controlconfig = config['local']['controls'][ctrlid]
+    if controlconfig['display']['type']=='hd44780':
+        display(text,controlconfig['display']['width'],controlconfig['display']['index'])
+
 #MQTT message arrived
 def on_message(mosq, obj, msg):
     print(msg.topic + " - " + str(msg.payload))
-    if msg.topic == "instruction":
+    nodes = msg.topic.split('/')
+    if nodes[0]=='clients':
+        if nodes[2]=='configure':
+            processRoundConfig(str(msg.payload))
+        elif nodes[2] == 'instructions':
+            display(str(msg.payload), 20, 0)
+        elif nodes[2] in controlids:
+            ctrlid = nodes[2]
+            controlsetup = r
+    if msg.topic == "instructions":
         display(str(msg.payload), 20, 0)
     if msg.topic == "control1":
         display(str(msg.payload), 16, 1)
@@ -86,6 +108,20 @@ def on_message(mosq, obj, msg):
         displayDigits(str(msg.payload))
     if msg.topic == "digit2":
         barGraph(int(str(msg.payload)))
+
+#Process control value assignment from server
+#def processControlValueAssignment(controlid, value):
+    
+
+    
+#Process an incoming config for a round
+def processRoundConfig(roundconfigstring):
+    roundconfig = json.loads(roundconfigstring)
+    display(roundconfig['instructions'], 20, 0)
+    for ctrlid in controlids:
+        controlsetup = roundconfig[ctrlid]
+        lcdwrite(controlsetup['name'], ctrlid)
+        #there's more to setup of course
 
 #Setup displays
 displayDigits('0000')
@@ -114,12 +150,15 @@ for pin in bar:
 #Setup MQTT
 client.on_message = on_message
 client.connect(server)
-
-client.subscribe("control1")
-client.subscribe("control2")
-client.subscribe("instruction")
-client.subscribe("digit1")
-client.subscribe("digit2")
-
+subsbase = "client/" + ipadddress + "/"
+client.subscribe(subsbase + "configure")
+client.subscribe(subsbase + "instructions")
+for controlid in [x['id'] for x in config['interface']['controls']]:
+    client.subscribe(subsbase + controlid + '/name')
+    client.subscribe(subsbase + controlid + '/enabled')
+    
+#register
+client.publish("server/register", json.dumps(config['interface']))
+               
 #Set MQTT listening
 client.loop_forever()
