@@ -44,6 +44,7 @@ def on_message(mosq, obj, msg):
             consolesetup = {}
             consolesetup['instructions'] = 'To start new game, all players push and hold button'
             consolesetup['controls'] = {}
+            print(config['controls'])
             for control in config['controls']:
                 ctrlid = control['id']
                 consolesetup['controls'][ctrlid]={}
@@ -55,8 +56,8 @@ def on_message(mosq, obj, msg):
                     consolesetup['controls'][ctrlid]['type'] = 'inactive'
                     consolesetup['controls'][ctrlid]['enabled'] = 0
                     consolesetup['controls'][ctrlid]['name'] = ""
-                client.publish('clients/' + cosnsoleip + '/configure', json.dumps(cosolesetup))
-                currentsetup[consoleip] = consolesetup
+            client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
+            currentsetup[consoleip] = consolesetup
                 
 #Connect to MQTT (final code should make this a retry loop)
 client.on_connect = on_connect
@@ -79,8 +80,8 @@ while(client.loop() == 0):
                 ctrlid = control['id']
                 consolesetup['controls'][ctrlid]={}
                 consolesetup['controls'][ctrlid]['enabled']=1
-                consolesetup['controls'][ctrlid]['name']=getControlName(control['width'], 2, 12)
-            client.publish('clients/' + cosnsoleip + '/configure', json.dumps(cosolesetup))
+                consolesetup['controls'][ctrlid]['name']=controls.getControlName(control['width'], 2, 12)
+            client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
                         
         #control1=controls.getControlName(16,2,14)
         #control2=controls.getControlName(16,2,14)
