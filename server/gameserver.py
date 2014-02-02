@@ -81,6 +81,7 @@ while(client.loop() == 0):
                 consolesetup['controls'][ctrlid]={}
                 consolesetup['controls'][ctrlid]['enabled']=1
                 consolesetup['controls'][ctrlid]['name']=controls.getControlName(control['width'], 2, 12)
+                consolesetup['controls'][ctrlid]['type']=random.choice([x['type'] for x in control['supported']])
             client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
                         
         #control1=controls.getControlName(16,2,14)
