@@ -17,8 +17,20 @@ f=open('game-' + ipaddress +'.config')
 config=json.loads(f.read())
 f.close()
 roundconfig={}
+lcd=[]
+nokia=[]
 controlids = [control['id'] for control in config['interface']['controls']]
 
+for ctrlid in config['local']['controls']:
+    dispdef = config['local']['controls'][ctrlid]['display']
+    if dispdef['type'] == 'hd44780':
+        newlcd = Adafruit_CharLCD()
+        newlcd.pin_e = dispdef['pin']
+        GPIO.setup(newlcd.pin_e, GPIO.OUT)
+        GPIO.output(newlcd.pin_e, GPIO.LOW)
+        newlcd.begin(dispdef['width'], dispdef['height'])
+        lcd.append(newlcd)
+        
 #MQTT client
 client = mosquitto.Mosquitto("Game-" + ipaddress) #client ID
 server = config['local']['server']
@@ -39,11 +51,12 @@ lookup7segchar = {'0': 0x3F, '1': 0x06, '2': 0x5B, '3': 0x4F, '4': 0x66, '5': 0x
                   }
 
 #Three HD44780 LCDs - 20x4 instructions display and two 16x2 control labels
-lcd = [Adafruit_CharLCD(), Adafruit_CharLCD(), Adafruit_CharLCD()]
-lcdpins = ["P8_9", "P8_16", "P8_10"]
+#lcd = [Adafruit_CharLCD(), Adafruit_CharLCD(), Adafruit_CharLCD(), Adafruit_CharLCD(), Adafruit_CharLCD()]
+#lcdpins = ["P8_9", "P8_16", "P8_10"]
+#lcdpins=["P9_15","P8_16","P9_13", "P8_9", "P8_10"]
 
 #Bar graph - didn't use a shift register because of space on breadboard
-bar = ["P9_11", "P9_12", "P9_13", "P9_14", "P9_15", "P9_16", "P9_21", "P9_22", "P9_23", "P9_24"]
+#bar = ["P9_11", "P9_12", "P9_13", "P9_14", "P9_15", "P9_16", "P9_21", "P9_22", "P9_23", "P9_24"]
 
 #Pretty print to the LCDs taking into account width
 def display(message, width, screen):
@@ -82,7 +95,7 @@ def barGraph(digit):
             GPIO.output(bar[i], GPIO.LOW)
 
 def lcdwrite(text, ctrlid):
-    controlconfig = config['local']['controls'][ctrlid]
+    controlconfig = config['local']['controls'][str(ctrlid)]
     if controlconfig['display']['type']=='hd44780':
         display(text,controlconfig['display']['width'],controlconfig['display']['index'])
 
@@ -97,7 +110,7 @@ def on_message(mosq, obj, msg):
             display(str(msg.payload), 20, 0)
         elif nodes[2] in controlids:
             ctrlid = nodes[2]
-            controlsetup = r
+            #controlsetup = r
     if msg.topic == "instructions":
         display(str(msg.payload), 20, 0)
     if msg.topic == "control1":
@@ -119,29 +132,30 @@ def processRoundConfig(roundconfigstring):
     roundconfig = json.loads(roundconfigstring)
     display(roundconfig['instructions'], 20, 0)
     for ctrlid in controlids:
-        controlsetup = roundconfig[ctrlid]
+        controlsetup = roundconfig['controls'][str(ctrlid)]
         lcdwrite(controlsetup['name'], ctrlid)
         #there's more to setup of course
 
 #Setup displays
 displayDigits('0000')
+
 #LCDs share a data bus but have different enable pins
-for i in range(3):
-	lcd[i].pin_e = lcdpins[i]
-	GPIO.setup(lcdpins[i], GPIO.OUT)
-	GPIO.output(lcdpins[i], GPIO.LOW)
+#for i in range(5):
+#	lcd[i].pin_e = lcdpins[i]
+#	GPIO.setup(lcdpins[i], GPIO.OUT)
+#	GPIO.output(lcdpins[i], GPIO.LOW)
 	
-lcd[0].begin(20, 4)
+#lcd[0].begin(20, 4)
 display("Awaiting instructions!", 20, 0)
-lcd[1].begin(16, 2)
+#lcd[1].begin(16, 2)
 display("Ready control 1!", 16, 1)
-lcd[2].begin(16, 2)
+#lcd[2].begin(16, 2)
 display("Ready control 2!", 16, 2)
 
 #Setup Bar graph
-for pin in bar:
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, GPIO.HIGH)
+#for pin in bar:
+#    GPIO.setup(pin, GPIO.OUT)
+#    GPIO.output(pin, GPIO.HIGH)
 	
 #Setup pot
 
@@ -150,12 +164,12 @@ for pin in bar:
 #Setup MQTT
 client.on_message = on_message
 client.connect(server)
-subsbase = "client/" + ipadddress + "/"
+subsbase = "clients/" + ipaddress + "/"
 client.subscribe(subsbase + "configure")
 client.subscribe(subsbase + "instructions")
 for controlid in [x['id'] for x in config['interface']['controls']]:
-    client.subscribe(subsbase + controlid + '/name')
-    client.subscribe(subsbase + controlid + '/enabled')
+    client.subscribe(subsbase + str(controlid) + '/name')
+    client.subscribe(subsbase + str(controlid) + '/enabled')
     
 #register
 client.publish("server/register", json.dumps(config['interface']))
