@@ -1,4 +1,6 @@
-# Class instance wrapper for Nokia LCDs
+# Class instance wrapper for Nokia LCDs with a PCD8544 controller
+# This should be duck-type polymorphic with the calls used for the
+# hd44780 LCDs so we can write to either 
 # York Hackspace January 2014
 
 import Adafruit_BBIO.GPIO as GPIO
@@ -12,14 +14,14 @@ class NokiaLCD:
         PCD.SCE=self.SCE
         PCD.init()
 
-    def display(self, displaytext):
+    def message(self, displaytext):
         PCD.SCE=self.SCE
         PCD.text(displaytext)
 
-    def cls(self):
+    def clear(self):
         PCD.SCE=self.SCE
         PCD.cls()
 
-    def goto(self, row, column):
+    def setCursor(self, col, row):
         PCD.SCE=self.SCE
-        PCD.gotorc(row, column)
+        PCD.gotorc(row, col)
