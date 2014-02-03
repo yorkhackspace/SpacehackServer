@@ -6,6 +6,7 @@ import mosquitto
 import Adafruit_BBIO.GPIO as GPIO
 from Adafruit_7Segment import SevenSegment
 from Adafruit_CharLCD import Adafruit_CharLCD
+from NokiaLCD import NokiaLCD
 import commands
 import json
 
@@ -17,8 +18,7 @@ f=open('game-' + ipaddress +'.config')
 config=json.loads(f.read())
 f.close()
 roundconfig={}
-lcd=[]
-nokia=[]
+lcd={}
 controlids = [control['id'] for control in config['interface']['controls']]
 
 for ctrlid in config['local']['controls']:
@@ -29,8 +29,11 @@ for ctrlid in config['local']['controls']:
         GPIO.setup(newlcd.pin_e, GPIO.OUT)
         GPIO.output(newlcd.pin_e, GPIO.LOW)
         newlcd.begin(dispdef['width'], dispdef['height'])
-        lcd.append(newlcd)
-        
+        lcd[ctrlid]=newlcd
+    else:
+        newlcd = NokiaLCD(pin_SCE=dispdef['pin'])
+        lcd[ctrlid]=newlcd
+   
 #MQTT client
 client = mosquitto.Mosquitto("Game-" + ipaddress) #client ID
 server = config['local']['server']
@@ -50,30 +53,25 @@ lookup7segchar = {'0': 0x3F, '1': 0x06, '2': 0x5B, '3': 0x4F, '4': 0x66, '5': 0x
                   'y': 0x6E, 'Y': 0x6E, 'z': 0x5B, 'Z': 0x5B, '-': 0x40
                   }
 
-#Three HD44780 LCDs - 20x4 instructions display and two 16x2 control labels
-#lcd = [Adafruit_CharLCD(), Adafruit_CharLCD(), Adafruit_CharLCD(), Adafruit_CharLCD(), Adafruit_CharLCD()]
-#lcdpins = ["P8_9", "P8_16", "P8_10"]
-#lcdpins=["P9_15","P8_16","P9_13", "P8_9", "P8_10"]
-
 #Bar graph - didn't use a shift register because of space on breadboard
 #bar = ["P9_11", "P9_12", "P9_13", "P9_14", "P9_15", "P9_16", "P9_21", "P9_22", "P9_23", "P9_24"]
 
 #Pretty print to the LCDs taking into account width
-def display(message, width, screen):
+def display(message, width, ctrlid):
     words = message.split(" ")
     line = ""
     pos=0
-    lcd[screen].clear()
+    lcd[ctrlid].clear()
     for word in words:
         if len(line) + len(word) > width:
-            lcd[screen].setCursor(0, pos)
-            lcd[screen].message(line.rstrip() + '\n')
+            lcd[ctrlid].setCursor(0, pos)
+            lcd[ctrlid].message(line.rstrip() + '\n')
             line = word + " "
             pos += 1
         else:
             line += word + " "
-    lcd[screen].setCursor(0, pos)
-    lcd[screen].message(line.rstrip())
+    lcd[ctrlid].setCursor(0, pos)
+    lcd[ctrlid].message(line.rstrip())
 
 #Print to the 7-seg
 def displayDigits(digits):
@@ -93,11 +91,6 @@ def barGraph(digit):
             GPIO.output(bar[i], GPIO.HIGH)
         else:
             GPIO.output(bar[i], GPIO.LOW)
-
-def lcdwrite(text, ctrlid):
-    controlconfig = config['local']['controls'][str(ctrlid)]
-    if controlconfig['display']['type']=='hd44780':
-        display(text,controlconfig['display']['width'],controlconfig['display']['index'])
 
 #MQTT message arrived
 def on_message(mosq, obj, msg):
@@ -130,27 +123,16 @@ def on_message(mosq, obj, msg):
 #Process an incoming config for a round
 def processRoundConfig(roundconfigstring):
     roundconfig = json.loads(roundconfigstring)
-    display(roundconfig['instructions'], 20, 0)
+    display(roundconfig['instructions'], 20, "0")
     for ctrlid in controlids:
-        controlsetup = roundconfig['controls'][str(ctrlid)]
-        lcdwrite(controlsetup['name'], ctrlid)
+        roundsetup = roundconfig['controls'][ctrlid]
+        controlsetup = config['local']['controls'][ctrlid]
+        display(roundsetup['name'], controlsetup['display']['width'], ctrlid)
+        #lcdwrite(roundsetup['name'], ctrlid)
         #there's more to setup of course
 
 #Setup displays
 displayDigits('0000')
-
-#LCDs share a data bus but have different enable pins
-#for i in range(5):
-#	lcd[i].pin_e = lcdpins[i]
-#	GPIO.setup(lcdpins[i], GPIO.OUT)
-#	GPIO.output(lcdpins[i], GPIO.LOW)
-	
-#lcd[0].begin(20, 4)
-display("Awaiting instructions!", 20, 0)
-#lcd[1].begin(16, 2)
-display("Ready control 1!", 16, 1)
-#lcd[2].begin(16, 2)
-display("Ready control 2!", 16, 2)
 
 #Setup Bar graph
 #for pin in bar:
