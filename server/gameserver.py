@@ -39,7 +39,8 @@ def on_message(mosq, obj, msg):
             config = json.loads(str(msg.payload))
             consoleip = config['ip']
             console[consoleip] = config
-            consoles.append(consoleip)
+            if not consoleip in consoles:
+                consoles.append(consoleip)
             #set console up for game start
             consolesetup = {}
             consolesetup['instructions'] = 'To start new game, all players push and hold button'
