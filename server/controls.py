@@ -94,10 +94,6 @@ def getControlName(maxwidth, maxlines, minlen):
             finished=True
     return ret
 
-# Describe an action suitable for a verb choice
-def getVerbChoiceAction(control, verb):
-    return verb + " the " + control
-    
 # Describe an action suitable for a button
 def getButtonAction(control):
     finished=False
@@ -152,8 +148,8 @@ def getColourAction(control, targetcolour):
 def getVerbListAction(control, targetverb):
     return targetverb + ' the ' + control
 
-# Describe an action suitable for a 7-seg word
-def get7segAction(control, targetword):
+# Describe an action suitable for a word
+def getWordAction(control, targetword):
     finished = False
     while not finished:
         ret = (random.choice(['Set ' + control + ' to \'' + targetword + '\'',
@@ -174,12 +170,24 @@ def getPasswdAction(control, targetpasswd):
             finished = True
     return ret
 
+#Describe a pin entry action
+def getPinAction(control, targetpin):
+    finished = False
+    while not finished:
+        ret = (random.choice(['Set ' + control + ' to \'' + targetpasswd + '\'',
+                              'Enter \'' + targetpasswd + random.choice(['\' on ','\' into ','\' onto ']) + control,
+                              'Key \'' + targetpasswd + '\' into ' + control,
+                              control + ' pin is \'' + targetpin + '\'']))
+        if countLines(ret, 20) <= 3:
+            finished = True
+    return ret
+
 # Generate a random action
 def getRandomAction(control):
     return random.choice([getButtonAction(control), getToggleAction(control, random.choice(range(2))),
                           getSelectorAction(control, range(11), random.choice(range(11)),random.choice(range(11))),
                           getColourAction(control, random.choice(colours)),
-                          get7segAction(control, random.choice(safewords)),
+                          getWordAction(control, random.choice(safewords)),
                           getPasswdAction(control, random.choice(passwd))])
 
 # Get 50 controls
