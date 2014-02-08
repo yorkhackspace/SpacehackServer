@@ -100,20 +100,9 @@ def on_message(mosq, obj, msg):
         if nodes[2]=='configure':
             processRoundConfig(str(msg.payload))
         elif nodes[2] == 'instructions':
-            display(str(msg.payload), 20, 0)
+            display(str(msg.payload), 20, "0")
         elif nodes[2] in controlids:
             ctrlid = nodes[2]
-            #controlsetup = r
-    if msg.topic == "instructions":
-        display(str(msg.payload), 20, 0)
-    if msg.topic == "control1":
-        display(str(msg.payload), 16, 1)
-    if msg.topic == "control2":
-        display(str(msg.payload), 16, 2)
-    if msg.topic == "digit1":
-        displayDigits(str(msg.payload))
-    if msg.topic == "digit2":
-        barGraph(int(str(msg.payload)))
 
 #Process control value assignment from server
 #def processControlValueAssignment(controlid, value):
