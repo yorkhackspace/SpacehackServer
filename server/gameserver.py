@@ -11,7 +11,6 @@ import json
 
 #MQTT client to allow publishing
 client = mosquitto.Mosquitto("PiServer") #ID shown to the broker
-lastgenerated = 0
 server = "127.0.0.1" #Mosquitto MQTT broker running locally
 
 #Pygame for sounds
@@ -60,14 +59,6 @@ def on_message(mosq, obj, msg):
             client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
             currentsetup[consoleip] = consolesetup
                 
-#Connect to MQTT (final code should make this a retry loop)
-client.on_connect = on_connect
-client.on_message = on_message
-client.connect(server)
-
-#Main topic subscription point for clients to register their configurations to
-client.subscribe('server/register')
-
 #Define a new set of controls for each client for this game round and send it to them.
 def defineControls():
     for consoleip in consoles:
@@ -166,16 +157,33 @@ def pickNewTarget(consoleip):
         targetval=newpin
         targetinstruction = controls.getPinAction(targetname, targetval)
     #Now we have targetval and targetinstruction for this consoleip, store and publish it
-    consoles[consoleip]['instructions']=targetinstruction
-    consoles[consoleip]['target']=targetval
+    console[consoleip]['instructions']=targetinstruction
+    console[consoleip]['target']=targetval
     client.publish('clients/' + consoleip + '/instructions', targetinstruction)
     
 #Main loop
+
+#Connect to MQTT (final code should make this a retry loop)
+client.on_connect = on_connect
+client.on_message = on_message
+client.connect(server)
+
+#Main topic subscription point for clients to register their configurations to
+client.subscribe('server/register')
+
+lastgenerated = 0
+numinstructions =0
 while(client.loop() == 0): 
     #Every five seconds...
     if time.time()-lastgenerated > 5:
-        #Dump another batch of random control names and action
-        defineControls()
+        if numinstructions = 0:
+            #Dump another batch of random control names and action
+            defineControls()
+            numinstructions = 5
+        else:
+            for consoleip in consoles:
+                pickNewTarget(consoleip)
+            numinstructions -= 1
         lastgenerated = time.time()
 
 #If client.loop() returns non-zero, loop drops out to here.
