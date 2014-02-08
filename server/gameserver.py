@@ -58,10 +58,13 @@ def on_message(mosq, obj, msg):
                     consolesetup['controls'][ctrlid]['name'] = ""
             client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
             currentsetup[consoleip] = consolesetup
+            #Temp for now
+            defineControls()
                 
 #Define a new set of controls for each client for this game round and send it to them.
 def defineControls():
     for consoleip in consoles:
+        print("Defining console " + consoleip)
         consolesetup={}
         consolesetup['instructions']='Stand by!'
         consolesetup['controls']={}
@@ -73,6 +76,7 @@ def defineControls():
             ctrldef = random.choice([x for x in control['supported']])
             consolesetup['controls'][ctrlid]['type']=ctrldef['type']
             consolesetup['controls'][ctrlid]['definition']=ctrldef
+            print("Control " + ctrlid + " is " + ctrldef['type'] + ": " + consolesetup['controls'][ctrlid]['name'])
         currentsetup[consoleip]=consolesetup
         client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
 
@@ -90,8 +94,8 @@ def pickNewTarget(consoleip):
     #pick a random console and random control from that console
     targetconsole = random.choice(consoles)
     targetsetup = currentsetup[targetconsole]
-    targetctrlid = random.choice(targetsetup.keys())
-    targetcontrol = targetsetup[targetctrlid]
+    targetctrlid = random.choice(targetsetup['controls'].keys())
+    targetcontrol = targetsetup['controls'][targetctrlid]
     targetname = targetcontrol['name']
     targetdef = targetcontrol['definition']
     targetinstruction = ''
@@ -148,7 +152,7 @@ def pickNewTarget(consoleip):
         targetinstruction = controls.getVerbListAction(targetname, targetval)
     elif ctrltype == 'pin':
         finished=False
-        while note finished:
+        while not finished:
             newpin=''
             for i in range(4):
                 newpin += str(random.choice(range(10)))
@@ -156,9 +160,13 @@ def pickNewTarget(consoleip):
                 finished=True
         targetval=newpin
         targetinstruction = controls.getPinAction(targetname, targetval)
+    else:
+        print("Unhandled type: " + ctrltype)
     #Now we have targetval and targetinstruction for this consoleip, store and publish it
     console[consoleip]['instructions']=targetinstruction
-    console[consoleip]['target']=targetval
+    console[consoleip]['target']={"console": targetconsole, "control": targetctrlid,
+                                  "value": targetval}
+    print("Instruction: " + consoleip + '/' + targetctrlid + ' - ' + str(targetinstruction))
     client.publish('clients/' + consoleip + '/instructions', targetinstruction)
     
 #Main loop
@@ -176,11 +184,13 @@ numinstructions =0
 while(client.loop() == 0): 
     #Every five seconds...
     if time.time()-lastgenerated > 5:
-        if numinstructions = 0:
+        if numinstructions == 0:
             #Dump another batch of random control names and action
+            print("calling define")
             defineControls()
             numinstructions = 5
         else:
+            #print("calling pick")
             for consoleip in consoles:
                 pickNewTarget(consoleip)
             numinstructions -= 1

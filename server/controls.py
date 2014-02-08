@@ -142,7 +142,7 @@ def getColourAction(control, targetcolour):
         ret = 'Set ' + control + ' to ' + random.choice(['','','','code ', 'condition ', 'status ']) + targetcolour + random.choice(['','','',' alert'])
         if countLines(ret, 20) <= 3:
             finished = True
-    return ret
+    return str(ret)
 
 # Describe an action suitable for a verb list choice
 def getVerbListAction(control, targetverb):
