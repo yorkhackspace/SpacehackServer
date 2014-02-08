@@ -79,10 +79,96 @@ def defineControls():
             consolesetup['controls'][ctrlid]={}
             consolesetup['controls'][ctrlid]['enabled']=1
             consolesetup['controls'][ctrlid]['name']=controls.getControlName(control['width'], 2, 12)
-            ctrltype = random.choice([x['type'] for x in control['supported']])
-            consolesetup['controls'][ctrlid]['type']=ctrltype
+            ctrldef = random.choice([x for x in control['supported']])
+            consolesetup['controls'][ctrlid]['type']=ctrldef['type']
+            consolesetup['controls'][ctrlid]['definition']=ctrldef
         currentsetup[consoleip]=consolesetup
         client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
+
+#Get a choice from a range that isn't the same as the old value
+def getChoice(choicerange, oldval):
+    finished=False
+    while not finished:
+        retval = random.choice(choicerange)
+        if retval != oldval:
+            finished=True
+    return retval
+
+#Pick a new instruction to display on a given console
+def pickNewTarget(consoleip):
+    #pick a random console and random control from that console
+    targetconsole = random.choice(consoles)
+    targetsetup = currentsetup[targetconsole]
+    targetctrlid = random.choice(targetsetup.keys())
+    targetcontrol = targetsetup[targetctrlid]
+    targetname = targetcontrol['name']
+    targetdef = targetcontrol['definition']
+    targetinstruction = ''
+    #pick a new target based on the control type and current value
+    ctrltype = targetcontrol['type']
+    if 'value' in targetcontrol:
+        curval = targetcontrol['value']
+    else:
+        curval=''
+    if ctrltype == 'button':
+        targetval=1
+        targetinstruction = controls.getButtonAction(targetname)
+    elif ctrltype == 'toggle':
+        if curval == 0:
+            targetval=1
+        else:
+            targetval=0
+        targetinstruction = controls.getToggleAction(targetname, targetval)
+    elif ctrltype == 'selector':
+        targetrange = range(targetdef['min'],targetdef['max']+1)
+        targetval = getChoice(targetrange, curval)
+        targetinstruction = controls.getSelectorAction(targetname, targetrange, targetval, curval)
+    elif ctrltype == 'colour':
+        targetrange = targetdef['values']
+        targetval = getChoice(targetrange, curval)
+        targetinstruction = controls.getColourAction(targetname, targetval)
+    elif ctrltype == 'words':
+        if targetdef['fixed']:
+            targetrange = targetdef['list']
+        elif targetdef['safe']:
+            targetrange=controls.safewords
+        elif 'list' in targetdef:
+            if targetdef['list']=='allcontrolwords':
+                targetrange=controls.allcontrolwords
+            elif targetdef['list']=='passwd':
+                targetrange=controls.passwd
+                targetinstruction = controls.getPasswdAction(targetname, getChoice(targetrange))
+            elif targetdef['list']=='verbs':
+                targetrange=controls.verbs
+                targetinstruction = controls.getVarbAction(targetname, getChoice(targetrange))
+            else:
+                targetrange = controls.allcontrolwords
+        else:
+            targetrange=controls.allcontrolwords
+        if targetinstruction=='':
+            targetval=getChoice(targetrange, curval)
+            targetinstruction = controls.getWordAction(targetname, targetval)
+    elif ctrltype == 'verbs':
+        if targetdef['fixed']:
+            targetrange = targetdef['list']
+        else:
+            targetrange = controls.verbs
+        targetval=getChoice(targetrange, curval)
+        targetinstruction = controls.getVerbListAction(targetname, targetval)
+    elif ctrltype == 'pin':
+        finished=False
+        while note finished:
+            newpin=''
+            for i in range(4):
+                newpin += str(random.choice(range(10)))
+            if newpin != curval:
+                finished=True
+        targetval=newpin
+        targetinstruction = controls.getPinAction(targetname, targetval)
+    #Now we have targetval and targetinstruction for this consoleip, store and publish it
+    consoles[consoleip]['instructions']=targetinstruction
+    consoles[consoleip]['target']=targetval
+    client.publish('clients/' + consoleip + '/instructions', targetinstruction)
     
 #Main loop
 while(client.loop() == 0): 
