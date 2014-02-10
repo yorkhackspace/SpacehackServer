@@ -1,12 +1,14 @@
 {
   "emergency": [
+    "Emergency"
     "Danger",
     "Warning",
     "Red Alert",
     "SOS",
     "Don't panic",
     "Attention",
-    "OMG"
+    "OMG",
+    "Breaking"
   ],
   "goingto": [
     "headed for",
