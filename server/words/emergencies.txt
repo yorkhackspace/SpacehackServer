@@ -1,4 +1,13 @@
 {
+  "emergency": [
+    "Danger",
+    "Warning",
+    "Red Alert",
+    "SOS",
+    "Don't panic",
+    "Attention",
+    "OMG"
+  ],
   "goingto": [
     "headed for",
     "drifting into",
@@ -161,5 +170,31 @@
     "weapons turret",
     "improbability drive",
     "time circuit"
+  ],
+  "buildingup": [
+    "is building up",
+    "is hoarding",
+    "is full of",
+    "is at maximum capacity of",
+    "has toxic levels of",
+    "has a surplus of"
+  ],
+  "unwantables": [
+    "garbage",
+    "crisp wrappers",
+    "kibble",
+    "radioactive waste",
+    "green glowing barrels",
+    "tribbles",
+    "silica gel",
+    "bottle tops",
+    "AOL discs",
+    "USB cables",
+    "toxic waste",
+    "chemical by-products",
+    "discarded flyers",
+    "cereal toys",
+    "unidentified fluff",
+    "unspecified DNA"
   ]
 }
