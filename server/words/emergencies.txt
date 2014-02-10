@@ -1,6 +1,6 @@
 {
   "emergency": [
-    "Emergency"
+    "Emergency",
     "Danger",
     "Warning",
     "Red Alert",
