@@ -1,0 +1,89 @@
+{
+  "goingto": [
+    "headed for",
+    "drifting into",
+    "veering towards",
+    "being sucked into",
+    "locked on course for"
+  ],
+  "badplace": [
+    "the heart of the sun",
+    "a wormhole",
+    "that space station",
+    "the rift",
+    "mortal peril",
+    "witch-space",
+    "the forbidden zone",
+    "an unstable gas giant",
+    "an ion storm",
+    "a magnetic anomaly",
+    "a radiation flare",
+    "an overwhelming sense of ennui"
+  ],
+  "attackedby": [
+    "invaded by",
+    "under attack by",
+    "being scanned by",
+    "ordered to surrender by",
+    "surrounded by",
+    "outgunned by"
+  ],
+  "badpeople": [
+    "Tribbles",
+    "Venusians",
+    "the French",
+    "Daleks",
+    "tourists",
+    "Khan",
+    "pan-dimensional beings",
+    "hyperintelligent energy"
+  ],
+  "losing": [
+    "losing",
+    "short of",
+    "critically low on"
+  ],
+  "neededresource": [
+    "gravity",
+    "pressure",
+    "power",
+    "CPU",
+    "lemon-scented hand wipes",
+    "red shirts"
+  ],
+  "leaking": [
+    "leaking",
+    "venting",
+    "bleeding off",
+    "critically low on",
+    "depleting"
+  ],
+  "fluid": [
+    "oxygen",
+    "water",
+    "coffee",
+    "tea",
+    "air",
+    "leek and potato soup",
+    "pan-galactic gargleblasters"
+  ],
+  "broken": [
+    "broken",
+    "ruptured",
+    "damaged",
+    "disabled",
+    "malfunctioning",
+    "snafu'd",
+    "sabotaged",
+    "breeched",
+    "depressed"
+  ],
+  "device": [
+    "warp vortex",
+    "robot",
+    "hull",
+    "minibar",
+    "reactor",
+    "games room"
+  ]
+}
