@@ -18,10 +18,15 @@
     "an ion storm",
     "a magnetic anomaly",
     "a radiation flare",
-    "an overwhelming sense of ennui",
+    "asense of ennui",
     "Button Moon",
     "a rip in space-time",
-    "wibbly wobbly timey wimey"
+    "wibbly wobbly timey wimey",
+    "this Maker Faire",
+    "Cardiff, again",
+    "then asteroid belt",
+    "another slate quarry",
+    "the singularity"
   ],
   "attackedby": [
     "invaded by",
@@ -29,7 +34,9 @@
     "being scanned by",
     "ordered to surrender by",
     "surrounded by",
-    "outgunned by"
+    "outgunned by",
+    "threatened by",
+    "being boarded by"
   ],
   "badpeople": [
     "Tribbles",
@@ -111,7 +118,10 @@
     "oil",
     "fuel",
     "Pinot Grigio",
-    "sythohol"
+    "sythohol",
+    "balloon helium",
+    "hydrogen",
+    "unobtanium"
   ],
   "broken": [
     "broken",
