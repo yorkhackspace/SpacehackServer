@@ -199,7 +199,7 @@ def getRandomAction(control):
 def getEmergency():
     finished=False
     while not finished:
-        n = random.choice(range(5))
+        n = random.choice(range(6))
         if n==0: #is {goingto} {badplace}
             em = "is " + random.choice(emergencies['goingto']) + " " + random.choice(emergencies['badplace'])
         elif n==1: #is {attackedby} {badpeople}
@@ -210,7 +210,9 @@ def getEmergency():
             em = "is " + random.choice(emergencies['leaking']) + " " + random.choice(emergencies['fluid'])
         elif n==4: #has a {broken} {device}
             em = "has " + random.choice(emergencies['broken']) + " " + random.choice(emergencies['device'])
-        ret = random.choice(["Emergency","Warning","Danger","Don't Panic","Red Alert","SOS"]) + " - the ship " + em + "! Stand by!"
+        elif n==5: #has a {buildupof} {unwantables}
+            em = random.choice(emergencies['buildingup']) + " " + random.choice(emergencies['unwantables'])
+        ret = random.choice(emergencies['emergency']) + " - the ship " + em + "! Stand by!"
         if countLines(ret, 20) <= 4:
             finished = True
     return ret
