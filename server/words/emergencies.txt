@@ -18,7 +18,7 @@
     "an ion storm",
     "a magnetic anomaly",
     "a radiation flare",
-    "asense of ennui",
+    "a sense of ennui",
     "Button Moon",
     "a rip in space-time",
     "wibbly wobbly timey wimey",
