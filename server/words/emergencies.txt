@@ -45,30 +45,51 @@
     "evil versions of ourselves",
     "Sontarans",
     "space pirates",
-    "klingons off the starboard bow"
+    "klingons off the starboard bow",
+    "His Divine Shadow",
+    "reptilians",
+    "Vogons",
+    "Thargoids",
+    "Martians",
+    "Neptunians",
+    "purple people eaters",
+    "Vorlons",
+    "Cylons",
+    "Romulans",
+    "Ferengi",
+    "the Dominion",
+    "Python class cruisers",
+    "TIE fighters",
+    "the Empire",
+    "Kardashians"
   ],
   "losing": [
     "losing",
-    "short of",
-    "critically low on"
+    "critically low on",
+    "about to lose",
+    "unable to maintain"
   ],
   "neededresource": [
     "gravity",
     "pressure",
     "power",
     "CPU",
-    "lemon-scented hand wipes",
+    "lemon-scented wipes",
     "red shirts",
     "life support",
     "electricity",
-    "impulse"
+    "impulse",
+    "motivation",
+    "altitude",
+    "lateral stability",
+    "hull integrity"
   ],
   "leaking": [
     "leaking",
     "venting",
     "bleeding off",
     "critically low on",
-    "depleting"
+    "losing"
   ],
   "fluid": [
     "oxygen",
@@ -78,7 +99,12 @@
     "air",
     "leek and potato soup",
     "pan-galactic gargleblasters",
-    "plasma"
+    "plasma",
+    "brake fluid",
+    "oil",
+    "fuel",
+    "Pinot Grigio",
+    "sythohol"
   ],
   "broken": [
     "broken",
@@ -89,7 +115,10 @@
     "snafu'd",
     "sabotaged",
     "breeched",
-    "depressed"
+    "depressed",
+    "failing",
+    "overheating",
+    "overstressed"
   ],
   "device": [
     "warp vortex",
@@ -97,6 +126,13 @@
     "hull",
     "minibar",
     "reactor",
-    "games room"
+    "rec room",
+    "crew section",
+    "engineering room",
+    "secondary bridge",
+    "cargo hold",
+    "escape shuttle",
+    "life support",
+    "weapons turret"
   ]
 }
