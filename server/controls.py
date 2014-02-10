@@ -2,6 +2,7 @@
 # Provides text generation for control names and various control type actions
 
 import random
+import json
 
 def readWordList(filename):
     f=open('words/' + filename)
@@ -31,6 +32,10 @@ colourlookup = {c[0]: (int(c[1]), int(c[2]), int(c[3])) for c in rawcols}
 
 allcontrolwords = adjectives + baseparts + elements + nouns + greekletters + verbs + colours + onwords + offwords
 allgeneralwords = readWordList('words.txt')
+
+f=open("words/emergencies.txt")
+emergencies=json.loads(f.read())
+f.close()
 
 # Letters that can work on a 7-segment
 sevensegletters = ['A','B','C','D','E','F','G','H','I','J','L','N',
@@ -190,6 +195,26 @@ def getRandomAction(control):
                           getWordAction(control, random.choice(safewords)),
                           getPasswdAction(control, random.choice(passwd))])
 
+#Get a random emergency
+def getEmergency():
+    finished=False
+    while not finished:
+        n = random.choice(range(5))
+        if n==0: #is {goingto} {badplace}
+            em = "is " + random.choice(words['goingto']) + " " + random.choice(words['badplace'])
+        elif n==1: #is {attackedby} {badpeople}
+            em = "is " + random.choice(words['attackedby']) + " " + random.choice(words['badpeople'])
+        elif n==2: #is {losing} {neededresource}
+            em = "is " + random.choice(words['losing']) + " " + random.choice(words['neededresource'])
+        elif n==3: #is {leaking} {fluid}
+            em = "is " + random.choice(words['leaking']) + " " + random.choice(words['fluid'])
+        elif n==4: #has a {broken} {device}
+            em = "has a " + random.choice(words['broken']) + " " + random.choice(words['device'])
+        ret = "Emergency - the ship " + em + "! Stand by!"
+        if countLines(ret, 20) <= 4:
+            finished = True
+    return ret
+
 # Get 50 controls
 def get50Controls():
     for i in range(50):
@@ -201,4 +226,8 @@ def get50Actions():
         print(getRandomAction(getControlName(16,2,12)))
         
 
-#get50Actions()
+#Get 50 emergencies
+def get50Emergencies():
+    for i in range(50):
+        print(getEmergency())
+        
