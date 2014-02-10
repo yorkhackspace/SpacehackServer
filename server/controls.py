@@ -209,7 +209,7 @@ def getEmergency():
         elif n==3: #is {leaking} {fluid}
             em = "is " + random.choice(emergencies['leaking']) + " " + random.choice(emergencies['fluid'])
         elif n==4: #has a {broken} {device}
-            em = "has a " + random.choice(emergencies['broken']) + " " + random.choice(emergencies['device'])
+            em = "has " + random.choice(emergencies['broken']) + " " + random.choice(emergencies['device'])
         ret = "Emergency - the ship " + em + "! Stand by!"
         if countLines(ret, 20) <= 4:
             finished = True
