@@ -137,10 +137,11 @@
     "oil",
     "fuel",
     "Pinot Grigio",
-    "sythohol",
+    "synthohol",
     "balloon helium",
     "hydrogen",
-    "unobtanium"
+    "unobtanium",
+    "bubbles"
   ],
   "broken": [
     "a broken",
