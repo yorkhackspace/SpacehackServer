@@ -18,7 +18,9 @@
     "an ion storm",
     "a magnetic anomaly",
     "a radiation flare",
-    "an overwhelming sense of ennui"
+    "an overwhelming sense of ennui",
+    "Button Moon",
+    "a rip in space-time"
   ],
   "attackedby": [
     "invaded by",
@@ -36,7 +38,14 @@
     "tourists",
     "Khan",
     "pan-dimensional beings",
-    "hyperintelligent energy"
+    "hyperintelligent energy",
+    "the Mysterons",
+    "the Clangers",
+    "the Borg",
+    "evil versions of ourselves",
+    "Sontarans",
+    "space pirates",
+    "klingons off the starboard bow"
   ],
   "losing": [
     "losing",
@@ -49,7 +58,10 @@
     "power",
     "CPU",
     "lemon-scented hand wipes",
-    "red shirts"
+    "red shirts",
+    "life support",
+    "electricity",
+    "impulse"
   ],
   "leaking": [
     "leaking",
@@ -65,7 +77,8 @@
     "tea",
     "air",
     "leek and potato soup",
-    "pan-galactic gargleblasters"
+    "pan-galactic gargleblasters",
+    "plasma"
   ],
   "broken": [
     "broken",
