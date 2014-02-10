@@ -24,7 +24,7 @@
     "wibbly wobbly timey wimey",
     "this Maker Faire",
     "Cardiff, again",
-    "then asteroid belt",
+    "the asteroid belt",
     "another slate quarry",
     "the singularity"
   ],
