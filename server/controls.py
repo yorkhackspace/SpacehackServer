@@ -201,15 +201,15 @@ def getEmergency():
     while not finished:
         n = random.choice(range(5))
         if n==0: #is {goingto} {badplace}
-            em = "is " + random.choice(words['goingto']) + " " + random.choice(words['badplace'])
+            em = "is " + random.choice(emergencies['goingto']) + " " + random.choice(emergencies['badplace'])
         elif n==1: #is {attackedby} {badpeople}
-            em = "is " + random.choice(words['attackedby']) + " " + random.choice(words['badpeople'])
+            em = "is " + random.choice(emergencies['attackedby']) + " " + random.choice(emergencies['badpeople'])
         elif n==2: #is {losing} {neededresource}
-            em = "is " + random.choice(words['losing']) + " " + random.choice(words['neededresource'])
+            em = "is " + random.choice(emergencies['losing']) + " " + random.choice(emergencies['neededresource'])
         elif n==3: #is {leaking} {fluid}
-            em = "is " + random.choice(words['leaking']) + " " + random.choice(words['fluid'])
+            em = "is " + random.choice(emergencies['leaking']) + " " + random.choice(emergencies['fluid'])
         elif n==4: #has a {broken} {device}
-            em = "has a " + random.choice(words['broken']) + " " + random.choice(words['device'])
+            em = "has a " + random.choice(emergencies['broken']) + " " + random.choice(emergencies['device'])
         ret = "Emergency - the ship " + em + "! Stand by!"
         if countLines(ret, 20) <= 4:
             finished = True
