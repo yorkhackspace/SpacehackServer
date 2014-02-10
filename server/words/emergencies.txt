@@ -75,7 +75,10 @@
     "rogue simulants",
     "Grebulons",
     "Golgafrinchans",
-    "Silastic Armourfiends"
+    "Silastic Armourfiends",
+    "Reavers",
+    "Wraiths",
+    "Alliance operatives"
   ],
   "losing": [
     "losing",
