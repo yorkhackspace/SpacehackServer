@@ -20,7 +20,8 @@
     "a radiation flare",
     "an overwhelming sense of ennui",
     "Button Moon",
-    "a rip in space-time"
+    "a rip in space-time",
+    "wibbly wobbly timey wimey"
   ],
   "attackedby": [
     "invaded by",
@@ -36,7 +37,7 @@
     "the French",
     "Daleks",
     "tourists",
-    "Khan",
+    "Khaaaannnn",
     "pan-dimensional beings",
     "hyperintelligent energy",
     "the Mysterons",
@@ -61,7 +62,13 @@
     "Python class cruisers",
     "TIE fighters",
     "the Empire",
-    "Kardashians"
+    "Kardashians",
+    "despair squid",
+    "G.E.L.F.s",
+    "rogue simulants",
+    "Grebulons",
+    "Golgafrinchans",
+    "Silastic Armourfiends"
   ],
   "losing": [
     "losing",
@@ -133,6 +140,8 @@
     "cargo hold",
     "escape shuttle",
     "life support",
-    "weapons turret"
+    "weapons turret",
+    "improbability drive",
+    "time circuit"
   ]
 }
