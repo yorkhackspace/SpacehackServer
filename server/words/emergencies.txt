@@ -127,18 +127,18 @@
     "unobtanium"
   ],
   "broken": [
-    "broken",
-    "ruptured",
-    "damaged",
-    "disabled",
-    "malfunctioning",
-    "snafu'd",
-    "sabotaged",
-    "breeched",
-    "depressed",
-    "failing",
-    "overheating",
-    "overstressed"
+    "a broken",
+    "a ruptured",
+    "a damaged",
+    "a disabled",
+    "a malfunctioning",
+    "a snafu'd",
+    "a sabotaged",
+    "a breeched",
+    "a depressed",
+    "a failing",
+    "an overheating",
+    "an overstressed"
   ],
   "device": [
     "warp vortex",
