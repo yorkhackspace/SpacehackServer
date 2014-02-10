@@ -92,7 +92,9 @@
     "Wraiths",
     "Alliance operatives",
     "the Covenant",
-    "generic greys"
+    "generic greys",
+    "the Outland Revenue",
+    "men in black"
   ],
   "losing": [
     "losing",
@@ -169,7 +171,11 @@
     "life support",
     "weapons turret",
     "improbability drive",
-    "time circuit"
+    "time circuit",
+    "bathroom",
+    "canteen",
+    "computer core",
+    "comms dish"
   ],
   "buildingup": [
     "is building up",
