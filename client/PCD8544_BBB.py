@@ -75,6 +75,8 @@ def init(dev=(0,0),speed=4000000, brightness=256, contrast=CONTRAST):
     for pin in [DC, RST]:
         GPIO.setup(pin, GPIO.OUT)
 
+    GPIO.output(SCE, GPIO.LOW)
+
     # Toggle RST low to reset.
     GPIO.output(RST, GPIO.LOW)
     time.sleep(0.100)
@@ -88,7 +90,7 @@ def init(dev=(0,0),speed=4000000, brightness=256, contrast=CONTRAST):
     else:
         GPIO.setup(LED, GPIO.OUT)
         GPIO.output(LED, GPIO.LOW)
- 
+    GPIO.output(SCE, GPIO.HIGH)
 
 
 def lcd_cmd(value):
