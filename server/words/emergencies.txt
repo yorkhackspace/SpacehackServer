@@ -39,7 +39,7 @@
     "this Maker Faire",
     "Cardiff, again",
     "the asteroid belt",
-    "... wait, that's no moon",
+    "- wait, that's no moon",
     "the singularity",
     "a black hole",
     "a temporal vortex",
@@ -105,7 +105,8 @@
     "men in black",
     "Galactic Police",
     "cloaked warbirds",
-    "Police Vipers"
+    "Police Vipers",
+    "astromonkeys"
   ],
   "losing": [
     "losing",
@@ -153,7 +154,8 @@
     "hydrogen",
     "unobtanium",
     "bubbles",
-    "Tizer"
+    "Tizer",
+    "anti-marmite"
   ],
   "broken": [
     "a broken",
@@ -167,7 +169,11 @@
     "a depressed",
     "a failing",
     "an overheating",
-    "an overstressed"
+    "an overstressed",
+    "a badly scuffed",
+    "a fire in the",
+    "flooding in the",
+    "weevils loose in the"
   ],
   "device": [
     "warp vortex",
@@ -175,8 +181,8 @@
     "hull",
     "minibar",
     "reactor",
-    "rec room",
-    "crew section",
+    "games room",
+    "crew quarters",
     "engineering room",
     "secondary bridge",
     "cargo hold",
@@ -188,7 +194,10 @@
     "bathroom",
     "canteen",
     "computer core",
-    "comms dish"
+    "comms dish",
+    "hydroponic garden",
+    "stasis bunks",
+    "Jefferies tubes"
   ],
   "buildingup": [
     "is building up",
@@ -196,7 +205,9 @@
     "is full of",
     "is at maximum capacity of",
     "has toxic levels of",
-    "has a surplus of"
+    "has a surplus of",
+    "has a dangerous excess of",
+    "is at alarming levels of"
   ],
   "unwantables": [
     "garbage",
@@ -212,9 +223,13 @@
     "toxic waste",
     "chemical by-products",
     "discarded flyers",
-    "cereal toys",
+    "Happy Meal toys",
     "unidentified fluff",
     "unspecified DNA",
-    "exhaust fumes"
+    "exhaust fumes",
+    "dark matter",
+    "novelty clowns",
+    "recycling",
+    "Soylent Green"
   ]
 }
