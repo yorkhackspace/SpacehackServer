@@ -176,7 +176,16 @@
     "a badly scuffed",
     "a fire in the",
     "flooding in the",
-    "weevils loose in the"
+    "weevils loose in the",
+    "a wrecked",
+    "a ruined",
+    "a disintigrating",
+    "an out of phase",
+    "an overcharged",
+    "an out of warranty",
+    "a dematerialising",
+    "freak conditions in the",
+    "a depressurised"
   ],
   "device": [
     "warp vortex",
@@ -189,7 +198,7 @@
     "engineering room",
     "secondary bridge",
     "cargo hold",
-    "escape shuttle",
+    "shuttle bay",
     "life support",
     "weapons turret",
     "improbability drive",
@@ -198,9 +207,14 @@
     "canteen",
     "computer core",
     "comms dish",
-    "hydroponic garden",
+    "hydroponics garden",
     "stasis dorm",
-    "Jefferies tube"
+    "Jefferies tube",
+    "turbolift",
+    "medical bay",
+    "astrophysics lab",
+    "cybernetics workshop",
+    "main crankshaft"
   ],
   "buildingup": [
     "is building up",
