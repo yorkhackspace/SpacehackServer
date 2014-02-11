@@ -196,8 +196,8 @@
     "computer core",
     "comms dish",
     "hydroponic garden",
-    "stasis bunks",
-    "Jefferies tubes"
+    "stasis dorm",
+    "Jefferies tube"
   ],
   "buildingup": [
     "is building up",
