@@ -8,14 +8,17 @@
     "Don't panic",
     "Attention",
     "OMG",
-    "Breaking"
+    "Breaking",
+    "Caution",
+    "Mayday"
   ],
   "goingto": [
     "headed for",
     "drifting into",
     "veering towards",
     "being sucked into",
-    "locked on course for"
+    "locked on course for",
+    "being pulled towards"
   ],
   "badplace": [
     "the heart of the sun",
@@ -36,7 +39,7 @@
     "this Maker Faire",
     "Cardiff, again",
     "the asteroid belt",
-    "another slate quarry",
+    "... wait, that's no moon",
     "the singularity",
     "a black hole",
     "a temporal vortex",
@@ -50,7 +53,10 @@
     "surrounded by",
     "outgunned by",
     "threatened by",
-    "being boarded by"
+    "being boarded by",
+    "under surveillance by",
+    "infiltrated by",
+    "being fired on by"
   ],
   "badpeople": [
     "Tribbles",
@@ -96,7 +102,9 @@
     "the Covenant",
     "generic greys",
     "the Outland Revenue",
-    "men in black"
+    "men in black",
+    "Galactic Police",
+    "cloaked warbirds"
   ],
   "losing": [
     "losing",
@@ -139,11 +147,12 @@
     "oil",
     "fuel",
     "Pinot Grigio",
-    "synthohol",
+    "synthehol",
     "balloon helium",
     "hydrogen",
     "unobtanium",
-    "bubbles"
+    "bubbles",
+    "Tizer"
   ],
   "broken": [
     "a broken",
@@ -204,6 +213,7 @@
     "discarded flyers",
     "cereal toys",
     "unidentified fluff",
-    "unspecified DNA"
+    "unspecified DNA",
+    "exhaust fumes"
   ]
 }
