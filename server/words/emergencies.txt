@@ -107,7 +107,10 @@
     "cloaked warbirds",
     "Police Vipers",
     "astromonkeys",
-    "Googlebots"
+    "Googlebots",
+    "Republican Space Rangers",
+    "Space Marines",
+    "cyber criminals"
   ],
   "losing": [
     "losing",
