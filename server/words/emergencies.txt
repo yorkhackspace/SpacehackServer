@@ -104,7 +104,8 @@
     "the Outland Revenue",
     "men in black",
     "Galactic Police",
-    "cloaked warbirds"
+    "cloaked warbirds",
+    "Police Vipers"
   ],
   "losing": [
     "losing",
