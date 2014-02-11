@@ -230,6 +230,9 @@
     "dark matter",
     "novelty clowns",
     "recycling",
-    "Soylent Green"
+    "Soylent Green",
+    "scruffy refugees",
+    "hitch-hikers",
+    "dihydrogen monoxide"
   ]
 }
