@@ -106,7 +106,8 @@
     "Galactic Police",
     "cloaked warbirds",
     "Police Vipers",
-    "astromonkeys"
+    "astromonkeys",
+    "Googlebots"
   ],
   "losing": [
     "losing",
@@ -155,7 +156,9 @@
     "unobtanium",
     "bubbles",
     "Tizer",
-    "anti-marmite"
+    "anti-marmite",
+    "hydraulic fluid",
+    "chlorine"
   ],
   "broken": [
     "a broken",
@@ -233,6 +236,8 @@
     "Soylent Green",
     "scruffy refugees",
     "hitch-hikers",
-    "dihydrogen monoxide"
+    "dihydrogen monoxide",
+    "crew effluent",
+    "buckyballs"
   ]
 }
