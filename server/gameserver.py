@@ -194,8 +194,7 @@ def pickNewTarget(consoleip):
         print("Unhandled type: " + ctrltype)
     #Now we have targetval and targetinstruction for this consoleip, store and publish it
     console[consoleip]['instructions']=targetinstruction
-    console[consoleip]['target']={"console": targetconsole, "control": targetctrlid,
-                                  "value": targetval}
+    console[consoleip]['target']={"console": targetconsole, "control": targetctrlid, "value": targetval}
     print("Instruction: " + consoleip + '/' + targetctrlid + ' - ' + str(targetinstruction))
     client.publish('clients/' + consoleip + '/instructions', targetinstruction)
     
