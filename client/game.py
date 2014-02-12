@@ -76,7 +76,7 @@ def display(message, width, ctrlid):
 #Display words on the left and right sides of the bottom row, for Nokia displays
 def displayButtonsLine(leftstr, rightstr, ctrlid):
     ctrldef = config['local']['controls'][ctrlid]['display']
-    combinedstr = lefstr + " "*(ctrldef['width'] - len(leftstr) - len(rightstr)) + rightstr
+    combinedstr = leftstr + " "*(ctrldef['width'] - len(leftstr) - len(rightstr)) + rightstr
     lcd[ctrlid].setCursor(0, ctrldef['height']-1)
     lcd[ctrlid].message(combinedstr)
 
@@ -136,8 +136,12 @@ def processRoundConfig(roundconfigstring):
         if 'definition' in roundsetup and roundsetup['enabled']:
             ctrltype = roundsetup['type']
             ctrldef = roundsetup['definition']
-            if controlsetup['display']['height'] > 3 and 'value' in ctrldef:
-                displayValueLine(ctrldef['value'], ctrlid)
+            if controlsetup['display']['height'] > 3:
+                if 'value' in ctrldef:
+                    displayValueLine(str(ctrldef['value']), ctrlid)
+                else:
+                    displayValueLine("Test", ctrlid)
+                    displayButtonsLine("Left", "Right", ctrlid)
         #there's more to setup of course
 
 #Setup displays
