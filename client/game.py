@@ -73,6 +73,22 @@ def display(message, width, ctrlid):
     lcd[ctrlid].setCursor(0, pos)
     lcd[ctrlid].message(line.rstrip())
 
+#Display words on the left and right sides of the bottom row, for Nokia displays
+def displayButtonsLine(leftstr, rightstr, ctrlid):
+    ctrldef = config['local']['controls'][ctrlid]['display']
+    combinedstr = lefstr + " "*(ctrldef['width'] - len(leftstr) - len(rightstr)) + rightstr
+    lcd[ctrlid].setCursor(0, ctrldef['height']-1)
+    lcd[ctrlid].message(combinedstr)
+
+#Display values centred on the fourth row, for Nokia displays
+def displayInfoLine(valuestr, ctrlid):
+    ctrldef = config['local']['controls'][ctrlid]['display']
+    if ctrldef['height'] > 4:
+        leftpad = (ctrldef['width'] - len(valuestr)) // 2
+        combinedstr = (" " * leftpad) + valuestr + (" " * (ctrldef['width'] - len(valuestr) - leftpad))
+        lcd[ctrlid].setCursor(0, ctrldef['height']-3)
+        lcd[ctrlid].message(combinedstr)
+    
 #Print to the 7-seg
 def displayDigits(digits):
     disp = -len(digits) % 4 * ' ' + digits
