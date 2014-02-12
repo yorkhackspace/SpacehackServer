@@ -107,9 +107,24 @@ def defineControls():
                     ctrldef['pool'] = wordpool
                 else:
                     ctrldef['pool'] = ctrldef['list']
+            #Pick a starting value
+            if ctrldef['assignable']:
+                if ctrltype in ['words', 'verbs']:
+                    ctrldef['value']=random.choice(ctrldef['pool'])
+                elif ctrltype == 'selector':
+                    ctrldef['value'] = random.choice(range(targetdef['min'],targetdef['max']+1))
+                elif ctrltype == 'colour':
+                    ctrldef['value'] = random.choice(ctrldef['values'])
+                elif ctrltype == 'toggle':
+                    ctrldef['value'] = random.choice(range(2))
+                elif ctrltype == 'button':
+                    ctrldef['value'] = 0
+                elif ctrltype == 'pin':
+                    ctrldef['value'] = ''
             consolesetup['controls'][ctrlid]['type'] = ctrltype
             consolesetup['controls'][ctrlid]['definition']=ctrldef
             print("Control " + ctrlid + " is " + ctrldef['type'] + ": " + consolesetup['controls'][ctrlid]['name'])
+
         currentsetup[consoleip]=consolesetup
         client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
 
@@ -134,8 +149,8 @@ def pickNewTarget(consoleip):
     targetinstruction = ''
     #pick a new target based on the control type and current value
     ctrltype = targetcontrol['type']
-    if 'value' in targetcontrol:
-        curval = targetcontrol['value']
+    if 'value' in targetdef:
+        curval = targetdef['value']
     else:
         curval=''
     if ctrltype == 'button':
