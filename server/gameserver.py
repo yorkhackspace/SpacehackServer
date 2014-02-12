@@ -64,6 +64,7 @@ def on_message(mosq, obj, msg):
 #Define a new set of controls for each client for this game round and send it to them.
 def defineControls():
     emergency = controls.getEmergency()
+    print(emergency)
     for consoleip in consoles:
         print("Defining console " + consoleip)
         consolesetup={}
