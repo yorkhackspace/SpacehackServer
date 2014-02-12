@@ -79,7 +79,7 @@ def defineControls():
             if ctrltype in ['words', 'verbs']:
                 if ctrldef['fixed']:
                     targetrange = ctrldef['list']
-                elif ctrldef['safe']:
+                elif 'safe' in ctrldef and ctrldef['safe']:
                     targetrange=controls.safewords
                 elif 'list' in ctrldef:
                     if ctrldef['list']=='allcontrolwords':
