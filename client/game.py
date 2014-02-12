@@ -133,7 +133,7 @@ def processRoundConfig(roundconfigstring):
         roundsetup = roundconfig['controls'][ctrlid]
         controlsetup = config['local']['controls'][ctrlid]
         if 'type' in controlsetup:
-        ctrltype = controlsetup['type']
+            ctrltype = controlsetup['type']
             ctrldef = controlsetup['definition']
             display(roundsetup['name'], controlsetup['display']['width'], ctrlid)
             if controlsetup['display']['height'] > 3 and 'value' in ctrldef:
