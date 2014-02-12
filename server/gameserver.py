@@ -102,7 +102,7 @@ def defineControls():
                         newword = random.choice(targetrange)
                         if not newword in wordpool:
                             wordpool.append(newword)
-                        if len(wordpool) = ctrldef['quantity']:
+                        if len(wordpool) == ctrldef['quantity']:
                             finished=True
                     ctrldef['pool'] = wordpool
                 else:
