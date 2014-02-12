@@ -81,7 +81,7 @@ def displayButtonsLine(leftstr, rightstr, ctrlid):
     lcd[ctrlid].message(combinedstr)
 
 #Display values centred on the fourth row, for Nokia displays
-def displayInfoLine(valuestr, ctrlid):
+def displaValueLine(valuestr, ctrlid):
     ctrldef = config['local']['controls'][ctrlid]['display']
     if ctrldef['height'] > 4:
         leftpad = (ctrldef['width'] - len(valuestr)) // 2
@@ -132,7 +132,11 @@ def processRoundConfig(roundconfigstring):
     for ctrlid in controlids:
         roundsetup = roundconfig['controls'][ctrlid]
         controlsetup = config['local']['controls'][ctrlid]
+        ctrltype = controlsetup['type']
+        ctrldef = controlsetup['definition']
         display(roundsetup['name'], controlsetup['display']['width'], ctrlid)
+        if controlsetup['display']['height'] > 3 and 'value' in ctrldef:
+            displayValueLine(ctrldef['value'], ctrlid)
         #lcdwrite(roundsetup['name'], ctrlid)
         #there's more to setup of course
 
