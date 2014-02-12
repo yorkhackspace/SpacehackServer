@@ -179,7 +179,6 @@ Bib
 Muffler
 Pivot
 Fulcrum
-Frustum
 Paddle
 Peg
 Servo
@@ -199,7 +198,7 @@ Clapper
 Feed
 Flow
 Robot
-Throstle
+Kerjigger
 Loom
 Tool
 Printer
@@ -293,6 +292,7 @@ Plating
 Cover
 Armour
 Flap
+Flail
 Strap
 Choke
 Funnel
