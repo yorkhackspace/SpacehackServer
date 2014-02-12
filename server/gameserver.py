@@ -75,7 +75,39 @@ def defineControls():
             consolesetup['controls'][ctrlid]['enabled']=1
             consolesetup['controls'][ctrlid]['name']=controls.getControlName(control['width'], 2, 12)
             ctrldef = random.choice([x for x in control['supported']])
-            consolesetup['controls'][ctrlid]['type']=ctrldef['type']
+            ctrltype = ctrldef['type']
+            if ctrltype in ['words', 'verbs']:
+                if ctrldef['fixed']:
+                    targetrange = ctrldef['list']
+                elif ctrldef['safe']:
+                    targetrange=controls.safewords
+                elif 'list' in ctrldef:
+                    if ctrldef['list']=='allcontrolwords':
+                        targetrange=controls.allcontrolwords
+                    elif ctrldef['list']=='passwd':
+                        targetrange=controls.passwd
+                    elif ctrldef['list']=='verbs':
+                        targetrange=controls.verbs
+                    else:
+                        targetrange = controls.allcontrolwords
+                elif ctrltype=='verbs':
+                    targetrange = controls.verbs
+                else:
+                    targetrange = controls.allcontrolwords
+                #Create a predetermined list?
+                if not ctrldef['fixed']:
+                    wordpool = []
+                    finished=False
+                    while not finished:
+                        newword = random.choice(targetrange)
+                        if not newword in wordpool:
+                            wordpool.append(newword)
+                        if len(wordpool) = ctrldef['quantity']:
+                            finished=True
+                    ctrldef['pool'] = wordpool
+                else:
+                    ctrldef['pool'] = ctrldef['list']
+            consolesetup['controls'][ctrlid]['type'] = ctrltype
             consolesetup['controls'][ctrlid]['definition']=ctrldef
             print("Control " + ctrlid + " is " + ctrldef['type'] + ": " + consolesetup['controls'][ctrlid]['name'])
         currentsetup[consoleip]=consolesetup
@@ -123,34 +155,16 @@ def pickNewTarget(consoleip):
         targetrange = targetdef['values']
         targetval = getChoice(targetrange, curval)
         targetinstruction = controls.getColourAction(targetname, targetval)
-    elif ctrltype == 'words':
-        if targetdef['fixed']:
-            targetrange = targetdef['list']
-        elif targetdef['safe']:
-            targetrange=controls.safewords
-        elif 'list' in targetdef:
-            if targetdef['list']=='allcontrolwords':
-                targetrange=controls.allcontrolwords
-            elif targetdef['list']=='passwd':
-                targetrange=controls.passwd
+    elif ctrltype in ['words', 'verbs']:
+        targetrange = targetdef['pool']
+        if 'list' in targetdef:
+            if targetdef['list']=='passwd':
                 targetinstruction = controls.getPasswdAction(targetname, getChoice(targetrange))
-            elif targetdef['list']=='verbs':
-                targetrange=controls.verbs
+            elif targetdef['list']=='verbs' or ctrltype == 'verbs':
                 targetinstruction = controls.getVarbAction(targetname, getChoice(targetrange))
-            else:
-                targetrange = controls.allcontrolwords
-        else:
-            targetrange=controls.allcontrolwords
         if targetinstruction=='':
             targetval=getChoice(targetrange, curval)
             targetinstruction = controls.getWordAction(targetname, targetval)
-    elif ctrltype == 'verbs':
-        if targetdef['fixed']:
-            targetrange = targetdef['list']
-        else:
-            targetrange = controls.verbs
-        targetval=getChoice(targetrange, curval)
-        targetinstruction = controls.getVerbListAction(targetname, targetval)
     elif ctrltype == 'pin':
         finished=False
         while not finished:
