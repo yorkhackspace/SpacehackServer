@@ -174,9 +174,9 @@ def pickNewTarget(consoleip):
         targetrange = targetdef['pool']
         if 'list' in targetdef:
             if targetdef['list']=='passwd':
-                targetinstruction = controls.getPasswdAction(targetname, getChoice(targetrange))
+                targetinstruction = controls.getPasswdAction(targetname, getChoice(targetrange, curval))
             elif targetdef['list']=='verbs' or ctrltype == 'verbs':
-                targetinstruction = controls.getVerbListAction(targetname, getChoice(targetrange))
+                targetinstruction = controls.getVerbListAction(targetname, getChoice(targetrange, curval))
         if targetinstruction=='':
             targetval=getChoice(targetrange, curval)
             targetinstruction = controls.getWordAction(targetname, targetval)
