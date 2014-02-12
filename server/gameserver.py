@@ -112,7 +112,7 @@ def defineControls():
                 if ctrltype in ['words', 'verbs']:
                     ctrldef['value']=random.choice(ctrldef['pool'])
                 elif ctrltype == 'selector':
-                    ctrldef['value'] = random.choice(range(targetdef['min'],targetdef['max']+1))
+                    ctrldef['value'] = random.choice(range(ctrldef['min'],ctrldef['max']+1))
                 elif ctrltype == 'colour':
                     ctrldef['value'] = random.choice(ctrldef['values'])
                 elif ctrltype == 'toggle':
