@@ -213,7 +213,7 @@ lastgenerated = 0
 numinstructions =0
 while(client.loop() == 0): 
     #Every five seconds...
-    if time.time()-lastgenerated > 5:
+    if time.time()-lastgenerated > 5 and len(consoles) > 0:
         if numinstructions == 0:
             #Dump another batch of random control names and action
             print("calling define")
