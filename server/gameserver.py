@@ -108,7 +108,7 @@ def defineControls():
                 else:
                     ctrldef['pool'] = ctrldef['list']
             #Pick a starting value
-            if ctrldef['assignable']:
+            if 'assignable' in ctrldef and ctrldef['assignable']:
                 if ctrltype in ['words', 'verbs']:
                     ctrldef['value']=random.choice(ctrldef['pool'])
                 elif ctrltype == 'selector':
