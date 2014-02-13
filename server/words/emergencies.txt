@@ -7,7 +7,7 @@
     "SOS",
     "Don't panic",
     "Attention",
-    "OMG",
+    "ZOMG",
     "Breaking",
     "Caution",
     "Mayday"
@@ -18,12 +18,16 @@
     "veering towards",
     "being sucked into",
     "locked on course for",
-    "being pulled towards"
+    "being pulled towards",
+    "on a collision course with",
+    "in the gravitational pull of",
+    "being dragged into",
+    "going to crash into"
   ],
   "badplace": [
     "the heart of the sun",
     "a wormhole",
-    "that space station",
+    "the space station",
     "the rift",
     "mortal peril",
     "witch-space",
@@ -43,7 +47,12 @@
     "the singularity",
     "a black hole",
     "a temporal vortex",
-    "proximity mines"
+    "proximity mines",
+    "nullspace",
+    "maker space",
+    "a parallel dimension",
+    "a supernova",
+    "an abandoned ghost ship"
   ],
   "attackedby": [
     "invaded by",
@@ -110,7 +119,8 @@
     "Googlebots",
     "Republican Space Rangers",
     "Space Marines",
-    "cyber criminals"
+    "cyber criminals",
+    "rebel scum"
   ],
   "losing": [
     "losing",
