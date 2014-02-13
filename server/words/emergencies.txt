@@ -124,14 +124,17 @@
     "power",
     "CPU",
     "lemon-scented wipes",
-    "red shirts",
+    "red shirted crew",
     "life support",
     "electricity",
     "impulse",
     "motivation",
     "altitude",
     "lateral stability",
-    "hull integrity"
+    "hull integrity",
+    "plot credibility",
+    "air miles",
+    "warp velocity"
   ],
   "leaking": [
     "leaking",
@@ -161,7 +164,9 @@
     "Tizer",
     "anti-marmite",
     "hydraulic fluid",
-    "chlorine"
+    "chlorine",
+    "diesel",
+    "WD40"
   ],
   "broken": [
     "a broken",
@@ -169,7 +174,7 @@
     "a damaged",
     "a disabled",
     "a malfunctioning",
-    "a snafu'd",
+    "a burnt-out",
     "a sabotaged",
     "a breeched",
     "a depressed",
@@ -182,13 +187,16 @@
     "weevils loose in the",
     "a wrecked",
     "a ruined",
-    "a disintigrating",
+    "a disintegrating",
     "an out of phase",
     "an overcharged",
     "an out of warranty",
     "a dematerialising",
     "freak conditions in the",
-    "a depressurised"
+    "a depressurised",
+    "a flooded",
+    "a devastated",
+    "a misaligned"
   ],
   "device": [
     "warp vortex",
@@ -205,7 +213,7 @@
     "life support",
     "weapons turret",
     "improbability drive",
-    "time circuit",
+    "flux capacitor",
     "bathroom",
     "canteen",
     "computer core",
@@ -217,7 +225,17 @@
     "medical bay",
     "astrophysics lab",
     "cybernetics workshop",
-    "main crankshaft"
+    "main crankshaft",
+    "door swoosh mechanism",
+    "motivator",
+    "megadrive",
+    "hover panel",
+    "cetacean tank",
+    "dorsal fin",
+    "port bow",
+    "starboard bow",
+    "officer's quarters",
+    "ready room"
   ],
   "buildingup": [
     "is building up",
