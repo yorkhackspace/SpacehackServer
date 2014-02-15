@@ -184,9 +184,7 @@ def processControlValueAssignment(value, ctrlid, override=False):
         hardwaretype = controlsetup['hardware']
         pins = controlsetup['pins']
         if hardwaretype == 'phonestylemenu':
-        	if ctrltype == 'button':
-        	    #do nothing
-        	elif ctrltype == 'toggle':
+            if ctrltype == 'toggle':
         	    if controlsetup['display']['height']>3:
         	        if value:
         	            displayValueLine("On", ctrlid)
@@ -204,8 +202,6 @@ def processControlValueAssignment(value, ctrlid, override=False):
             elif ctrltype == 'words':
         	    if controlsetup['display']['height']>3:
                     displayValueLine(value, ctrlid)
-            elif ctrltype == 'verbs':
-                #Nothing
         elif hardwaretype == 'bargraphpotentiometer':
         	if ctrltype == 'toggle':
     	        if value:
@@ -215,9 +211,7 @@ def processControlValueAssignment(value, ctrlid, override=False):
             elif ctrltype == 'selector':
                 barGraph(value)
         elif hardwaretype == 'combo7SegColourRotary':
-        	if ctrltype == 'button':
-        	    #do nothing
-        	elif ctrltype == 'toggle':
+        	if ctrltype == 'toggle':
         	    if value:
         	        displayDigits('On')
         	        #Light LED red
@@ -242,8 +236,6 @@ def processControlValueAssignment(value, ctrlid, override=False):
             elif ctrltype == 'words':
                 #Switch off LED
                 displayDigits(value)
-        elif hardwaretype == 'switchbank':
-            #Anything to do?
         elif hardwaretype == 'illuminatedbutton':
             if ctrltype == 'toggle':
                 if value:
@@ -251,9 +243,7 @@ def processControlValueAssignment(value, ctrlid, override=False):
                 else:
                     GPIO.output(pins['LED'], LOW)
         elif hardwaretype == 'potentiometer':
-        	if ctrltype == 'button':
-        	    #do nothing
-        	elif ctrltype == 'toggle':
+        	if ctrltype == 'toggle':
         	    if controlsetup['display']['height']>3:
         	        if value:
         	            displayValueLine("On", ctrlid)
@@ -283,8 +273,6 @@ def processControlValueAssignment(value, ctrlid, override=False):
                     else:
                         displayValueLine("Off", ctrlid)
                         GPIO.output(pins['LED'], LOW)
-        elif hardwaretype == 'fourbuttons':
-            #Nothing to do here
         elif hardwaretype == 'keypad':
             #no need for cases
             displayValueLine(value)
