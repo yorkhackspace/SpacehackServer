@@ -20,10 +20,10 @@ ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 f=open('game-' + ipaddress +'.config')
 config=json.loads(f.read())
 f.close()
-roundconfig={}
 lcd={}
 controlids = [control['id'] for control in config['interface']['controls']]
 controldefs = {}
+roundconfig = {}
 bar = []
 keypad = None
 
@@ -185,25 +185,25 @@ def processControlValueAssignment(value, ctrlid, override=False):
         pins = controlsetup['pins']
         if hardwaretype == 'phonestylemenu':
             if ctrltype == 'toggle':
-        	    if controlsetup['display']['height'] > 3:
-        	        if value:
-        	            displayValueLine("On", ctrlid)
-        	            #Light the LED red
+       	        if controlsetup['display']['height'] > 3:
+                    if value:
+                        displayValueLine("On", ctrlid)
+                        #Light the LED red
                     else:
                         displayValueLine("Off", ctrlid)
-        	            #Uswitch off LED
+                        #Uswitch off LED
             elif ctrltype == 'selector':
                 if controlsetup['display']['height'] > 3:
                     displayValueLine(str(value), ctrlid)
             elif ctrltype == 'colour':
-        	    if controlsetup['display']['height'] > 3:
+                if controlsetup['display']['height'] > 3:
                     displayValueLine(str(value), ctrlid)
                 #Light the LED the right colours
             elif ctrltype == 'words':
-        	    if controlsetup['display']['height'] > 3:
-                    displayValueLine(value, ctrlid)
+               if controlsetup['display']['height'] > 3:
+                   displayValueLine(value, ctrlid)
         elif hardwaretype == 'bargraphpotentiometer':
-        	if ctrltype == 'toggle':
+            if ctrltype == 'toggle':
     	        if value:
     	            barGraph(10)
                 else:
@@ -211,10 +211,10 @@ def processControlValueAssignment(value, ctrlid, override=False):
             elif ctrltype == 'selector':
                 barGraph(value)
         elif hardwaretype == 'combo7SegColourRotary':
-        	if ctrltype == 'toggle':
-        	    if value:
-        	        displayDigits('On')
-        	        #Light LED red
+            if ctrltype == 'toggle':
+                if value:
+                    displayDigits('On')
+                    #Light LED red
                 else:
                     displayDigits('Off')
                     #Switch off LED
@@ -235,44 +235,44 @@ def processControlValueAssignment(value, ctrlid, override=False):
                     displayDigits("CYAN")
             elif ctrltype == 'words':
                 #Switch off LED
-                displayDigits(value)
+                displayDigits(value.upper())
         elif hardwaretype == 'illuminatedbutton':
             if ctrltype == 'toggle':
                 if value:
-                    GPIO.output(pins['LED'], HIGH)
+                    GPIO.output(pins['LED'], GPIO.HIGH)
                 else:
-                    GPIO.output(pins['LED'], LOW)
+                    GPIO.output(pins['LED'], GPIO.LOW)
         elif hardwaretype == 'potentiometer':
-        	if ctrltype == 'toggle':
-        	    if controlsetup['display']['height']>3:
-        	        if value:
-        	            displayValueLine("On", ctrlid)
-        	            #Light the LED red
+            if ctrltype == 'toggle':
+                if controlsetup['display']['height']>3:
+                    if value:
+                        displayValueLine("On", ctrlid)
+                        #Light the LED red
                     else:
                         displayValueLine("Off", ctrlid)
-        	            #Uswitch off LED
+                        #Switch off LED
             elif ctrltype == 'selector':
-        	    if controlsetup['display']['height']>3:
+                if controlsetup['display']['height']>3:
                     displayValueLine(str(value), ctrlid)
             elif ctrltype == 'colour':
-        	    if controlsetup['display']['height']>3:
+                if controlsetup['display']['height']>3:
                     displayValueLine(str(value), ctrlid)
                 #Light the LED the right colours
             elif ctrltype == 'words':
-        	    if controlsetup['display']['height']>3:
+                if controlsetup['display']['height']>3:
                     displayValueLine(value, ctrlid)
             elif ctrltype == 'verbs':
-        	    if controlsetup['display']['height']>3:
+                if controlsetup['display']['height']>3:
                     displayValueLine(value, ctrlid)
         elif hardwaretype == 'illuminatedtoggle':
             if ctrltype == 'toggle':
-        	    if controlsetup['display']['height']>3:
-        	        if value:
+                if controlsetup['display']['height']>3:
+                    if value:
     	                displayValueLine("On", ctrlid)
-                        GPIO.output(pins['LED'], HIGH)
+                        GPIO.output(pins['LED'], GPIO.HIGH)
                     else:
                         displayValueLine("Off", ctrlid)
-                        GPIO.output(pins['LED'], LOW)
+                        GPIO.output(pins['LED'], GPIO.LOW)
         elif hardwaretype == 'keypad':
             #no need for cases
             displayValueLine(value)
@@ -280,7 +280,9 @@ def processControlValueAssignment(value, ctrlid, override=False):
             
 #Process an incoming config for a round
 def processRoundConfig(roundconfigstring):
-    roundconfig = json.loads(roundconfigstring)
+    x = json.loads(roundconfigstring)
+    for key in x.keys():
+        roundconfig[key] = x[key]
     display(roundconfig['instructions'], 20, "0")
     for ctrlid in controlids:
         roundsetup = roundconfig['controls'][ctrlid]
@@ -296,8 +298,9 @@ def processRoundConfig(roundconfigstring):
                     displayValueLine("Test", ctrlid)
                     displayButtonsLine("Left", "Right", ctrlid)
             #there's more to setup of course
+            hardwaretype = config['local']['controls'][ctrlid]['hardware']
             if 'value' in ctrldef:
-                ProcessControlValueAssignment(ctrldef['value'], ctrlid, True)
+                processControlValueAssignment(ctrldef['value'], ctrlid, True)
 
 #Setup displays
 displayDigits('0000')
