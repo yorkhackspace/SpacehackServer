@@ -54,7 +54,7 @@ for ctrlid in config['local']['controls']:
             PWM.start(pins['RGB_B'], 0.0)
         elif hardwaretype == 'bargraphpotentiometer': #10k pot, 10 LEDs
             for barnum in range(11):
-                pin = pins['BAR_' + str(barnum+1)
+                pin = pins['BAR_' + str(barnum+1)]
                 GPIO.setup(pin, GPIO.OUT)
                 GPIO.output(pin, GPIO.HIGH)
                 bar.append(pin)
