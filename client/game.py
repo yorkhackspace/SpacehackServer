@@ -174,11 +174,122 @@ def on_message(mosq, obj, msg):
         elif nodes[2] in controlids:
             ctrlid = nodes[2]
 
-#Process control value assignment from server
-#def processControlValueAssignment(controlid, value):
-    
-
-    
+#Process control value assignment
+def processControlValueAssignment(value, ctrlid, override=False):
+    roundsetup = roundconfig['controls'][ctrlid]
+    ctrltype = roundsetup['type']
+    ctrldef = roundsetup['definition']
+    if 'value' not in ctrldef or ctrldef['value'] != value or override:
+        controlsetup = config['local']['controls'][ctrlid]
+        hardwaretype = controlsetup['hardware']
+        pins = controlsetup['pins']
+        if hardwaretype == 'phonestylemenu':
+        	if ctrltype == 'button':
+        	    #do nothing
+        	elif ctrltype == 'toggle':
+        	    if controlsetup['display']['height']>3:
+        	        if value:
+        	            displayValueLine("On", ctrlid)
+        	            #Light the LED red
+                    else:
+                        displayValueLine("Off", ctrlid)
+        	            #Uswitch off LED
+            elif ctrltype == 'selector':
+        	    if controlsetup['display']['height']>3:
+                    displayValueLine(str(value), ctrlid)
+            elif ctrltype == 'colour':
+        	    if controlsetup['display']['height']>3:
+                    displayValueLine(str(value), ctrlid)
+                #Light the LED the right colours
+            elif ctrltype == 'words':
+        	    if controlsetup['display']['height']>3:
+                    displayValueLine(value, ctrlid)
+            elif ctrltype == 'verbs':
+                #Nothing
+        elif hardwaretype == 'bargraphpotentiometer':
+        	if ctrltype == 'toggle':
+    	        if value:
+    	            barGraph(10)
+                else:
+    	            barGraph(0)
+            elif ctrltype == 'selector':
+                barGraph(value)
+        elif hardwaretype == 'combo7SegColourRotary':
+        	if ctrltype == 'button':
+        	    #do nothing
+        	elif ctrltype == 'toggle':
+        	    if value:
+        	        displayDigits('On')
+        	        #Light LED red
+                else:
+                    displayDigits('Off')
+                    #Switch off LED
+            elif ctrltype == 'selector':
+                displayDigits(str(value))
+                #Switch off LED
+            elif ctrltype == 'colour':
+                #Light LED appropriate colour
+                if value == 'red':
+                    displayDigits("RED")
+                elif value == 'green':
+                    displayDigits("GREN")
+                elif value == 'blue':
+                    displayDigits("BLUE")
+                elif value == 'yellow':
+                    displayDigits("YELO")
+                elif value == 'cyan':
+                    displayDigits("CYAN")
+            elif ctrltype == 'words':
+                #Switch off LED
+                displayDigits(value)
+        elif hardwaretype == 'switchbank':
+            #Anything to do?
+        elif hardwaretype == 'illuminatedbutton':
+            if ctrltype == 'toggle':
+                if value:
+                    GPIO.output(pins['LED'], HIGH)
+                else:
+                    GPIO.output(pins['LED'], LOW)
+        elif hardwaretype == 'potentiometer':
+        	if ctrltype == 'button':
+        	    #do nothing
+        	elif ctrltype == 'toggle':
+        	    if controlsetup['display']['height']>3:
+        	        if value:
+        	            displayValueLine("On", ctrlid)
+        	            #Light the LED red
+                    else:
+                        displayValueLine("Off", ctrlid)
+        	            #Uswitch off LED
+            elif ctrltype == 'selector':
+        	    if controlsetup['display']['height']>3:
+                    displayValueLine(str(value), ctrlid)
+            elif ctrltype == 'colour':
+        	    if controlsetup['display']['height']>3:
+                    displayValueLine(str(value), ctrlid)
+                #Light the LED the right colours
+            elif ctrltype == 'words':
+        	    if controlsetup['display']['height']>3:
+                    displayValueLine(value, ctrlid)
+            elif ctrltype == 'verbs':
+        	    if controlsetup['display']['height']>3:
+                    displayValueLine(value, ctrlid)
+        elif hardwaretype == 'illuminatedtoggle':
+            if ctrltype == 'toggle':
+        	    if controlsetup['display']['height']>3:
+        	        if value:
+    	                displayValueLine("On", ctrlid)
+                        GPIO.output(pins['LED'], HIGH)
+                    else:
+                        displayValueLine("Off", ctrlid)
+                        GPIO.output(pins['LED'], LOW)
+        elif hardwaretype == 'fourbuttons':
+            #Nothing to do here
+        elif hardwaretype == 'keypad':
+            #no need for cases
+            displayValueLine(value)
+        ctrldef['value'] = value
+            
 #Process an incoming config for a round
 def processRoundConfig(roundconfigstring):
     roundconfig = json.loads(roundconfigstring)
@@ -196,7 +307,9 @@ def processRoundConfig(roundconfigstring):
                 else:
                     displayValueLine("Test", ctrlid)
                     displayButtonsLine("Left", "Right", ctrlid)
-        #there's more to setup of course
+            #there's more to setup of course
+            if 'value' in ctrldef:
+                ProcessControlValueAssignment(ctrldef['value'], ctrlid, True)
 
 #Setup displays
 displayDigits('0000')
