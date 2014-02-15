@@ -73,13 +73,13 @@ for ctrlid in config['local']['controls']:
                 GPIO.output(pins['LED_' + str(i)], GPIO.LOW)
         elif hardwaretype == 'illuminatedbutton': #one button, one LED
             GPIO.setup(pins['BTN'], GPIO.IN, GPIO.PUD_UP)
-            GPIO.setup(pins['LED]', GPIO.OUT)
+            GPIO.setup(pins['LED'], GPIO.OUT)
             GPIO.output(pins['LED'], GPIO.LOW)
         elif hardwaretype == 'potentiometer': #slide or rotary 10k pot
             ADC.setup(pins['POT'])
         elif hardwaretype == 'illuminatedtoggle': #one switch, one LED            
             GPIO.setup(pins['SW'], GPIO.IN, GPIO.PUD_UP)
-            GPIO.setup(pins['LED]', GPIO.OUT)
+            GPIO.setup(pins['LED'], GPIO.OUT)
             GPIO.output(pins['LED'], GPIO.LOW)
         elif hardwaretype == 'fourbuttons': #four buttons
             for i in range(1,5):
