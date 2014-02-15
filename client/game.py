@@ -299,21 +299,29 @@ def processRoundConfig(roundconfigstring):
                     displayButtonsLine("Left", "Right", ctrlid)
             #there's more to setup of course
             hardwaretype = config['local']['controls'][ctrlid]['hardware']
+            if hardwaretype == 'phonestylemenu':
+                if ctrltype == 'button':
+                    if random.choice(range(2)):
+                        #left
+                        displayButtonsLine("Push", "", ctrlid)
+                    else:
+                        #right
+                        displayButtonsLine("", "Push", ctrlid)
+                elif ctrltype == 'toggle':
+                    displayButtonsLine("Off", "On", ctrlid)
+                elif ctrltype == 'verbs':
+                    displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
+                else:
+                    displayButtonsLine("<", ">", ctrlid)
+            elif hardwaretype == 'combo7SegColourRotary':
+                if ctrltype == 'button':
+                    displayDigits("PUSH")
             if 'value' in ctrldef:
                 processControlValueAssignment(ctrldef['value'], ctrlid, True)
 
 #Setup displays
 displayDigits('0000')
 
-#Setup Bar graph
-#for pin in bar:
-#    GPIO.setup(pin, GPIO.OUT)
-#    GPIO.output(pin, GPIO.HIGH)
-	
-#Setup pot
-
-#Setup button
-	
 #Setup MQTT
 client.on_message = on_message
 client.connect(server)
