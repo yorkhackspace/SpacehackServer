@@ -12,6 +12,7 @@ from NokiaLCD import NokiaLCD
 import Keypad_BBB
 import commands
 import json
+import random
 
 #Who am I?
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
