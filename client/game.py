@@ -85,7 +85,8 @@ for ctrlid in config['local']['controls']:
             for i in range(1,5):
                 GPIO.setup(pins['BTN_' + str(i)], GPIO.IN, GPIO.PUD_UP)
         elif hardwaretype == 'keypad': #four rows, four cols
-            keypad = Keypad_BBB.keypad(pins['ROW_1'], pins['ROW_2'], pins['ROW_3', pins['ROW_4'], pins['COL_1'], pins['COL_2'], pins['COL_3', pins['COL_4'])
+            keypad = Keypad_BBB.keypad(pins['ROW_1'], pins['ROW_2'], pins['ROW_3'], pins['ROW_4'], 
+                                       pins['COL_1'], pins['COL_2'], pins['COL_3', pins['COL_4'])
             
 #MQTT client
 client = mosquitto.Mosquitto("Game-" + ipaddress) #client ID
