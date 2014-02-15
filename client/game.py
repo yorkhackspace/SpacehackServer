@@ -193,7 +193,7 @@ def processControlValueAssignment(value, ctrlid, override=False):
                         displayValueLine("Off", ctrlid)
         	            #Uswitch off LED
             elif ctrltype == 'selector':
-        	    if controlsetup['display']['height'] > 3:
+                if controlsetup['display']['height'] > 3:
                     displayValueLine(str(value), ctrlid)
             elif ctrltype == 'colour':
         	    if controlsetup['display']['height'] > 3:
