@@ -185,7 +185,7 @@ def processControlValueAssignment(value, ctrlid, override=False):
         pins = controlsetup['pins']
         if hardwaretype == 'phonestylemenu':
             if ctrltype == 'toggle':
-        	    if controlsetup['display']['height']>3:
+        	    if controlsetup['display']['height'] > 3:
         	        if value:
         	            displayValueLine("On", ctrlid)
         	            #Light the LED red
@@ -193,14 +193,14 @@ def processControlValueAssignment(value, ctrlid, override=False):
                         displayValueLine("Off", ctrlid)
         	            #Uswitch off LED
             elif ctrltype == 'selector':
-        	    if controlsetup['display']['height']>3:
+        	    if controlsetup['display']['height'] > 3:
                     displayValueLine(str(value), ctrlid)
             elif ctrltype == 'colour':
-        	    if controlsetup['display']['height']>3:
+        	    if controlsetup['display']['height'] > 3:
                     displayValueLine(str(value), ctrlid)
                 #Light the LED the right colours
             elif ctrltype == 'words':
-        	    if controlsetup['display']['height']>3:
+        	    if controlsetup['display']['height'] > 3:
                     displayValueLine(value, ctrlid)
         elif hardwaretype == 'bargraphpotentiometer':
         	if ctrltype == 'toggle':
