@@ -337,7 +337,7 @@ def pollControls():
                 if 'value' in ctrldef:
                     ctrlvalue = ctrldef['value']
                 else:
-                    ctrldef = None
+                    ctrlvalue = None
                 hardwaretype = config['local']['controls'][ctrlid]['hardware'] #Which hardware implementation
                 #For the particular hardware, poll the controls and decide what it means
                 if hardwaretype == 'phonestylemenu':
@@ -345,8 +345,12 @@ def pollControls():
                     btn2 = GPIO.input(pins['BTN_2'])
                     state = [btn1, btn2]
                     if ctrlstate != state:
-                        leftchanged = ctrlstate[0] != state[0]
-                        rightchanged = ctrlstate[1] != state[1]
+                        if ctrlstate == None:
+                            leftchanged = True
+                            rightchanged = True
+                        else:
+                            leftchanged = ctrlstate[0] != state[0]
+                            rightchanged = ctrlstate[1] != state[1]
                         leftpressed = state[0]
                         rightpressed = state[1]
                         if ctrltype == 'toggle':
