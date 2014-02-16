@@ -340,6 +340,7 @@ def pollControls():
                     ctrlvalue = None
                 hardwaretype = config['local']['controls'][ctrlid]['hardware'] #Which hardware implementation
                 #For the particular hardware, poll the controls and decide what it means
+                value = ctrlvalue
                 if hardwaretype == 'phonestylemenu':
                     btn1 = GPIO.input(pins['BTN_1'])
                     btn2 = GPIO.input(pins['BTN_2'])
@@ -358,10 +359,7 @@ def pollControls():
                                 value = 1
                             elif leftchanged and leftpressed: #Off
                                 value = 0
-                            else:
-                                value = ctrlvalue
                         elif ctrltype == 'selector':
-                            value = ctrlvalue
                             if rightchanged and rightpressed:
                                 if ctrlvalue < ctrldef['max']:
                                     value = ctrlvalue + 1
@@ -404,7 +402,6 @@ def pollControls():
                 elif hardwaretype == 'illuminatedbutton':
                     btn = GPIO.input(pins['BTN'])
                     state = btn
-                    value = ctrlvalue
                     if ctrlstate != state:
                         if ctrltype == 'button':
                             value = state
