@@ -433,5 +433,5 @@ for controlid in [x['id'] for x in config['interface']['controls']]:
 client.publish("server/register", json.dumps(config['interface']))
                
 #Main loop
-while client.loop():
+while(client.loop() == 0):
     pollControls()
