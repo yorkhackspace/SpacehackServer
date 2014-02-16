@@ -320,98 +320,99 @@ def processRoundConfig(roundconfigstring):
 
 #Poll controls, interpret into values, recognise changes, inform server
 def pollControls():
-    for ctrlid in controlids:
-        roundsetup = roundconfig['controls'][ctrlid]
-        controlsetup = config['local']['controls'][ctrlid]
-        if 'definition' in roundsetup and roundsetup['enabled']:
-            ctrltype = roundsetup['type'] #Which supported type are we this time
-            ctrldef = roundsetup['definition']
-            pins = ctrldef['pins']
-            #State is physical state of buttons etc
-            if 'state' in ctrldef:
-                ctrlstate = ctrldef['state']
-            else:
-                ctrlstate = None
-            #Value is as interpreted by the abstracted control type
-            if 'value' in ctrldef:
-                ctrlvalue = ctrldef['value']
-            else:
-                ctrldef = None
-            hardwaretype = config['local']['controls'][ctrlid]['hardware'] #Which hardware implementation
-            #For the particular hardware, poll the controls and decide what it means
-            if hardwaretype == 'phonestylemenu':
-                btn1 = GPIO.input(pins['BTN_1'])
-                btn2 = GPIO.input(pins['BTN_2'])
-                state = [btn1, btn2]
-                if ctrlstate != state:
-                    leftchanged = ctrlstate[0] != state[0]
-                    rightchanged = ctrlstate[1] != state[1]
-                    leftpressed = state[0]
-                    rightpressed = state[1]
-                    if ctrltype == 'toggle':
-                        if rightchanged and rightpressed: #On
-                            value = 1
-                        elif leftchanged and leftpressed: #Off
-                            value = 0
-                        else:
+    if len(roundconfig) > 0:
+        for ctrlid in controlids:
+            roundsetup = roundconfig['controls'][ctrlid]
+            controlsetup = config['local']['controls'][ctrlid]
+            if 'definition' in roundsetup and roundsetup['enabled']:
+                ctrltype = roundsetup['type'] #Which supported type are we this time
+                ctrldef = roundsetup['definition']
+                pins = ctrldef['pins']
+                #State is physical state of buttons etc
+                if 'state' in ctrldef:
+                    ctrlstate = ctrldef['state']
+                else:
+                    ctrlstate = None
+                #Value is as interpreted by the abstracted control type
+                if 'value' in ctrldef:
+                    ctrlvalue = ctrldef['value']
+                else:
+                    ctrldef = None
+                hardwaretype = config['local']['controls'][ctrlid]['hardware'] #Which hardware implementation
+                #For the particular hardware, poll the controls and decide what it means
+                if hardwaretype == 'phonestylemenu':
+                    btn1 = GPIO.input(pins['BTN_1'])
+                    btn2 = GPIO.input(pins['BTN_2'])
+                    state = [btn1, btn2]
+                    if ctrlstate != state:
+                        leftchanged = ctrlstate[0] != state[0]
+                        rightchanged = ctrlstate[1] != state[1]
+                        leftpressed = state[0]
+                        rightpressed = state[1]
+                        if ctrltype == 'toggle':
+                            if rightchanged and rightpressed: #On
+                                value = 1
+                            elif leftchanged and leftpressed: #Off
+                                value = 0
+                            else:
+                                value = ctrlvalue
+                        elif ctrltype == 'selector':
                             value = ctrlvalue
-                    elif ctrltype == 'selector':
-                        value = ctrlvalue
-                        if rightchanged and rightpressed:
-                            if ctrlvalue < ctrldef['max']:
-                                value = ctrlvalue + 1
-                        elif leftchanged and leftpressed:
-                            if ctrlvalue > ctrldef['min']:
-                                value = ctrlvalue - 1
-                    elif ctrltype == 'colours':
-                        #get current index from pool of values
-                        idx = ctrldef['values'].index(ctrlvalue)
-                        if rightchanged and rightpressed:
-                            if idx < len(ctrldef['values']) - 1:
-                                idx += 1
-                            else:
-                                idx = 0
-                        elif leftchanged and leftpressed:
-                            if idx > 0:
-                                idx -= 1
-                            else:
-                                idx = len(ctrldef['values']) - 1
-                        value = ctrldef['values'][idx]
-                    elif ctrltype == 'words':
-                        #get current index from pool of values
-                        idx = ctrldef['pool'].index(ctrlvalue)
-                        if rightchanged and rightpressed:
-                            if idx < len(ctrldef['pool']) - 1:
-                                idx += 1
-                            else:
-                                idx = 0
-                        elif leftchanged and leftpressed:
-                            if idx > 0:
-                                idx -= 1
-                            else:
-                                idx = len(ctrldef['pool']) - 1
-                        value = ctrldef['pool'][idx]
-                    elif ctrltype == 'verbs':
-                        if rightchanged and rightpressed:
-                            value = ctrldef['pool'][1]
-                        elif leftchanged and leftpressed:
-                            value = ctrldef['pool'][0]
-            elif hardwaretype == 'illuminatedbutton':
-                btn = GPIO.input(pins['BTN'])
-                state = btn
-                value = ctrlvalue
-                if ctrlstate != state:
-                    if ctrltype == 'button':
-                        value = state
-                    elif ctrltype == 'toggle':
-                        if state:
-                            value = not ctrlvalue
-            #more cases to go here
-            if value != ctrlvalue:
-                processControlValueAssignment(value, ctrlid)
-                client.publish("clients/" + ipaddress + "/" + ctrlid + "value", value)
-                ctrldef['value'] = value
-            ctrldef['state'] = state
+                            if rightchanged and rightpressed:
+                                if ctrlvalue < ctrldef['max']:
+                                    value = ctrlvalue + 1
+                            elif leftchanged and leftpressed:
+                                if ctrlvalue > ctrldef['min']:
+                                    value = ctrlvalue - 1
+                        elif ctrltype == 'colours':
+                            #get current index from pool of values
+                            idx = ctrldef['values'].index(ctrlvalue)
+                            if rightchanged and rightpressed:
+                                if idx < len(ctrldef['values']) - 1:
+                                    idx += 1
+                                else:
+                                    idx = 0
+                            elif leftchanged and leftpressed:
+                                if idx > 0:
+                                    idx -= 1
+                                else:
+                                    idx = len(ctrldef['values']) - 1
+                            value = ctrldef['values'][idx]
+                        elif ctrltype == 'words':
+                            #get current index from pool of values
+                            idx = ctrldef['pool'].index(ctrlvalue)
+                            if rightchanged and rightpressed:
+                                if idx < len(ctrldef['pool']) - 1:
+                                    idx += 1
+                                else:
+                                    idx = 0
+                            elif leftchanged and leftpressed:
+                                if idx > 0:
+                                    idx -= 1
+                                else:
+                                    idx = len(ctrldef['pool']) - 1
+                            value = ctrldef['pool'][idx]
+                        elif ctrltype == 'verbs':
+                            if rightchanged and rightpressed:
+                                value = ctrldef['pool'][1]
+                            elif leftchanged and leftpressed:
+                                value = ctrldef['pool'][0]
+                elif hardwaretype == 'illuminatedbutton':
+                    btn = GPIO.input(pins['BTN'])
+                    state = btn
+                    value = ctrlvalue
+                    if ctrlstate != state:
+                        if ctrltype == 'button':
+                            value = state
+                        elif ctrltype == 'toggle':
+                            if state:
+                                value = not ctrlvalue
+                #more cases to go here
+                if value != ctrlvalue:
+                    processControlValueAssignment(value, ctrlid)
+                    client.publish("clients/" + ipaddress + "/" + ctrlid + "value", value)
+                    ctrldef['value'] = value
+                ctrldef['state'] = state
                         
                     
                     
