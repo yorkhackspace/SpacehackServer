@@ -322,8 +322,8 @@ def processRoundConfig(roundconfigstring):
                 processControlValueAssignment(ctrldef['value'], ctrlid, True)
 
 #Setup displays
-displayDigits('0000')
-barGraph(3)
+displayDigits('')
+barGraph(0)
 
 #Setup MQTT
 client.on_message = on_message
