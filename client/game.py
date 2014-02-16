@@ -9,6 +9,7 @@ import Adafruit_BBIO.ADC as ADC
 from Adafruit_7Segment import SevenSegment
 from Adafruit_CharLCD import Adafruit_CharLCD
 from NokiaLCD import NokiaLCD
+import gaugette.rotary_encoder as rotary
 import Keypad_BBB
 import commands
 import json
