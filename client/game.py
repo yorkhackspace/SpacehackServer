@@ -24,6 +24,7 @@ config=json.loads(f.read())
 f.close()
 lcd={}
 controlids = [control['id'] for control in config['interface']['controls']]
+controlids.sort()
 controldefs = {}
 roundconfig = {}
 bar = []
@@ -33,7 +34,9 @@ for control in config['interface']['controls']:
     ctrlid = control['id']
     controldefs[ctrlid] = control
     
-for ctrlid in config['local']['controls']:
+sortedlist = [ctrlid for ctrlid in config['local']['controls']]
+sortedlist.sort()
+for ctrlid in sortedlist:
     dispdef = config['local']['controls'][ctrlid]['display']
     if dispdef['type'] == 'hd44780':
         newlcd = Adafruit_CharLCD()
@@ -42,9 +45,11 @@ for ctrlid in config['local']['controls']:
         GPIO.output(newlcd.pin_e, GPIO.LOW)
         newlcd.begin(dispdef['width'], dispdef['height'])
         lcd[ctrlid]=newlcd
+        print("Control " + ctrlid + " is hd44780 on pin " + newlcd.pin_e)
     else:
         newlcd = NokiaLCD(pin_SCE=dispdef['pin'])
         lcd[ctrlid]=newlcd
+        print("Control " + ctrlid + " is nokia on pin " + dispdef['pin'])
     hardwaretype = config['local']['controls'][ctrlid]['hardware'] 
     if hardwaretype != 'instructions':
         pins = config['local']['controls'][ctrlid]['pins']
