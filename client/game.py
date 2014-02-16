@@ -322,7 +322,7 @@ def processRoundConfig(roundconfigstring):
                 processControlValueAssignment(ctrldef['value'], ctrlid, True)
 
 #Setup displays
-displayDigits('')
+displayDigits('    ')
 barGraph(0)
 
 #Setup MQTT
