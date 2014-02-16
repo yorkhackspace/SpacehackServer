@@ -327,7 +327,7 @@ def pollControls():
             if 'definition' in roundsetup and roundsetup['enabled']:
                 ctrltype = roundsetup['type'] #Which supported type are we this time
                 ctrldef = roundsetup['definition']
-                pins = ctrldef['pins']
+                pins = controlsetup['pins']
                 #State is physical state of buttons etc
                 if 'state' in ctrldef:
                     ctrlstate = ctrldef['state']
