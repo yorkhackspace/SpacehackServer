@@ -13,7 +13,6 @@ import gaugette.rotary_encoder as rotary
 import Keypad_BBB
 import commands
 import json
-import random
 
 #Who am I?
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
@@ -54,8 +53,8 @@ for ctrlid in sortedlist:
     if hardwaretype != 'instructions':
         pins = config['local']['controls'][ctrlid]['pins']
         if hardwaretype == 'phonestylemenu': # 2 buttons, RGB LED
-            GPIO.setup(pins['BTN_1'], GPIO.IN, GPIO.PUD_UP)
-            GPIO.setup(pins['BTN_2'], GPIO.IN, GPIO.PUD_UP)
+            GPIO.setup(pins['BTN_1'], GPIO.IN, GPIO.PUD_DOWN)
+            GPIO.setup(pins['BTN_2'], GPIO.IN, GPIO.PUD_DOWN)
             #PWM.start(pins['RGB_R'], 0.0)
             #PWM.start(pins['RGB_G'], 0.0)
             #PWM.start(pins['RGB_B'], 0.0)
@@ -68,29 +67,29 @@ for ctrlid in sortedlist:
             ADC.setup(pins['POT'])
         elif hardwaretype == 'combo7SegColourRotary': #I2C 7Seg, button, rotary, RGB
             #segment defined at module scope
-            GPIO.setup(pins['BTN'], GPIO.IN, GPIO.PUD_UP)
+            GPIO.setup(pins['BTN'], GPIO.IN, GPIO.PUD_DOWN)
             #PWM.start(pins['RGB_R'], 0.0)
             #PWM.start(pins['RGB_G'], 0.0)
             #PWM.start(pins['RGB_B'], 0.0)
             #What to do about rotary?
         elif hardwaretype == 'switchbank': #Four switches, four LEDs
             for i in range(1,5):
-                GPIO.setup(pins['SW_' + str(i)], GPIO.IN, GPIO.PUD_UP)
+                GPIO.setup(pins['SW_' + str(i)], GPIO.IN, GPIO.PUD_DOWN)
                 GPIO.setup(pins['LED_' + str(i)], GPIO.OUT)
                 GPIO.output(pins['LED_' + str(i)], GPIO.LOW)
         elif hardwaretype == 'illuminatedbutton': #one button, one LED
-            GPIO.setup(pins['BTN'], GPIO.IN, GPIO.PUD_UP)
+            GPIO.setup(pins['BTN'], GPIO.IN, GPIO.PUD_DOWN)
             GPIO.setup(pins['LED'], GPIO.OUT)
             GPIO.output(pins['LED'], GPIO.LOW)
         elif hardwaretype == 'potentiometer': #slide or rotary 10k pot
             ADC.setup(pins['POT'])
         elif hardwaretype == 'illuminatedtoggle': #one switch, one LED            
-            GPIO.setup(pins['SW'], GPIO.IN, GPIO.PUD_UP)
+            GPIO.setup(pins['SW'], GPIO.IN, GPIO.PUD_DOWN)
             GPIO.setup(pins['LED'], GPIO.OUT)
             GPIO.output(pins['LED'], GPIO.LOW)
         elif hardwaretype == 'fourbuttons': #four buttons
             for i in range(1,5):
-                GPIO.setup(pins['BTN_' + str(i)], GPIO.IN, GPIO.PUD_UP)
+                GPIO.setup(pins['BTN_' + str(i)], GPIO.IN, GPIO.PUD_DOWN)
         elif hardwaretype == 'keypad': #four rows, four cols
             keypad = Keypad_BBB.keypad(pins['ROW_1'], pins['ROW_2'], pins['ROW_3'], pins['ROW_4'], 
                                        pins['COL_1'], pins['COL_2'], pins['COL_3'], pins['COL_4'])
@@ -307,14 +306,7 @@ def processRoundConfig(roundconfigstring):
             #there's more to setup of course
             hardwaretype = config['local']['controls'][ctrlid]['hardware']
             if hardwaretype == 'phonestylemenu':
-                if ctrltype == 'button':
-                    if random.choice(range(2)):
-                        #left
-                        displayButtonsLine("Push", "", ctrlid)
-                    else:
-                        #right
-                        displayButtonsLine("", "Push", ctrlid)
-                elif ctrltype == 'toggle':
+                if ctrltype == 'toggle':
                     displayButtonsLine("Off", "On", ctrlid)
                 elif ctrltype == 'verbs':
                     displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
@@ -326,6 +318,103 @@ def processRoundConfig(roundconfigstring):
             if 'value' in ctrldef:
                 processControlValueAssignment(ctrldef['value'], ctrlid, True)
 
+#Poll controls, interpret into values, recognise changes, inform server
+def pollControls():
+    for ctrlid in controlids:
+        roundsetup = roundconfig['controls'][ctrlid]
+        controlsetup = config['local']['controls'][ctrlid]
+        if 'definition' in roundsetup and roundsetup['enabled']:
+            ctrltype = roundsetup['type'] #Which supported type are we this time
+            ctrldef = roundsetup['definition']
+            pins = ctrldef['pins']
+            #State is physical state of buttons etc
+            if 'state' in ctrldef:
+                ctrlstate = ctrldef['state']
+            else:
+                ctrlstate = None
+            #Value is as interpreted by the abstracted control type
+            if 'value' in ctrldef:
+                ctrlvalue = ctrldef['value']
+            else:
+                ctrldef = None
+            hardwaretype = config['local']['controls'][ctrlid]['hardware'] #Which hardware implementation
+            #For the particular hardware, poll the controls and decide what it means
+            if hardwaretype == 'phonestylemenu':
+                btn1 = GPIO.input(pins['BTN_1'])
+                btn2 = GPIO.input(pins['BTN_2'])
+                state = [btn1, btn2]
+                if ctrlstate != state:
+                    leftchanged = ctrlstate[0] != state[0]
+                    rightchanged = ctrlstate[1] != state[1]
+                    leftpressed = state[0]
+                    rightpressed = state[1]
+                    if ctrltype == 'toggle':
+                        if rightchanged and rightpressed: #On
+                            value = 1
+                        elif leftchanged and leftpressed: #Off
+                            value = 0
+                        else:
+                            value = ctrlvalue
+                    elif ctrltype == 'selector':
+                        value = ctrlvalue
+                        if rightchanged and rightpressed:
+                            if ctrlvalue < ctrldef['max']:
+                                value = ctrlvalue + 1
+                        elif leftchanged and leftpressed:
+                            if ctrlvalue > ctrldef['min']:
+                                value = ctrlvalue - 1
+                    elif ctrltype == 'colours':
+                        #get current index from pool of values
+                        idx = ctrldef['values'].index(ctrlvalue)
+                        if rightchanged and rightpressed:
+                            if idx < len(ctrldef['values']) - 1:
+                                idx += 1
+                            else:
+                                idx = 0
+                        elif leftchanged and leftpressed:
+                            if idx > 0:
+                                idx -= 1
+                            else:
+                                idx = len(ctrldef['values']) - 1
+                        value = ctrldef['values'][idx]
+                    elif ctrltype == 'words':
+                        #get current index from pool of values
+                        idx = ctrldef['pool'].index(ctrlvalue)
+                        if rightchanged and rightpressed:
+                            if idx < len(ctrldef['pool']) - 1:
+                                idx += 1
+                            else:
+                                idx = 0
+                        elif leftchanged and leftpressed:
+                            if idx > 0:
+                                idx -= 1
+                            else:
+                                idx = len(ctrldef['pool']) - 1
+                        value = ctrldef['pool'][idx]
+                    elif ctrltype == 'verbs':
+                        if rightchanged and rightpressed:
+                            value = ctrldef['pool'][1]
+                        elif leftchanged and leftpressed:
+                            value = ctrldef['pool'][0]
+            elif hardwaretype == 'illuminatedbutton':
+                btn = GPIO.input(pins['BTN'])
+                state = btn
+                value = ctrlvalue
+                if ctrlstate != state:
+                    if ctrltype == 'button':
+                        value = state
+                    elif ctrltype == 'toggle':
+                        if state:
+                            value = not ctrlvalue
+            #more cases to go here
+            if value != ctrlvalue:
+                processControlValueAssignment(value, ctrlid)
+                client.publish("clients/" + ipaddress + "/" + ctrlid + "value", value)
+                ctrldef['value'] = value
+            ctrldef['state'] = state
+                        
+                    
+                    
 #Setup displays
 displayDigits('    ')
 barGraph(0)
@@ -343,5 +432,6 @@ for controlid in [x['id'] for x in config['interface']['controls']]:
 #register
 client.publish("server/register", json.dumps(config['interface']))
                
-#Set MQTT listening
-client.loop_forever()
+#Main loop
+while client.loop():
+    pollControls()
