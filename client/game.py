@@ -322,7 +322,7 @@ def processRoundConfig(roundconfigstring):
 
 #Setup displays
 displayDigits('0000')
-barGraph(10)
+barGraph(3)
 
 #Setup MQTT
 client.on_message = on_message
