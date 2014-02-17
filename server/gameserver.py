@@ -56,6 +56,7 @@ def on_message(mosq, obj, msg):
                     consolesetup['controls'][ctrlid]['type'] = 'inactive'
                     consolesetup['controls'][ctrlid]['enabled'] = 0
                     consolesetup['controls'][ctrlid]['name'] = ""
+                client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
             client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
             currentsetup[consoleip] = consolesetup
             #Temp for now
