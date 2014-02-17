@@ -192,6 +192,7 @@ def on_message(mosq, obj, msg):
             if mess == 'started':
                 client.publish("server/register", json.dumps(config['interface']))
             elif mess == 'ready':
+                global hasregistered
                 if not hasregistered:
                     hasregistered = True
                     client.publish("server/register", json.dumps(config['interface']))
