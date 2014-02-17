@@ -379,7 +379,7 @@ def pollControls():
                                     idx -= 1
                                 else:
                                     idx = len(ctrldef['values']) - 1
-                            value = ctrldef['values'][idx]
+                            value = str(ctrldef['values'][idx])
                         elif ctrltype == 'words':
                             #get current index from pool of values
                             idx = ctrldef['pool'].index(ctrlvalue)
@@ -393,12 +393,12 @@ def pollControls():
                                     idx -= 1
                                 else:
                                     idx = len(ctrldef['pool']) - 1
-                            value = ctrldef['pool'][idx]
+                            value = str(ctrldef['pool'][idx])
                         elif ctrltype == 'verbs':
                             if rightchanged and rightpressed:
-                                value = ctrldef['pool'][1]
+                                value = str(ctrldef['pool'][1])
                             elif leftchanged and leftpressed:
-                                value = ctrldef['pool'][0]
+                                value = str(ctrldef['pool'][0])
                 elif hardwaretype == 'illuminatedbutton':
                     btn = GPIO.input(pins['BTN'])
                     state = btn
