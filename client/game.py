@@ -443,9 +443,6 @@ def pollControls():
                             state = ctrlstate #if not decisively left or right, stay the same
                         if state != ctrlstate:
                             value = state
-                    elif ctrltype == 'selector':
-                        #Can't just sweep round, must linger!
-                        
                 #more cases to go here
                 if value != ctrlvalue:
                     processControlValueAssignment(value, ctrlid)
