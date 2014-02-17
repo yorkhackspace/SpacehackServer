@@ -28,6 +28,7 @@ controldefs = {}
 roundconfig = {}
 bar = []
 keypad = None
+hasregistered = False
 
 for control in config['interface']['controls']:
     ctrlid = control['id']
@@ -179,7 +180,22 @@ def on_message(mosq, obj, msg):
             display(str(msg.payload), 20, "0")
         elif nodes[2] in controlids:
             ctrlid = nodes[2]
-
+            if nodes[3] == 'enabled':
+                roundconfig['controls'][ctrlid]['enabled'] = False
+                #switch it off?
+                display(" ", config['local']['controls'][ctrlid]['display'], ctrlid)
+            elif nodes[3] == 'name':
+                display(str(msg.payload), config['local']['controls'][ctrlid]['display'], ctrlid)
+    elif nodes[0] == 'server':
+        if nodes[1] == 'ready':
+            mess = str(msg.payload)
+            if mess == 'started':
+                client.publish("server/register", json.dumps(config['interface']))
+            elif mess == 'ready':
+                if not hasregistered:
+                    hasregistered = True
+                    client.publish("server/register", json.dumps(config['interface']))
+                    
 #Process control value assignment
 def processControlValueAssignment(value, ctrlid, override=False):
     roundsetup = roundconfig['controls'][ctrlid]
@@ -451,13 +467,12 @@ client.connect(server)
 subsbase = "clients/" + ipaddress + "/"
 client.subscribe(subsbase + "configure")
 client.subscribe(subsbase + "instructions")
+client.subscribe("server/ready")
+
 for controlid in [x['id'] for x in config['interface']['controls']]:
     client.subscribe(subsbase + str(controlid) + '/name')
     client.subscribe(subsbase + str(controlid) + '/enabled')
     
-#register
-client.publish("server/register", json.dumps(config['interface']))
-               
 #Main loop
 while(client.loop() == 0):
     pollControls()
