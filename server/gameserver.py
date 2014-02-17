@@ -60,7 +60,7 @@ def on_message(mosq, obj, msg):
             client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
             currentsetup[consoleip] = consolesetup
             #Temp for now
-            defineControls()
+            #defineControls()
                 
 #Define a new set of controls for each client for this game round and send it to them.
 def defineControls():
