@@ -408,6 +408,28 @@ def pollControls():
                         elif ctrltype == 'toggle':
                             if state:
                                 value = not ctrlvalue
+                elif hardwaretype == 'illuminatedtoggle':
+                    sw = GPIO.input(pins['SW'])
+                    state = sw
+                    if ctrlstate != state:
+                        if ctrltype == 'toggle':
+                            if state:
+                                value = not ctrlvalue
+                elif hardwaretype == 'bargraphpotentiometer':
+                    pot = ADC.read(pins['POT'])
+                    #Interpretation varies by state
+                    if ctrltype == 'toggle':
+                        if pot < 0.3:
+                            state = 0
+                        elif pot > 0.7:
+                            state = 1
+                        else:
+                            state = ctrlstate #if not decisively left or right, stay the same
+                        if state != ctrlstate:
+                            value = state
+                    elif ctrltype == 'selector':
+                        #Can't just sweep round, must linger!
+                        
                 #more cases to go here
                 if value != ctrlvalue:
                     processControlValueAssignment(value, ctrlid)
