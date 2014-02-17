@@ -219,17 +219,18 @@ lastgenerated = time.time()
 numinstructions =0
 while(client.loop() == 0): 
     #Every five seconds...
-    if time.time()-lastgenerated > 5 and len(consoles) > 0:
+    if time.time()-lastgenerated > 5: 
         client.publish('server/ready', 'ready')
-        if numinstructions == 0:
-            #Dump another batch of random control names and action
-            defineControls()
-            numinstructions = 5
-        else:
-            #print("calling pick")
-            for consoleip in consoles:
-                pickNewTarget(consoleip)
-            numinstructions -= 1
+        if len(consoles) > 0:
+            if numinstructions == 0:
+                #Dump another batch of random control names and action
+                defineControls()
+                numinstructions = 5
+            else:
+                #print("calling pick")
+                for consoleip in consoles:
+                    pickNewTarget(consoleip)
+                numinstructions -= 1
         lastgenerated = time.time()
 
 #If client.loop() returns non-zero, loop drops out to here.
