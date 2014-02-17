@@ -214,14 +214,15 @@ client.connect(server)
 #Main topic subscription point for clients to register their configurations to
 client.subscribe('server/register')
 
-lastgenerated = 0
+client.publish('server/ready', 'started')
+lastgenerated = time.time()
 numinstructions =0
 while(client.loop() == 0): 
     #Every five seconds...
     if time.time()-lastgenerated > 5 and len(consoles) > 0:
+        client.publish('server/ready', 'ready')
         if numinstructions == 0:
             #Dump another batch of random control names and action
-            print("calling define")
             defineControls()
             numinstructions = 5
         else:
