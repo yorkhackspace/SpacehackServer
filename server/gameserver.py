@@ -59,9 +59,11 @@ def on_message(mosq, obj, msg):
                 client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
             client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
             currentsetup[consoleip] = consolesetup
-            #Temp for now
-            #defineControls()
-                
+            global lastgenerated
+            global numinstructions
+            lastgenerated = time.time()
+            numinstructions = 0
+
 #Define a new set of controls for each client for this game round and send it to them.
 def defineControls():
     emergency = controls.getEmergency()
