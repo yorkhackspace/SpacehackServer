@@ -206,6 +206,8 @@ def on_message(mosq, obj, msg):
             #start timer?
             if 'timeout' in roundconfig and roundconfig['timeout'] > 0.0:
                 global timeoutstarted
+                global timeoutdisplayblocks
+                timeoutdisplayblocks = 0
                 timeoutstarted = time.time()
         elif nodes[2] in controlids:
             ctrlid = nodes[2]
