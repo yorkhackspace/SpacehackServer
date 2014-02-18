@@ -13,6 +13,7 @@ import gaugette.rotary_encoder as rotary
 import Keypad_BBB
 import commands
 import json
+import time
 
 #Who am I?
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
@@ -21,6 +22,8 @@ ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 f=open('game-' + ipaddress +'.config')
 config=json.loads(f.read())
 f.close()
+
+#Vars
 lcd={}
 controlids = [control['id'] for control in config['interface']['controls']]
 controlids.sort()
