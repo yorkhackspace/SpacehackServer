@@ -198,15 +198,17 @@ def displayTimer():
 def on_message(mosq, obj, msg):
     print(msg.topic + " - " + str(msg.payload))
     nodes = msg.topic.split('/')
+    global timeoutstarted
+    global timeoutdisplayblocks
     if nodes[0]=='clients':
         if nodes[2]=='configure':
             processRoundConfig(str(msg.payload))
+            timeoutstarted = 0.0
+            timeoutdisplayblocks = 0
         elif nodes[2] == 'instructions':
             display(str(msg.payload), 20, "0")
             #start timer?
             if 'timeout' in roundconfig and roundconfig['timeout'] > 0.0:
-                global timeoutstarted
-                global timeoutdisplayblocks
                 timeoutdisplayblocks = 0
                 timeoutstarted = time.time()
         elif nodes[2] in controlids:
