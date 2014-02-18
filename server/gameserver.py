@@ -21,7 +21,7 @@ pygame.mixer.init()
 consoles = []
 console = {}
 currentsetup = {}
-currenttimeout = 20.0
+currenttimeout = 8.0
 lastgenerated = time.time()
 numinstructions = 0
 
