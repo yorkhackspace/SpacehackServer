@@ -29,6 +29,8 @@ roundconfig = {}
 bar = []
 keypad = None
 hasregistered = False
+timeoutstarted = 0.0
+timeoutdisplayblocks = 0
 
 for control in config['interface']['controls']:
     ctrlid = control['id']
@@ -169,6 +171,26 @@ def barGraph(digit):
         else:
             GPIO.output(bar[i], GPIO.LOW)
 
+#Display a timer bar on the bottom row of the instructions display
+def displayTimer():
+    global timeoutdisplayblocks
+    if timeoutstarted == 0.0:
+        blockstodisplay = 0
+    else
+        timesincetimeout = time.time() - timeoutstarted
+        if timesincetimeout > roundconfig['timeout']:
+            blockstodisplay = 0
+        else:
+            blockstodisplay = int(20 * (1 - (timesincetimeout / roundconfig['timeout'])))
+        #Work out diff between currently displayed blocks and intended, to minimise amount to draw
+        if blockstodisplay > timeoutdisplayblocks:
+            lcd["0"].setCursor(timeoutdisplayblocks, 3)
+            lcd["0"].message((blockstodisplay - timeoutdisplayblocks) * chr(255))
+        elif timeoutdisplayblocks > blockstodisplay:
+            lcd["0"].setCursor(blockstodisplay, 3)
+            lcd["0"].message((timeoutdisplayblocks - blockstodisplay ) * ' ')
+        timeoutdisplayblocks = blockstodisplay
+        
 #MQTT message arrived
 def on_message(mosq, obj, msg):
     print(msg.topic + " - " + str(msg.payload))
@@ -178,6 +200,10 @@ def on_message(mosq, obj, msg):
             processRoundConfig(str(msg.payload))
         elif nodes[2] == 'instructions':
             display(str(msg.payload), 20, "0")
+            #start timer?
+            if 'timeout' in roundconfig and roundconfig['timeout'] > 0.0:
+                global timeoutstarted
+                timeoutstarted = time.time()
         elif nodes[2] in controlids:
             ctrlid = nodes[2]
             if nodes[3] == 'enabled':
@@ -474,3 +500,5 @@ for controlid in [x['id'] for x in config['interface']['controls']]:
 #Main loop
 while(client.loop() == 0):
     pollControls()
+    displayTimer()
+    
