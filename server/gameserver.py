@@ -21,6 +21,9 @@ pygame.mixer.init()
 consoles = []
 console = {}
 currentsetup = {}
+currenttimeout = 20.0
+lastgenerated = time.time()
+numinstructions = 0
 
 #Show when we've connected
 def on_connect(mosq, obj, rc):
@@ -72,6 +75,7 @@ def defineControls():
         print("Defining console " + consoleip)
         consolesetup={}
         consolesetup['instructions']=emergency
+        consolesetup['timeout'] = currenttimeout
         consolesetup['controls']={}
         for control in console[consoleip]["controls"]:
             ctrlid = control['id']
@@ -217,8 +221,7 @@ client.connect(server)
 client.subscribe('server/register')
 
 client.publish('server/ready', 'started')
-lastgenerated = time.time()
-numinstructions =0
+
 while(client.loop() == 0): 
     #Every five seconds...
     if time.time()-lastgenerated > 5: 
