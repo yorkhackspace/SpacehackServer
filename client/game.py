@@ -176,7 +176,7 @@ def displayTimer():
     global timeoutdisplayblocks
     if timeoutstarted == 0.0:
         blockstodisplay = 0
-    else
+    else:
         timesincetimeout = time.time() - timeoutstarted
         if timesincetimeout > roundconfig['timeout']:
             blockstodisplay = 0
