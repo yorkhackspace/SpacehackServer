@@ -5,6 +5,7 @@ import random
 import json
 
 def readWordList(filename):
+    """Read a file as a list of words separated by newlines and return a list."""
     f=open('words/' + filename)
     ret = f.read().replace('\r','').split('\n')
     f.close
@@ -48,8 +49,9 @@ passwdletters = ['A', 'B', 'C', 'D', 'E', 'I', 'O', 'S']
 # Letters which can be used on an 'upside down calculator'
 upsidedowncalcletters = ['O', 'I', 'Z', 'E', 'H', 'S', 'G', 'L', 'B']
 
-#Check if a word can be displayed on a 4-digit 7-seg
+#Check if a word can be displayed using a subset of letters, e.g. on a 4-digit 7-seg
 def checkSafeWord(word, minlen, maxlen, safeletters):
+    """Check if a word can be displayed using a subset of letters, e.g. on a 4-digit 7-seg."""
     if len(word)>maxlen or len(word) < minlen:
         return False
     else:
@@ -59,6 +61,7 @@ def checkSafeWord(word, minlen, maxlen, safeletters):
     return True
 
 def getSafeWords(wordlist, minlen, maxlen, safeletters):
+    """Extract a subset of words from a list which satisfy length restrictions and specified letter subsets."""
     return list(set([word for word in wordlist if checkSafeWord(word, minlen, maxlen, safeletters)]))
 
 safewords = getSafeWords(allcontrolwords, 3, 4, sevensegletters)
@@ -75,6 +78,7 @@ upsidedowncalc = list(set(getSafeWords(allgeneralwords, 3, 4, upsidedowncalclett
 # target 16x2 LCD and action instructions for three lines of a target 20x4
 # display.
 def countLines(control, width):
+    """Count the lines needed to display the supplied text on a screen of given width without breaking words over lines."""
     lines = 1
     linelen=0
     for word in control.split(' '):
@@ -87,6 +91,7 @@ def countLines(control, width):
 
 # Generate a random control name
 def getControlName(maxwidth, maxlines, minlen):
+    """Generate a random control name."""
     finished=False
     while not finished:
         ret = (random.choice(['','',random.choice(adjectives).lower()+' ',
@@ -101,6 +106,7 @@ def getControlName(maxwidth, maxlines, minlen):
 
 # Describe an action suitable for a button
 def getButtonAction(control):
+    """Describe an action suitable for a button."""
     finished=False
     while not finished:
         ret = random.choice(verbs) + ' the ' + control
@@ -110,6 +116,7 @@ def getButtonAction(control):
 
 # Describe an action suitable for a toggle
 def getToggleAction(control, targetstate):
+    """Describe an action suitable for a toggle."""
     finished=False
     while not finished:
         if targetstate:
@@ -123,6 +130,7 @@ def getToggleAction(control, targetstate):
 
 # Describe an action suitable for a selector
 def getSelectorAction(control, numrange, targetnum, currentnum):
+    """Describe an action suitable for a selector."""
     finished=False
     while not finished:
         choices = ['Set ' + control + ' to ' + str(targetnum)]
@@ -142,6 +150,7 @@ def getSelectorAction(control, numrange, targetnum, currentnum):
 
 # Describe an action suitable for a colour
 def getColourAction(control, targetcolour):
+    """Describe an action suitable for a colour."""
     finished=False
     while not finished:
         ret = 'Set ' + control + ' to ' + random.choice(['','','','code ', 'condition ', 'status ']) + targetcolour + random.choice(['','','',' alert'])
@@ -151,10 +160,12 @@ def getColourAction(control, targetcolour):
 
 # Describe an action suitable for a verb list choice
 def getVerbListAction(control, targetverb):
+    """Describe an action suitable for a verb list choice."""
     return targetverb + ' the ' + control
 
 # Describe an action suitable for a word
 def getWordAction(control, targetword):
+    """Describe an action suitable for a word."""
     finished = False
     while not finished:
         ret = (random.choice(['Set ' + control + ' to \'' + targetword + '\'',
@@ -165,6 +176,7 @@ def getWordAction(control, targetword):
 
 # Describe an action suitable for a numpad password action
 def getPasswdAction(control, targetpasswd):
+    """Describe an action suitable for a numpad password action."""
     finished = False
     while not finished:
         ret = (random.choice(['Set ' + control + ' to \'' + targetpasswd + '\'',
@@ -177,6 +189,7 @@ def getPasswdAction(control, targetpasswd):
 
 #Describe a pin entry action
 def getPinAction(control, targetpin):
+    """Describe a pin entry action."""
     finished = False
     while not finished:
         ret = (random.choice(['Set ' + control + ' to \'' + targetpasswd + '\'',
@@ -189,14 +202,16 @@ def getPinAction(control, targetpin):
 
 # Generate a random action
 def getRandomAction(control):
+    """Generate a random action as a demo."""
     return random.choice([getButtonAction(control), getToggleAction(control, random.choice(range(2))),
                           getSelectorAction(control, range(11), random.choice(range(11)),random.choice(range(11))),
                           getColourAction(control, random.choice(colours)),
                           getWordAction(control, random.choice(safewords)),
                           getPasswdAction(control, random.choice(passwd))])
 
-#Get a random emergency
+#Generate a random emergency
 def getEmergency():
+    """Generate a random emergency."""
     finished=False
     while not finished:
         n = random.choice(range(6))
@@ -219,17 +234,19 @@ def getEmergency():
 
 # Get 50 controls
 def get50Controls():
+    """Get 50 controls, as a demo."""
     for i in range(50):
         print(getControlName(16,2,12))
         
 # Get 50 actions
 def get50Actions():
+    """Get 50 actions, as a demo."""
     for i in range(50):
         print(getRandomAction(getControlName(16,2,12)))
         
 
 #Get 50 emergencies
 def get50Emergencies():
+    """Get 50 emergencies, as a demo."""
     for i in range(50):
         print(getEmergency())
-        
