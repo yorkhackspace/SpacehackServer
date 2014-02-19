@@ -27,6 +27,7 @@ numinstructions = 0
 
 #Show when we've connected
 def on_connect(mosq, obj, rc):
+    """Receive MQTT connection notification"""
     if rc == 0:
         print("Connected to MQTT")
     else:
@@ -34,6 +35,7 @@ def on_connect(mosq, obj, rc):
 
 #MQTT message arrived
 def on_message(mosq, obj, msg):
+    """Receive and process incoming MQTT published message"""
     nodes = msg.topic.split('/')
     print(msg.topic + " - " + str(msg.payload))
     if nodes[0]=='server':
@@ -67,8 +69,9 @@ def on_message(mosq, obj, msg):
             lastgenerated = time.time()
             numinstructions = 0
 
-#Define a new set of controls for each client for this game round and send it to them.
+#Define a new set of controls for each client for this game round and send it to them as JSON.
 def defineControls():
+    """Define a new set of controls for each client for this game round and send it to them as JSON."""
     emergency = controls.getEmergency()
     print(emergency)
     for consoleip in consoles:
@@ -142,6 +145,7 @@ def defineControls():
 
 #Get a choice from a range that isn't the same as the old value
 def getChoice(choicerange, oldval):
+    """Get a choice from a range that isn't the same as the old value."""
     finished=False
     while not finished:
         retval = random.choice(choicerange)
@@ -151,6 +155,7 @@ def getChoice(choicerange, oldval):
 
 #Pick a new instruction to display on a given console
 def pickNewTarget(consoleip):
+    """Pick a new instruction to display on a given console."""
     #pick a random console and random control from that console
     targetconsole = random.choice(consoles)
     targetsetup = currentsetup[targetconsole]
