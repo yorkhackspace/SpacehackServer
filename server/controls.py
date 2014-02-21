@@ -14,7 +14,7 @@ def readWordList(filename):
 
 def readJSON(filename):
     """Read a file as JSON and return a Python dictionary"""
-    f=open("words/' + filename")
+    f=open("words/" + filename)
     ret=json.loads(f.read())
     f.close()
     return ret
@@ -242,9 +242,11 @@ def getMedal():
     """Generate a random medal."""
     finished = False
     while not finished:
-        ret = "You have been awarded the " + random.choice(medals['adjective'] + " " + random.choice(medals['award'] \
-              + " of " + medals['name'] + " for your " + medals['attribute'] + "."
-        if countlines(ret, 20) <= 4:
+        ret = "The " + random.choice(medals['adjective']) \
+                   + " " + random.choice(medals['award']) \
+                   + " of " + random.choice(medals['name']) + " for your " \
+                   + random.choice(medals['attribute']) + "."
+        if countLines(ret, 20) <= 4:
             finished = True
     return ret
 
