@@ -11,7 +11,14 @@
     "Royal",
     "Elite",
     "White",
-    "Crimson"
+    "Crimson",
+    "Most Noble",
+    "Grand",
+    "Iron",
+    "Winged",
+    "Titanium",
+    "Steel",
+    "Diamond"
   ],
   "award": [
     "Medal",
@@ -27,7 +34,10 @@
     "Crest",
     "Sword",
     "Heart",
-    "Rose"
+    "Rose",
+    "Thistle",
+    "Dagger",
+    "Palm"
   ],
   "name": [
     "Honour",
@@ -45,8 +55,17 @@
     "the Federation",
     "the Galaxy",
     "the Stars",
-    "Star Fleet",
-    "Weyland Yutani"
+    "Star Corps",
+    "Weyland Yutani",
+    "Moon Command",
+    "Jupiter",
+    "the Somme",
+    "Mafeking",
+    "the Republic",
+    "Deliverance",
+    "Salvation",
+    "High Command",
+    "the Illuminati"
   ],
   "attribute": [
     "neatness",
@@ -71,6 +90,16 @@
     "special talents",
     "adequate effort",
     "cooperation",
-    "singing"
+    "singing",
+    "dedication",
+    "footballing",
+    "funny impressions",
+    "tea making",
+    "sunny smile",
+    "subservience",
+    "hygiene",
+    "industriousness",
+    "personal integrity",
+    "compliance"
   ]
 }
