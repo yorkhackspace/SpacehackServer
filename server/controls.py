@@ -239,7 +239,7 @@ def getEmergency():
     return ret
 
 def getMedal():
-    """Generate a random medal.""""
+    """Generate a random medal."""
     finished = False
     while not finished:
         ret = "You have been awarded the " + random.choice(medals['adjective'] + " " + random.choice(medals['award'] \
