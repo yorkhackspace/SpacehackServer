@@ -100,6 +100,14 @@
     "hygiene",
     "industriousness",
     "personal integrity",
-    "compliance"
+    "compliance",
+    "table tennis",
+    "darts championship",
+    "swimming certificate",
+    "piano grade 6",
+    "moving poetry",
+    "disco moves",
+    "organ donation",
+    "diligence"
   ]
 }
