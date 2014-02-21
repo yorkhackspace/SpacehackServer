@@ -12,6 +12,13 @@ def readWordList(filename):
     if '' in ret: ret.remove('')
     return ret
 
+def readJSON(filename):
+    """Read a file as JSON and return a Python dictionary"""
+    f=open("words/' + filename")
+    ret=json.loads(f.read())
+    f.close()
+    return ret
+
 #read word lists
 adjectives = readWordList('adjectives.txt')
 baseparts = readWordList('baseparts.txt')
@@ -34,9 +41,8 @@ colourlookup = {c[0]: (int(c[1]), int(c[2]), int(c[3])) for c in rawcols}
 allcontrolwords = adjectives + baseparts + elements + nouns + greekletters + verbs + colours + onwords + offwords
 allgeneralwords = readWordList('words.txt')
 
-f=open("words/emergencies.txt")
-emergencies=json.loads(f.read())
-f.close()
+emergencies = readJSON('emergencies.txt')
+medals =  readJSON('medals.txt')
 
 # Letters that can work on a 7-segment
 sevensegletters = ['A','B','C','D','E','F','G','H','I','J','L','N',
@@ -232,6 +238,16 @@ def getEmergency():
             finished = True
     return ret
 
+def getMedal():
+    """Generate a random medal.""""
+    finished = False
+    while not finished:
+        ret = "You have been awarded the " + random.choice(medals['adjective'] + " " + random.choice(medals['award'] \
+              + " of " + medals['name'] + " for your " + medals['attribute'] + "."
+        if countlines(ret, 20) <= 4:
+            finished = True
+    return ret
+
 # Get 50 controls
 def get50Controls():
     """Get 50 controls, as a demo."""
@@ -250,3 +266,8 @@ def get50Emergencies():
     """Get 50 emergencies, as a demo."""
     for i in range(50):
         print(getEmergency())
+
+def get50Medals():
+    """Get 50 medals, as a demo."""
+    for i in range(50):
+        print(getMedal())
