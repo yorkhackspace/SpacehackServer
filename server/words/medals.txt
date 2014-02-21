@@ -43,7 +43,8 @@
     "Palm",
     "Mark",
     "Trefoil",
-    "Triforce"
+    "Triforce",
+    "Ring"
   ],
   "name": [
     "Honour",
@@ -71,7 +72,8 @@
     "Deliverance",
     "Salvation",
     "High Command",
-    "the Illuminati"
+    "the Illuminati",
+    "Fire"
   ],
   "attribute": [
     "neatness",
