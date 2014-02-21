@@ -18,7 +18,10 @@
     "Winged",
     "Titanium",
     "Steel",
-    "Diamond"
+    "Diamond",
+    "Flaming",
+    "Earthican",
+    "Cosmic"
   ],
   "award": [
     "Medal",
@@ -37,7 +40,10 @@
     "Rose",
     "Thistle",
     "Dagger",
-    "Palm"
+    "Palm",
+    "Mark",
+    "Trefoil",
+    "Triforce"
   ],
   "name": [
     "Honour",
@@ -108,6 +114,11 @@
     "moving poetry",
     "disco moves",
     "organ donation",
-    "diligence"
+    "diligence",
+    "fancy shooting",
+    "interpretive dance",
+    "freestyling",
+    "drinking games",
+    "prompt paperwork"
   ]
 }
