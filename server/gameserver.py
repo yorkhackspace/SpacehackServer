@@ -14,7 +14,7 @@ if sound:
     #Pygame for sounds
     pygame.mixer.quit()
     pygame.mixer.init(48000, -16, 2, 1024) #was 1024
-    sndhum = pygame.mixer.sound("sounds/spaceshiphum.mp3")
+    sndhum = pygame.mixer.Sound("sounds/spaceshiphum.mp3")
     sndhum.volume = 0.2
     sndhum.play(-1)
     
