@@ -14,10 +14,8 @@ if sound:
     #Pygame for sounds
     pygame.mixer.quit()
     pygame.mixer.init(48000, -16, 2, 1024) #was 1024
-    sndhum = pygame.mixer.Music("sounds/spaceshiphum.mp3")
-    sndhum.set_volume(0.8)
-    chanhum = pygame.mixer.Channel(1)
-    chanhum.play(sndhum, -1)
+    pygame.mixer.music.load("sounds/spaceshiphum.mp3")
+    pygame.mixer.music.play(-1)
     
 #MQTT client to allow publishing
 client = mosquitto.Mosquitto("PiServer") #ID shown to the broker
