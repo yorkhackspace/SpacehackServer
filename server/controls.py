@@ -191,20 +191,20 @@ def getPasswdAction(control, targetpasswd):
                               control + ' password is \'' + targetpasswd + '\'']))
         if countLines(ret, 20) <= 3:
             finished = True
-    return ret
+    return str(ret)
 
 #Describe a pin entry action
 def getPinAction(control, targetpin):
     """Describe a pin entry action."""
     finished = False
     while not finished:
-        ret = (random.choice(['Set ' + control + ' to \'' + targetpasswd + '\'',
-                              'Enter \'' + targetpasswd + random.choice(['\' on ','\' into ','\' onto ']) + control,
-                              'Key \'' + targetpasswd + '\' into ' + control,
+        ret = (random.choice(['Set ' + control + ' to \'' + targetpin + '\'',
+                              'Enter \'' + targetpin + random.choice(['\' on ','\' into ','\' onto ']) + control,
+                              'Key \'' + targetpin + '\' into ' + control,
                               control + ' pin is \'' + targetpin + '\'']))
         if countLines(ret, 20) <= 3:
             finished = True
-    return ret
+    return str(ret)
 
 # Generate a random action
 def getRandomAction(control):
