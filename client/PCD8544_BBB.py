@@ -10,7 +10,7 @@ from PIL import Image,ImageDraw,ImageFont
 from nokiafont import FONT
 
 # White backlight
-CONTRAST = 0xaa
+CONTRAST = 0xbb
 
 ROWS = 6
 COLUMNS = 14
