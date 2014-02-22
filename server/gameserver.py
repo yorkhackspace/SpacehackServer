@@ -9,6 +9,12 @@ import random
 import json
 
 sound = True #Swithch this off if you don't have pyGame
+
+def playSound(filename):
+    if sound:
+        snd = pygame.mixer.Sound("sounds/" + filename)
+        snd.play()
+        
 if sound:
     import pygame
     #Pygame for sounds
@@ -239,11 +245,14 @@ while(client.loop() == 0):
         client.publish('server/ready', 'ready')
         if len(consoles) > 0:
             if numinstructions == 0:
+                #temp
+                playSound(random.choice(controls.soundfiles['atmospehere']))
                 #Dump another batch of random control names and action
                 defineControls()
                 numinstructions = 5
             else:
-                #print("calling pick")
+                #temp
+                playSound(random.choice(controls.soundfiles['right']))
                 for consoleip in consoles:
                     pickNewTarget(consoleip)
                 numinstructions -= 1
