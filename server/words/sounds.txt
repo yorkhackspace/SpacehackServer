@@ -1,7 +1,7 @@
 {
   "atmosphere": [
     "angrybees.ogg",
-    "attack.ogg"
+    "attack.ogg",
     "blaster.ogg",
     "beyondthegrave.ogg",
     "brokenspaceship.ogg",
