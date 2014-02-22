@@ -246,7 +246,7 @@ while(client.loop() == 0):
         if len(consoles) > 0:
             if numinstructions == 0:
                 #temp
-                playSound(random.choice(controls.soundfiles['atmospehere']))
+                playSound(random.choice(controls.soundfiles['atmosphere']))
                 #Dump another batch of random control names and action
                 defineControls()
                 numinstructions = 5
