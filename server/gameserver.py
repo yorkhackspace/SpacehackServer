@@ -6,16 +6,21 @@ import controls
 import mosquitto
 import time
 import random
-import pygame
 import json
 
+sound = True #Swithch this off if you don't have pyGame
+if sound:
+    import pygame
+    #Pygame for sounds
+    pygame.mixer.quit()
+    pygame.mixer.init(48000, -16, 2, 1024) #was 1024
+    pygame.mixer.music.load("sounds/spaceshiphum.mp3")
+    pygame.mixer.music.play(-1)
+    
 #MQTT client to allow publishing
 client = mosquitto.Mosquitto("PiServer") #ID shown to the broker
 server = "127.0.0.1" #Mosquitto MQTT broker running locally
 
-#Pygame for sounds
-pygame.init()
-pygame.mixer.init()
 
 #Game variables
 consoles = []
