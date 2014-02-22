@@ -361,7 +361,7 @@ def processRoundConfig(roundconfigstring):
                 elif ctrltype == 'verbs':
                     displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
                 else:
-                    displayButtonsLine("<", ">", ctrlid)
+                    displayButtonsLine("<<<<", ">>>>", ctrlid)
             elif hardwaretype == 'combo7SegColourRotary':
                 if ctrltype == 'button':
                     displayDigits("PUSH")
