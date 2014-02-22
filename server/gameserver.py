@@ -15,7 +15,7 @@ if sound:
     pygame.mixer.quit()
     pygame.mixer.init(48000, -16, 2, 1024) #was 1024
     sndhum = pygame.mixer.Sound("sounds/spaceshiphum.mp3")
-    sndhum.set_volume(0.2)
+    sndhum.set_volume(0.8)
     sndhum.play(-1)
     
 #MQTT client to allow publishing
