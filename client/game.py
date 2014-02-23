@@ -503,13 +503,13 @@ def pollControls():
                         value = int(state)
                     elif ctrltype == 'colours':
                         state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
-                        value = state
+                        value = str(state)
                     elif ctrltype == 'words':
                         state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
-                        value = ctrldef['pool'][int(state)]
+                        value = str(ctrldef['pool'][int(state)])
                     elif ctrltype == 'verbs':
                         state = translateCalibratedValue(pot, controlsetup['calibration']['words'])
-                        value = ctrldef['pool'][int(state)]
+                        value = str(ctrldef['pool'][int(state)])
                 #more cases to go here
                 if value != ctrlvalue:
                     processControlValueAssignment(value, ctrlid)
