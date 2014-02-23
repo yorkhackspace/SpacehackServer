@@ -107,7 +107,7 @@ def getControlName(maxwidth, maxlines, minlen):
                 +random.choice(['','',random.choice(letters), 
                 random.choice(greekletters).lower()])+random.choice(baseparts).lower()
                 +random.choice(['','','',' '+random.choice(baseparts).lower()]))
-        if countLines(ret, maxwidth) <= maxlines and len(ret) >= minlen and max([len(x) for x in ret.split()]) < maxwidth:
+        if countLines(ret, maxwidth) <= maxlines and len(ret) >= minlen and max([len(x) for x in ret.split()]) <= maxwidth:
             finished=True
     return ret
 
