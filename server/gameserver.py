@@ -131,7 +131,7 @@ def defineControls():
                                 finished=True
                         if ctrldef['quantity'] != 2 or len(wordpool[0]) + len(wordpool[1]) < 14:
                             reallyfinished = True
-                    ctrldef['pool'] = wordpool
+                    ctrldef['pool'] = sorted(wordpool)
                 else:
                     ctrldef['pool'] = ctrldef['list']
             #Pick a starting value
