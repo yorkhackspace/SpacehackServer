@@ -477,6 +477,9 @@ def pollControls():
                             state = ctrlstate #if not decisively left or right, stay the same
                         if state != ctrlstate:
                             value = state
+                elif hardwaretype == 'potentiometer':
+                    pot = ADC.read(pins['POT'])
+                    print pot
                 #more cases to go here
                 if value != ctrlvalue:
                     processControlValueAssignment(value, ctrlid)
