@@ -206,6 +206,8 @@ def pickNewTarget(consoleip):
                 targetinstruction = controls.getPasswdAction(targetname, getChoice(targetrange, curval))
             elif targetdef['list']=='verbs' or ctrltype == 'verbs':
                 targetinstruction = controls.getVerbListAction(targetname, getChoice(targetrange, curval))
+        elif ctrltype == 'verbs':
+            targetinstruction = controls.getVerbListAction(targetname, getChoice(targetrange, curval))
         targetval=getChoice(targetrange, curval)
         if targetinstruction=='':
             targetinstruction = controls.getWordAction(targetname, targetval)
