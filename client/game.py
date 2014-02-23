@@ -506,6 +506,7 @@ def pollControls():
                     elif ctrltype == 'colours':
                         state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
                         value = str(state)
+                        print "colour is " + state
                     elif ctrltype == 'words':
                         state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
                         value = str(ctrldef['pool'][int(state)])
