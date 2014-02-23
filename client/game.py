@@ -119,11 +119,9 @@ lookup7segchar = {'0': 0x3F, '1': 0x06, '2': 0x5B, '3': 0x4F, '4': 0x66, '5': 0x
                   'y': 0x6E, 'Y': 0x6E, 'z': 0x5B, 'Z': 0x5B, '-': 0x40
                   }
 
-#Bar graph - didn't use a shift register because of space on breadboard
-#bar = ["P9_11", "P9_12", "P9_13", "P9_14", "P9_15", "P9_16", "P9_21", "P9_22", "P9_23", "P9_24"]
-
 #Pretty print to the LCDs taking into account width
 def display(message, width, ctrlid):
+    """Pretty print to the LCDs taking into account width"""
     words = message.split(" ")
     line = ""
     pos=0
@@ -141,6 +139,7 @@ def display(message, width, ctrlid):
 
 #Display words on the left and right sides of the bottom row, for Nokia displays
 def displayButtonsLine(leftstr, rightstr, ctrlid):
+    """Display words on the left and right sides of the bottom row, for Nokia displays"""
     ctrldef = config['local']['controls'][ctrlid]['display']
     combinedstr = leftstr + " "*(ctrldef['width'] - len(leftstr) - len(rightstr)) + rightstr
     lcd[ctrlid].setCursor(0, ctrldef['height']-1)
@@ -148,6 +147,7 @@ def displayButtonsLine(leftstr, rightstr, ctrlid):
 
 #Display values centred on the fourth row, for Nokia displays
 def displayValueLine(valuestr, ctrlid):
+    """Display values centred on the fourth row, for Nokia displays"""
     ctrldef = config['local']['controls'][ctrlid]['display']
     if ctrldef['height'] > 4:
         leftpad = (ctrldef['width'] - len(valuestr)) // 2
@@ -157,6 +157,7 @@ def displayValueLine(valuestr, ctrlid):
     
 #Print to the 7-seg
 def displayDigits(digits):
+    """Print to the 7-seg"""
     disp = -len(digits) % 4 * ' ' + digits
     for i in range(4):
         digit=disp[i]
@@ -168,6 +169,7 @@ def displayDigits(digits):
         
 #Bar graph
 def barGraph(digit):
+    """Display Bar graph"""
     for i in range(10):
         if digit > i:
             GPIO.output(bar[i], GPIO.HIGH)
@@ -176,6 +178,7 @@ def barGraph(digit):
 
 #Display a timer bar on the bottom row of the instructions display
 def displayTimer():
+    """Display a timer bar on the bottom row of the instructions display"""
     global timeoutdisplayblocks
     if timeoutstarted == 0.0:
         blockstodisplay = 0
@@ -196,6 +199,7 @@ def displayTimer():
         
 #MQTT message arrived
 def on_message(mosq, obj, msg):
+    """Process incoming MQTT message"""
     print(msg.topic + " - " + str(msg.payload))
     nodes = msg.topic.split('/')
     global timeoutstarted
@@ -232,6 +236,7 @@ def on_message(mosq, obj, msg):
                     
 #Process control value assignment
 def processControlValueAssignment(value, ctrlid, override=False):
+    """Process control value assignment"""
     roundsetup = roundconfig['controls'][ctrlid]
     ctrltype = roundsetup['type']
     ctrldef = roundsetup['definition']
@@ -336,6 +341,7 @@ def processControlValueAssignment(value, ctrlid, override=False):
             
 #Process an incoming config for a round
 def processRoundConfig(roundconfigstring):
+    """Process an incoming config for a round"""
     x = json.loads(roundconfigstring)
     for key in x.keys():
         roundconfig[key] = x[key]
@@ -347,12 +353,6 @@ def processRoundConfig(roundconfigstring):
         if 'definition' in roundsetup and roundsetup['enabled']:
             ctrltype = roundsetup['type']
             ctrldef = roundsetup['definition']
-            #if controlsetup['display']['height'] > 3:
-            #    if 'value' in ctrldef:
-            #        displayValueLine(str(ctrldef['value']), ctrlid)
-            #    else:
-            #        displayValueLine("Test", ctrlid)
-            #        displayButtonsLine("Left", "Right", ctrlid)
             #there's more to setup of course
             hardwaretype = config['local']['controls'][ctrlid]['hardware']
             if hardwaretype == 'phonestylemenu':
@@ -368,8 +368,15 @@ def processRoundConfig(roundconfigstring):
             if 'value' in ctrldef:
                 processControlValueAssignment(ctrldef['value'], ctrlid, True)
 
+def translateCalibratedValue(rawvalue, calibrationdict):
+    """Calculate a calibrated value from a raw value and translation dictionary"""
+    for value in calibrationdict.keys():
+        if rawvalue < calibrationdict[value]:
+            return value
+    
 #Poll controls, interpret into values, recognise changes, inform server
 def pollControls():
+    """Poll controls, interpret into values, recognise changes, inform server"""
     if len(roundconfig) > 0:
         for ctrlid in controlids:
             roundsetup = roundconfig['controls'][ctrlid]
@@ -477,9 +484,32 @@ def pollControls():
                             state = ctrlstate #if not decisively left or right, stay the same
                         if state != ctrlstate:
                             value = state
+                    elif ctrltype == 'selector':
+                        state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+                        value = state
                 elif hardwaretype == 'potentiometer':
                     pot = ADC.read(pins['POT'])
-                    print pot
+                    if ctrltype == 'toggle':
+                        if pot < 0.3:
+                            state = 0
+                        elif pot > 0.7:
+                            state = 1
+                        else:
+                            state = ctrlstate #if not decisively left or right, stay the same
+                        if state != ctrlstate:
+                            value = state
+                    elif ctrltype == 'selector':
+                        state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+                        value = int(state)
+                    elif ctrltype == 'colours':
+                        state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+                        value = state
+                    elif ctrltype == 'words':
+                        state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+                        value = ctrldef['pool'][int(state)]
+                    elif ctrltype == 'verbs':
+                        state = translateCalibratedValue(pot, controlsetup['calibration']['words'])
+                        value = ctrldef['pool'][int(state)]
                 #more cases to go here
                 if value != ctrlvalue:
                     processControlValueAssignment(value, ctrlid)
@@ -489,7 +519,6 @@ def pollControls():
                     ctrldef['value'] = value
                 ctrldef['state'] = state
                         
-                    
                     
 #Setup displays
 displayDigits('    ')
