@@ -11,6 +11,7 @@ from Adafruit_CharLCD import Adafruit_CharLCD
 from NokiaLCD import NokiaLCD
 import gaugette.rotary_encoder as rotary
 import Keypad_BBB
+from collections import OrderedDict
 import commands
 import json
 import time
@@ -370,8 +371,7 @@ def processRoundConfig(roundconfigstring):
 
 def translateCalibratedValue(rawvalue, calibrationdict):
     """Calculate a calibrated value from a raw value and translation dictionary"""
-    sortedlist = calibrationdict.keys()
-    sortedlist.sort()
+    sortedlist = OrderedDict(sorted(calibrationdict.items(), key=lambda t: t[1]))
     for value in sortedlist:
         if rawvalue < calibrationdict[value]:
             return value
