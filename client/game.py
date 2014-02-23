@@ -486,7 +486,7 @@ def pollControls():
                             value = state
                     elif ctrltype == 'selector':
                         state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
-                        value = state
+                        value = int(state)
                 elif hardwaretype == 'potentiometer':
                     pot = ADC.read(pins['POT'])
                     if ctrltype == 'toggle':
