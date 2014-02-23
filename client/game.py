@@ -370,7 +370,9 @@ def processRoundConfig(roundconfigstring):
 
 def translateCalibratedValue(rawvalue, calibrationdict):
     """Calculate a calibrated value from a raw value and translation dictionary"""
-    for value in calibrationdict.keys():
+    sortedlist = calibrationdict.keys()
+    sortedlist.sort()
+    for value in sortedlist:
         if rawvalue < calibrationdict[value]:
             return value
     
