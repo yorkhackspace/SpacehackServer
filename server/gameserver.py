@@ -80,7 +80,7 @@ def on_message(mosq, obj, msg):
             global numinstructions
             lastgenerated = time.time()
             numinstructions = 0
-    elif nodes[0] == 'client':
+    elif nodes[0] == 'clients':
         consoleip = nodes[1]
         ctrlid = nodes[2]
         value = str(msg.payload)
