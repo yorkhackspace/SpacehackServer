@@ -87,15 +87,16 @@ def on_message(mosq, obj, msg):
         if nodes[3] == 'value':
             #Check posted value against current targets
             matched = False
-            for consoleip in consoles:
-                consoledef = console[consoleip]
+            console[consoleip][ctrlid]['value'] = value
+            for targetip in consoles:
+                consoledef = console[targetip]
                 if ('target' in consoledef and consoledef['target']['console'] == consoleip 
                             and consoledef['target']['control'] == ctrlid
                             and str(consoledef['target']['value']) == value):
                     #Match
                     matched = True
                     playSound(random.choice(controls.soundfiles['right']))
-                    pickNewTarget(consoleip)
+                    pickNewTarget(targetip)
             if not matched: #Need to also check if a game round has begun yet
                 playSound(random.choice(controls.soundfiles['wrong']))
             
@@ -244,9 +245,19 @@ def pickNewTarget(consoleip):
         print("Unhandled type: " + ctrltype)
     #Now we have targetval and targetinstruction for this consoleip, store and publish it
     console[consoleip]['instructions']=targetinstruction
-    console[consoleip]['target']={"console": targetconsole, "control": targetctrlid, "value": targetval}
+    console[consoleip]['target']={"console": targetconsole, "control": targetctrlid, "value": targetval, "timestamp": time.time()}
     print("Instruction: " + consoleip + '/' + targetctrlid + ' - ' + str(targetinstruction))
     client.publish('clients/' + consoleip + '/instructions', targetinstruction)
+
+def checkTimeouts():
+    """Check all targets for expired instructions"""
+    for consoleip in consoles:
+        consoledef = console[consoleip]
+        if 'target' in consoledef and consoledef['target']['timestamp'] + currenttimeout < time.time():
+            #Expired instruction
+            playSound(random.choice(controls.soundfiles['wrong']))
+            pickNewTarget(consoleip)
+
     
 #Main loop
 
