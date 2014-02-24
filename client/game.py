@@ -517,7 +517,7 @@ def pollControls():
                     processControlValueAssignment(value, ctrlid)
                     print("Publishing control " + ctrlid + " which is " + hardwaretype + " / " + ctrltype)
                     print ("value = " + str(value))
-                    client.publish("clients/" + ipaddress + "/" + ctrlid + "value", value)
+                    client.publish("clients/" + ipaddress + "/" + ctrlid + "/value", value)
                     ctrldef['value'] = value
                 ctrldef['state'] = state
                         
