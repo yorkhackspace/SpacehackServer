@@ -80,7 +80,26 @@ def on_message(mosq, obj, msg):
             global numinstructions
             lastgenerated = time.time()
             numinstructions = 0
-
+    elif nodes[0] == 'client':
+        consoleip = nodes[1]
+        ctrlid = nodes[2]
+        value = str(msg.payload)
+        if nodes[3] == 'value':
+            #Check posted value against current targets
+            matched = False
+            for consoleip in consoles:
+                consoledef = console[consoleip]
+                if ('target' in consoledef and consoledef['target']['console'] == consoleip 
+                            and consoledef['target']['control'] == ctrlid
+                            and str(consoldef['target']['value']) == value):
+                    #Match
+                    matched = True
+                    playSound(random.choice(controls.soundfiles['right']))
+                    pickNewTarget(consoleip)
+            if not matched: #Need to also check if a game round has begun yet
+                playSound(random.choice(controls.soundfiles['wrong']))
+            
+            
 #Define a new set of controls for each client for this game round and send it to them as JSON.
 def defineControls():
     """Define a new set of controls for each client for this game round and send it to them as JSON."""
