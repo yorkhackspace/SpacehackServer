@@ -50,9 +50,16 @@ class ProcessEvents(threading.Thread):
 
 
 if __name__ == "__main__":
+	pin11 = IOEvents("P9_11", queue)
+	pin11.setDaemon(True)
+	pin11.start()
 	pin12 = IOEvents("P9_12", queue)
 	pin12.setDaemon(True)
 	pin12.start()
+	pin13 = IOEvents("P9_13", queue)
+	pin13.setDaemon(True)
+	pin13.start()
+
 
 	events = ProcessEvents(queue)
 	events.setDaemon(True)
