@@ -221,7 +221,7 @@ def getEmergency():
     """Generate a random emergency."""
     finished=False
     while not finished:
-        n = random.choice(range(6))
+        n = random.choice(range(7))
         if n==0: #is {goingto} {badplace}
             em = "is " + random.choice(emergencies['goingto']) + " " + random.choice(emergencies['badplace'])
         elif n==1: #is {attackedby} {badpeople}
@@ -234,6 +234,8 @@ def getEmergency():
             em = "has " + random.choice(emergencies['broken']) + " " + random.choice(emergencies['device'])
         elif n==5: #has a {buildupof} {unwantables}
             em = random.choice(emergencies['buildingup']) + " " + random.choice(emergencies['unwantables'])
+        elif n==6: #movie cliches
+            em = random.choice(emergencies['cliches'])
         ret = random.choice(emergencies['emergency']) + " - the ship " + em + "! Stand by!"
         if countLines(ret, 20) <= 4:
             finished = True
