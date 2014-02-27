@@ -307,5 +307,10 @@
     "Punch it, Chewie",
     "I thought they smelled bad on the outside",
     "IT'S A TRAP",
-    "Let the Wookie win"
+    "Let the Wookie win",
+    "I can't let you do that, Dave",
+    "Dai..sy, dai..sy...",
+    "Come with me if you want to live",
+    "Hasta la vista, baby"
+  ]
 }
