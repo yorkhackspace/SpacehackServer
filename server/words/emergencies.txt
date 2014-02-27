@@ -284,5 +284,28 @@
     "dihydrogen monoxide",
     "crew effluent",
     "buckyballs"
-  ]
+  ],
+  "cliches": [
+    "The engines cannae take it any more",
+    "No-one can hear you scream",
+    "There's Klingons on the starboard bow",
+    "It's a bug hunt",
+    "Get your ass to Mars",
+    "It's life, Jim, but not as we know it",
+    "Houston, we have a problem",
+    "The chances of anything coming from Mars...",
+    "Gordon's alive?",
+    "Dispatch war rocket Ajax, to bring back his body",
+    "Flash Gordon approaching? Open fire!  All weapons",
+    "What is this thing you call... love?",
+    "It's cold outside, there's no kind of atmosphere",
+    "Game over man, game over",
+    "They mostly come out at night, mostly",
+    "Nuke the site from orbit",
+    "I find your lack of faith disturbing",
+    "Use the Force, Luke",
+    "Punch it, Chewie",
+    "I thought they smelled bad on the outside",
+    "IT'S A TRAP",
+    "Let the Wookie win"
 }
