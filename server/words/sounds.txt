@@ -5,7 +5,21 @@
     "blaster.ogg",
     "beyondthegrave.ogg",
     "brokenspaceship.ogg",
-    "blaster.ogg"
+    "blaster.ogg",
+    "compute.ogg",
+    "buzzer.ogg",
+    "cliker.ogg",
+    "delaywatcher.ogg",
+    "gargle.ogg",
+    "ghostship.ogg",
+    "growlrumbles.ogg",
+    "killer.ogg",
+    "laserblast.ogg",
+    "lowrumbling.ogg",
+    "memoryloss.ogg",
+    "reactivate.ogg",
+    "scifi22.ogg",
+    "scifi21.ogg"
   ],
   "right": [
     "beep1.ogg",
@@ -57,11 +71,17 @@
     "beep7.ogg",
     "beep26.ogg",
     "beep37.ogg",
-    "beep50.ogg"
+    "beep50.ogg",
+    "scifi12.ogg",
+    "scifi13.ogg",
+    "scifi23.ogg",
+    "scifi18.ogg",
+    "scifi19.ogg"
   ],
   "continuous": [
     "spaceshiphum.ogg",
-    "timemachine.ogg"
+    "timemachine.ogg",
+    "creeper.ogg"
   ],
   "special": {
     "keypad": "bleep.ogg"
