@@ -311,6 +311,12 @@
     "I can't let you do that, Dave",
     "Dai..sy, dai..sy...",
     "Come with me if you want to live",
-    "Hasta la vista, baby"
+    "Hasta la vista, baby",
+    "Attack ships on fire off the shoulder of Orion",
+    "C-beams glitter in the dark near the Tannhauser Gate",
+    "Dune... Arrakis... Desert planet...",
+    "I've got a bad feeling about this",
+    "I swallowed a bug",
+    "We come in peace, shoot to kill"
   ]
 }
