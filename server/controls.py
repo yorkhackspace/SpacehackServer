@@ -236,7 +236,10 @@ def getEmergency():
             em = random.choice(emergencies['buildingup']) + " " + random.choice(emergencies['unwantables'])
         elif n==6: #movie cliches
             em = random.choice(emergencies['cliches'])
-        ret = random.choice(emergencies['emergency']) + " - the ship " + em + "! Stand by!"
+        ret = random.choice(emergencies['emergency']) + " - " 
+        if n < 6:
+            ret += "the ship " 
+        ret += em + "! Stand by!"
         if countLines(ret, 20) <= 4:
             finished = True
     return ret
