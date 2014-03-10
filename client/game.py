@@ -267,10 +267,10 @@ def processControlValueAssignment(value, ctrlid, override=False):
         elif hardwaretype == 'bargraphpotentiometer':
             if roundsetup['enabled']:
                 if ctrltype == 'toggle':
-        	        if value:
-        	            barGraph(10)
+                    if value:
+                        barGraph(10)
                     else:
-        	            barGraph(0)
+                        barGraph(0)
                 elif ctrltype == 'selector':
                     barGraph(value)
             else:
