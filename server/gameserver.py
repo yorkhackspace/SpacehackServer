@@ -247,7 +247,7 @@ def pickNewTarget(consoleip):
     console[consoleip]['instructions']=targetinstruction
     console[consoleip]['target']={"console": targetconsole, "control": targetctrlid, "value": targetval, "timestamp": time.time()}
     print("Instruction: " + consoleip + '/' + targetctrlid + ' - ' + str(targetinstruction))
-    client.publish('clients/' + consoleip + '/instructions', targetinstruction)
+    client.publish('clients/' + consoleip + '/instructions', str(targetinstruction))
 
 def checkTimeouts():
     """Check all targets for expired instructions"""
@@ -273,7 +273,7 @@ client.publish('server/ready', 'started')
 
 while(client.loop() == 0): 
     #Every five seconds...
-    if time.time()-lastgenerated > 5: 
+    if time.time()-lastgenerated > 15: 
         client.publish('server/ready', 'ready')
         if len(consoles) > 0:
             if numinstructions == 0:
