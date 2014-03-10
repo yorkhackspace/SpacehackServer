@@ -265,39 +265,45 @@ def processControlValueAssignment(value, ctrlid, override=False):
                if controlsetup['display']['height'] > 3:
                    displayValueLine(value, ctrlid)
         elif hardwaretype == 'bargraphpotentiometer':
-            if ctrltype == 'toggle':
-    	        if value:
-    	            barGraph(10)
-                else:
-    	            barGraph(0)
-            elif ctrltype == 'selector':
-                barGraph(value)
+            if roundsetup['enabled']:
+                if ctrltype == 'toggle':
+        	        if value:
+        	            barGraph(10)
+                    else:
+        	            barGraph(0)
+                elif ctrltype == 'selector':
+                    barGraph(value)
+            else:
+                barGraph(0)
         elif hardwaretype == 'combo7SegColourRotary':
-            if ctrltype == 'toggle':
-                if value:
-                    displayDigits('On')
-                    #Light LED red
-                else:
-                    displayDigits('Off')
+            if roundsetup['enabled']:
+                if ctrltype == 'toggle':
+                    if value:
+                        displayDigits('On')
+                        #Light LED red
+                    else:
+                        displayDigits('Off')
+                        #Switch off LED
+                elif ctrltype == 'selector':
+                    displayDigits(str(value))
                     #Switch off LED
-            elif ctrltype == 'selector':
-                displayDigits(str(value))
-                #Switch off LED
-            elif ctrltype == 'colour':
-                #Light LED appropriate colour
-                if value == 'red':
-                    displayDigits("RED")
-                elif value == 'green':
-                    displayDigits("GREN")
-                elif value == 'blue':
-                    displayDigits("BLUE")
-                elif value == 'yellow':
-                    displayDigits("YELO")
-                elif value == 'cyan':
-                    displayDigits("CYAN")
-            elif ctrltype == 'words':
-                #Switch off LED
-                displayDigits(value.upper())
+                elif ctrltype == 'colour':
+                    #Light LED appropriate colour
+                    if value == 'red':
+                        displayDigits("RED")
+                    elif value == 'green':
+                        displayDigits("GREN")
+                    elif value == 'blue':
+                        displayDigits("BLUE")
+                    elif value == 'yellow':
+                        displayDigits("YELO")
+                    elif value == 'cyan':
+                        displayDigits("CYAN")
+                elif ctrltype == 'words':
+                    #Switch off LED
+                    displayDigits(value.upper())
+            else:
+                dispalDigits("    ")
         elif hardwaretype == 'illuminatedbutton':
             if ctrltype == 'toggle':
                 if value:
@@ -478,9 +484,14 @@ def pollControls():
                     pot = ADC.read(pins['POT'])
                     #Interpretation varies by state
                     if ctrltype == 'toggle':
-                        if pot < 0.3:
+                        if ctrlvalue == None: #We'll take the mid line to decide
+                            if pot < 0.5:
+                                state = 0
+                            else:
+                                state = 1
+                        elif pot < 0.4: #Dead zone in the middle
                             state = 0
-                        elif pot > 0.7:
+                        elif pot > 0.6:
                             state = 1
                         else:
                             state = ctrlstate #if not decisively left or right, stay the same
@@ -492,9 +503,14 @@ def pollControls():
                 elif hardwaretype == 'potentiometer':
                     pot = ADC.read(pins['POT'])
                     if ctrltype == 'toggle':
-                        if pot < 0.3:
+                        if ctrlvalue == None: #We'll take the mid line to decide
+                            if pot < 0.5:
+                                state = 0
+                            else:
+                                state = 1
+                        elif pot < 0.4: #Dead zone in the middle
                             state = 0
-                        elif pot > 0.7:
+                        elif pot > 0.6:
                             state = 1
                         else:
                             state = ctrlstate #if not decisively left or right, stay the same
