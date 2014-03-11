@@ -172,7 +172,8 @@ def displayDigits(digits):
 def barGraph(digit):
     """Display Bar graph"""
     for i in range(10):
-        if digit > i:
+        #if digit > i:
+        if digit != i:
             GPIO.output(bar[i], GPIO.HIGH)
         else:
             GPIO.output(bar[i], GPIO.LOW)
