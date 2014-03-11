@@ -84,6 +84,8 @@ def on_message(mosq, obj, msg):
         consoleip = nodes[1]
         ctrlid = nodes[2]
         value = str(msg.payload)
+        if currentsetup[consoleip]['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
+            value = int(value)
         if nodes[3] == 'value':
             #Check posted value against current targets
             matched = False
