@@ -89,7 +89,8 @@ def on_message(mosq, obj, msg):
         if nodes[3] == 'value':
             #Check posted value against current targets
             matched = False
-            currentsetup[consoleip]['controls'][ctrlid]['definition']['value'] = value
+            if 'definition' in currentsetup[consoleip]['controls'][ctrlid]:
+                currentsetup[consoleip]['controls'][ctrlid]['definition']['value'] = value
             for targetip in consoles:
                 consoledef = console[targetip]
                 if ('target' in consoledef and consoledef['target']['console'] == consoleip 
