@@ -36,6 +36,7 @@ currentsetup = {}
 currenttimeout = 10.0
 lastgenerated = time.time()
 numinstructions = 0
+gamestate = 'initserver' #initserver, readytostart, waitingforplayers, initgame, setupround, playround, gameover, awardmedals
 
 #Show when we've connected
 def on_connect(mosq, obj, rc):
@@ -274,7 +275,7 @@ client.subscribe('server/register')
 
 client.publish('server/ready', 'started')
 
-while(client.loop() == 0): 
+while(client.loop(0) == 0): 
     #Every five seconds...
     if time.time()-lastgenerated > 15: 
         client.publish('server/ready', 'ready')
