@@ -95,7 +95,7 @@ def on_message(mosq, obj, msg):
                 consoledef = console[targetip]
                 if ('target' in consoledef and consoledef['target']['console'] == consoleip 
                             and consoledef['target']['control'] == ctrlid
-                            and str(consoledef['target']['value']) == value):
+                            and str(consoledef['target']['value']) == str(value)):
                     #Match
                     matched = True
                     playSound(random.choice(controls.soundfiles['right']))
