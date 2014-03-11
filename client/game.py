@@ -472,14 +472,14 @@ def pollControls():
                             value = state
                         elif ctrltype == 'toggle':
                             if state:
-                                value = not ctrlvalue
+                                value = int(not ctrlvalue)
                 elif hardwaretype == 'illuminatedtoggle':
                     sw = GPIO.input(pins['SW'])
                     state = sw
                     if ctrlstate != state:
                         if ctrltype == 'toggle':
                             if state:
-                                value = not ctrlvalue
+                                int(value = not ctrlvalue)
                 elif hardwaretype == 'bargraphpotentiometer':
                     pot = ADC.read(pins['POT'])
                     #Interpretation varies by state
