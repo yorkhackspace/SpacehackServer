@@ -593,7 +593,7 @@ for controlid in [x['id'] for x in config['interface']['controls']]:
     client.subscribe(subsbase + str(controlid) + '/enabled')
     
 #Main loop
-while(client.loop() == 0):
+while(client.loop(0) == 0):
     pollControls()
     displayTimer()
     
