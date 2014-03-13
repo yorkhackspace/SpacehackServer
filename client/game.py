@@ -528,6 +528,44 @@ def pollControls():
                     elif ctrltype == 'verbs':
                         state = translateCalibratedValue(pot, controlsetup['calibration']['words'])
                         value = str(ctrldef['pool'][int(state)])
+                elif hardwaretype == 'combo7segColourRotary':
+                    btn = GPIO.input(pins['BTN'])
+                    #rotary movement is handled separately not sampled
+                    if ctrlstate != state:
+                        if ctrltype == 'button':
+                            value = state
+                        elif ctrltype == 'toggle':
+                            if state:
+                                value = int(not ctrlvalue)
+                elif hardwaretype == 'switchbank':
+                    sw1 = GPIO.input(pins['SW1'])
+                    sw2 = GPIO.input(pins['SW2'])
+                    sw3 = GPIO.input(pins['SW3'])
+                    sw4 = GPIO.input(pins['SW4'])
+                    state = [sw1, sw2, sw3, sw4]
+                    if ctrlstate != state:
+                        if ctrltype == 'toggle':
+                            if state == [1, 1, 1, 1]:
+                                value = 1
+                            elif state == [0, 0, 0, 0]:
+                                value = 0
+                            else:
+                                value = ctrlvalue
+                elif hardwaretype == 'fourbuttons':
+                    btn1 = GPIO.input(pins['BTN1'])
+                    btn2 = GPIO.input(pins['BTN2'])
+                    btn3 = GPIO.input(pins['BTN3'])
+                    btn4 = GPIO.input(pins['BTN4'])
+                    state = [btn1, btn2, btn3, btn4]
+                    if ctrlstate != state:
+                        for i in range(4):
+                        if state[i] - ctrlstate[i] == 1:
+                            #button i has been newly pushed
+                            if ctrltype == 'verbs':
+                                value = str(ctrldef['list'][i])
+                            elif ctrltype == 'colour':
+                                value = str(ctrldef['values'][i])
+                #elif hardwaretype == 'keypad':
                 #more cases to go here
                 if value != ctrlvalue:
                     processControlValueAssignment(value, ctrlid)
@@ -555,7 +593,7 @@ for controlid in [x['id'] for x in config['interface']['controls']]:
     client.subscribe(subsbase + str(controlid) + '/enabled')
     
 #Main loop
-while(client.loop(0) == 0):
+while(client.loop() == 0):
     pollControls()
     displayTimer()
     
