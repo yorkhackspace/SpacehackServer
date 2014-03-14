@@ -275,9 +275,9 @@ client.subscribe('server/register')
 
 client.publish('server/ready', 'started')
 
-while(client.loop(0) == 0): 
+while(client.loop() == 0): 
     #Every five seconds...
-    if time.time()-lastgenerated > 15: 
+    if time.time()-lastgenerated > currenttimeout: 
         client.publish('server/ready', 'ready')
         if len(consoles) > 0:
             if numinstructions == 0:
