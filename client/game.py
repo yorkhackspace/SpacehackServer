@@ -543,7 +543,7 @@ def pollControls():
                     sw3 = GPIO.input(pins['SW3'])
                     sw4 = GPIO.input(pins['SW4'])
                     state = [sw1, sw2, sw3, sw4]
-                    if ctrlstate != state:
+                    if not ctrlstate = state:
                         if ctrltype == 'toggle':
                             if state == [1, 1, 1, 1]:
                                 value = 1
@@ -557,7 +557,7 @@ def pollControls():
                     btn3 = GPIO.input(pins['BTN3'])
                     btn4 = GPIO.input(pins['BTN4'])
                     state = [btn1, btn2, btn3, btn4]
-                    if ctrlstate != state:
+                    if not ctrlstate = state:
                         for i in range(4):
                         if state[i] - ctrlstate[i] == 1:
                             #button i has been newly pushed
@@ -565,7 +565,36 @@ def pollControls():
                                 value = str(ctrldef['list'][i])
                             elif ctrltype == 'colour':
                                 value = str(ctrldef['values'][i])
-                #elif hardwaretype == 'keypad':
+                elif hardwaretype == 'keypad':
+                    state = keypad.getKey()
+                    if (ctrlstate != state) and (state != None):
+                        if not 'buffer' in ctrldef:
+                            ctrldef['buffer'] = ""
+                        if ctrltype = 'pin':
+                            if state in "0123456789":
+                                ctrldef['buffer'] += state
+                                if len(ctrldef['buffer']) == 4:
+                                    value = ctrldef['buffer']
+                                    ctrldef['buffer'] = ''
+                        elif ctrltype == 'selector':
+                            if state in "0123456789":
+                                value = state
+                        elif ctrltype = 'words':
+                            if state in "ABCD":
+                                ctrldef['buffer'] += state
+                            elif state == '0':
+                                ctrldef['buffer'] += 'O'
+                            elif state == '1':
+                                ctrldef['buffer'] += 'I'
+                            elif state == '2':
+                                ctrldef['buffer'] += 'Z'
+                            elif state == '3':
+                                ctrldef['buffer'] += 'E'
+                            elif state == '5':
+                                ctrldef['buffer'] += 'S'
+                            elif state == '#':
+                                value = ctrldef['buffer']
+                                ctrldef['buffer'] = ''
                 #more cases to go here
                 if value != ctrlvalue:
                     processControlValueAssignment(value, ctrlid)
