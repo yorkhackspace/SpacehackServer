@@ -568,12 +568,12 @@ def pollControls():
                     state = [btn1, btn2, btn3, btn4]
                     if not ctrlstate == state:
                         for i in range(4):
-                        if state[i] - ctrlstate[i] == 1:
-                            #button i has been newly pushed
-                            if ctrltype == 'verbs':
-                                value = str(ctrldef['list'][i])
-                            elif ctrltype == 'colour':
-                                value = str(ctrldef['values'][i])
+                            if state[i] - ctrlstate[i] == 1:
+                                #button i has been newly pushed
+                                if ctrltype == 'verbs':
+                                    value = str(ctrldef['list'][i])
+                                elif ctrltype == 'colour':
+                                    value = str(ctrldef['values'][i])
                 elif hardwaretype == 'keypad':
                     state = keypad.getKey()
                     if (ctrlstate != state) and (state != None):
