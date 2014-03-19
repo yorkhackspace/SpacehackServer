@@ -566,7 +566,7 @@ def pollControls():
                     btn3 = GPIO.input(pins['BTN3'])
                     btn4 = GPIO.input(pins['BTN4'])
                     state = [btn1, btn2, btn3, btn4]
-                    if not ctrlstate = state:
+                    if not ctrlstate == state:
                         for i in range(4):
                         if state[i] - ctrlstate[i] == 1:
                             #button i has been newly pushed
