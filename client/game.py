@@ -588,7 +588,7 @@ def pollControls():
                         elif ctrltype == 'selector':
                             if state in "0123456789":
                                 value = state
-                        elif ctrltype = 'words':
+                        elif ctrltype == 'words':
                             if state in "ABCD":
                                 ctrldef['buffer'] += state
                             elif state == '0':
