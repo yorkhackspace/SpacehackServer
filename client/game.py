@@ -62,9 +62,9 @@ for ctrlid in sortedlist:
         if hardwaretype == 'phonestylemenu': # 2 buttons, RGB LED
             GPIO.setup(pins['BTN_1'], GPIO.IN, GPIO.PUD_DOWN)
             GPIO.setup(pins['BTN_2'], GPIO.IN, GPIO.PUD_DOWN)
-            #PWM.start(pins['RGB_R'], 0.0)
-            #PWM.start(pins['RGB_G'], 0.0)
-            #PWM.start(pins['RGB_B'], 0.0)
+            PWM.start(pins['RGB_R'], 0.0)
+            PWM.start(pins['RGB_G'], 0.0)
+            PWM.start(pins['RGB_B'], 0.0)
         elif hardwaretype == 'bargraphpotentiometer': #10k pot, 10 LEDs
             for barnum in range(10):
                 pin = pins['BAR_' + str(barnum+1)]
@@ -75,9 +75,9 @@ for ctrlid in sortedlist:
         elif hardwaretype == 'combo7SegColourRotary': #I2C 7Seg, button, rotary, RGB
             #segment defined at module scope
             GPIO.setup(pins['BTN'], GPIO.IN, GPIO.PUD_DOWN)
-            #PWM.start(pins['RGB_R'], 0.0)
-            #PWM.start(pins['RGB_G'], 0.0)
-            #PWM.start(pins['RGB_B'], 0.0)
+            PWM.start(pins['RGB_R'], 0.0)
+            PWM.start(pins['RGB_G'], 0.0)
+            PWM.start(pins['RGB_B'], 0.0)
             #What to do about rotary?
         elif hardwaretype == 'switchbank': #Four switches, four LEDs
             for i in range(1,5):
