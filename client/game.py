@@ -547,10 +547,10 @@ def pollControls():
                             if state:
                                 value = int(not ctrlvalue)
                 elif hardwaretype == 'switchbank':
-                    sw1 = GPIO.input(pins['SW1'])
-                    sw2 = GPIO.input(pins['SW2'])
-                    sw3 = GPIO.input(pins['SW3'])
-                    sw4 = GPIO.input(pins['SW4'])
+                    sw1 = GPIO.input(pins['SW_1'])
+                    sw2 = GPIO.input(pins['SW_2'])
+                    sw3 = GPIO.input(pins['SW_3'])
+                    sw4 = GPIO.input(pins['SW_4'])
                     state = [sw1, sw2, sw3, sw4]
                     if not ctrlstate == state:
                         if ctrltype == 'toggle':
