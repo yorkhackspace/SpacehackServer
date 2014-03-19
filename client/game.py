@@ -579,7 +579,7 @@ def pollControls():
                     if (ctrlstate != state) and (state != None):
                         if not 'buffer' in ctrldef:
                             ctrldef['buffer'] = ""
-                        if ctrltype = 'pin':
+                        if ctrltype == 'pin':
                             if state in "0123456789":
                                 ctrldef['buffer'] += state
                                 if len(ctrldef['buffer']) == 4:
