@@ -552,7 +552,7 @@ def pollControls():
                     sw3 = GPIO.input(pins['SW3'])
                     sw4 = GPIO.input(pins['SW4'])
                     state = [sw1, sw2, sw3, sw4]
-                    if not ctrlstate = state:
+                    if not ctrlstate == state:
                         if ctrltype == 'toggle':
                             if state == [1, 1, 1, 1]:
                                 value = 1
