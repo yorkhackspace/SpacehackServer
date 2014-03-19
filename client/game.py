@@ -75,9 +75,9 @@ for ctrlid in sortedlist:
         elif hardwaretype == 'combo7SegColourRotary': #I2C 7Seg, button, rotary, RGB
             #segment defined at module scope
             GPIO.setup(pins['BTN'], GPIO.IN, GPIO.PUD_DOWN)
-            PWM.start(pins['RGB_R'], 0.0)
-            PWM.start(pins['RGB_G'], 0.0)
-            PWM.start(pins['RGB_B'], 0.0)
+            PWM.start(pins['RGB_R'], 1.0) #common anode so 1.0 = off, 0.0 = on
+            PWM.start(pins['RGB_G'], 1.0)
+            PWM.start(pins['RGB_B'], 1.0)
             #What to do about rotary?
         elif hardwaretype == 'switchbank': #Four switches, four LEDs
             for i in range(1,5):
@@ -93,7 +93,7 @@ for ctrlid in sortedlist:
         elif hardwaretype == 'illuminatedtoggle': #one switch, one LED            
             GPIO.setup(pins['SW'], GPIO.IN, GPIO.PUD_DOWN)
             GPIO.setup(pins['LED'], GPIO.OUT)
-            GPIO.output(pins['LED'], GPIO.LOW)
+            GPIO.output(pins['LED'], GPIO.HIGH) #common anode, so HIGH for off, LOW for on
         elif hardwaretype == 'fourbuttons': #four buttons
             for i in range(1,5):
                 GPIO.setup(pins['BTN_' + str(i)], GPIO.IN, GPIO.PUD_DOWN)
@@ -246,14 +246,14 @@ def processControlValueAssignment(value, ctrlid, override=False):
         hardwaretype = controlsetup['hardware']
         pins = controlsetup['pins']
         if hardwaretype == 'phonestylemenu':
+            RGB = [0.0, 0.0, 0.0]
             if ctrltype == 'toggle':
        	        if controlsetup['display']['height'] > 3:
                     if value:
                         displayValueLine("On", ctrlid)
-                        #Light the LED red
+                        RGB = [1.0, 0.0, 0.0]
                     else:
                         displayValueLine("Off", ctrlid)
-                        #Uswitch off LED
             elif ctrltype == 'selector':
                 if controlsetup['display']['height'] > 3:
                     displayValueLine(str(value), ctrlid)
@@ -261,9 +261,13 @@ def processControlValueAssignment(value, ctrlid, override=False):
                 if controlsetup['display']['height'] > 3:
                     displayValueLine(str(value), ctrlid)
                 #Light the LED the right colours
+                RGB = controlsetup['colours'][str(value)]
             elif ctrltype == 'words':
-               if controlsetup['display']['height'] > 3:
-                   displayValueLine(value, ctrlid)
+                if controlsetup['display']['height'] > 3:
+                    displayValueLine(value, ctrlid)
+            PWM.start(pins['RGB_R'], RGB[0])
+            PWM.start(pins['RGB_G'], RGB[1])
+            PWM.start(pins['RGB_B'], RGB[2])
         elif hardwaretype == 'bargraphpotentiometer':
             if roundsetup['enabled']:
                 if ctrltype == 'toggle':
@@ -276,11 +280,12 @@ def processControlValueAssignment(value, ctrlid, override=False):
             else:
                 barGraph(0)
         elif hardwaretype == 'combo7SegColourRotary':
+            RGB = [0.0, 0.0, 0.0]
             if roundsetup['enabled']:
                 if ctrltype == 'toggle':
                     if value:
                         displayDigits('On')
-                        #Light LED red
+                        RGB = [1.0, 0.0, 0.0]
                     else:
                         displayDigits('Off')
                         #Switch off LED
@@ -299,11 +304,15 @@ def processControlValueAssignment(value, ctrlid, override=False):
                         displayDigits("YELO")
                     elif value == 'cyan':
                         displayDigits("CYAN")
+                    RGB = controlsetup['colours'][str(value)]
                 elif ctrltype == 'words':
                     #Switch off LED
                     displayDigits(value.upper())
             else:
                 dispalDigits("    ")
+            PWM.start(pins['RGB_R'], 1.0 - RGB[0])
+            PWM.start(pins['RGB_G'], 1.0 - RGB[1])
+            PWM.start(pins['RGB_B'], 1.0 - RGB[2])
         elif hardwaretype == 'illuminatedbutton':
             if ctrltype == 'toggle':
                 if value:
@@ -337,10 +346,10 @@ def processControlValueAssignment(value, ctrlid, override=False):
                 if controlsetup['display']['height']>3:
                     if value:
     	                displayValueLine("On", ctrlid)
-                        GPIO.output(pins['LED'], GPIO.HIGH)
+                        GPIO.output(pins['LED'], GPIO.LOW)
                     else:
                         displayValueLine("Off", ctrlid)
-                        GPIO.output(pins['LED'], GPIO.LOW)
+                        GPIO.output(pins['LED'], GPIO.HIGH)
         elif hardwaretype == 'keypad':
             #no need for cases
             displayValueLine(value)
