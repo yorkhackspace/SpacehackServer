@@ -25,11 +25,11 @@ import lcd_manager
 #Who am I? Get my ip address
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 
-#config
+#configuration. Load the config and get various dictionaries and arrays back
 configFileName = 'game-' + ipaddress +'.config'
 config, controlids, controldefs, sortedlist = config_manager.loadConfig(configFileName)
 
-#configure all of the LCDs
+#initialise all of the LCDs and return a list of LCD objects
 lcd = lcd_manager.initLCDs(sortedlist, config)
 
 #Vars
@@ -41,21 +41,8 @@ timeoutstarted = 0.0
 timeoutdisplayblocks = 0
 
 
-
+#initialisers for all controls
 for ctrlid in sortedlist:
-    #dispdef = config['local']['controls'][ctrlid]['display']
-    #if dispdef['type'] == 'hd44780':
-    #    newlcd = Adafruit_CharLCD()
-    #    newlcd.pin_e = dispdef['pin']
-    #    GPIO.setup(newlcd.pin_e, GPIO.OUT)
-    #    GPIO.output(newlcd.pin_e, GPIO.LOW)
-    #    newlcd.begin(dispdef['width'], dispdef['height'])
-    #    lcd[ctrlid]=newlcd
-    #    print("Control " + ctrlid + " is hd44780 on pin " + newlcd.pin_e)
-    #else:
-    #    newlcd = NokiaLCD(pin_SCE=dispdef['pin'])
-    #    lcd[ctrlid]=newlcd
-    #    print("Control " + ctrlid + " is nokia on pin " + dispdef['pin'])
     hardwaretype = config['local']['controls'][ctrlid]['hardware'] 
     if hardwaretype != 'instructions':
         pins = config['local']['controls'][ctrlid]['pins']
