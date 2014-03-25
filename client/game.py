@@ -2,6 +2,7 @@
 #York Hackspace January 2014
 #This runs on a Beaglebone Black
 
+import sys
 import mosquitto
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
@@ -16,7 +17,9 @@ import commands
 import json
 import time
 
-import gamelibs/config_manager.py
+sys.path.append('./gamelibs')
+
+import config_manager
 
 #Who am I?
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
