@@ -28,17 +28,11 @@ ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 #config
 configFileName = 'game-' + ipaddress +'.config'
 config, controlids, controldefs, sortedlist = config_manager.loadConfig(configFileName)
-print "\n\nconfig\n"
-print config
-print "\n\ncontrolids\n"
-print controlids
-print "\n\ncontroldefs\n"
-print controldefs
-print "\n\nsortedlist\n"
-print sortedlist
+
+#configure all of the LCDs
+lcd = lcd_manager.initLCDs(sortedlist, config)
 
 #Vars
-#lcd={}
 roundconfig = {}
 bar = []
 keypad = None
@@ -46,7 +40,7 @@ hasregistered = False
 timeoutstarted = 0.0
 timeoutdisplayblocks = 0
 
-lcd_manager.initLCDs(sortedlist, config)
+
 
 for ctrlid in sortedlist:
     #dispdef = config['local']['controls'][ctrlid]['display']

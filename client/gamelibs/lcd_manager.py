@@ -21,3 +21,4 @@ def initLCDs(sortedlist, config):
 	        newlcd = NokiaLCD(pin_SCE=dispdef['pin'])
 	        lcd[ctrlid]=newlcd
 	        print("Control " + ctrlid + " is nokia on pin " + dispdef['pin'])
+    return lcd
