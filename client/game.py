@@ -27,7 +27,7 @@ ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 
 #config
 configFileName = 'game-' + ipaddress +'.config'
-loadConfig(configFileName)
+config_manager.loadConfig(configFileName)
 
 #Vars
 #lcd={}
@@ -38,7 +38,7 @@ hasregistered = False
 timeoutstarted = 0.0
 timeoutdisplayblocks = 0
 
-initLCDs(sortedlist, config)
+lcd_manager.initLCDs(sortedlist, config)
 
 for ctrlid in sortedlist:
     #dispdef = config['local']['controls'][ctrlid]['display']
