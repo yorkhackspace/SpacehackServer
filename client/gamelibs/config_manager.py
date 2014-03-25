@@ -19,3 +19,4 @@ def loadConfig(fileName):
         controldefs[ctrlid] = control
     sortedlist = [ctrlid for ctrlid in config['local']['controls']]
     sortedlist.sort()
+    return config, controlids, controldefs, sortedlist
