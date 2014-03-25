@@ -26,7 +26,7 @@ import lcd_manager
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 
 #config
-configFileName = 'game-' + ipaddress +'.config'
+configFileName = '../game-' + ipaddress +'.config'
 config_manager.loadConfig(configFileName)
 
 config = config_manager.config              #Raw JSON config stored here
