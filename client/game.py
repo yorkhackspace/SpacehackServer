@@ -16,6 +16,8 @@ import commands
 import json
 import time
 
+import gamelibs/config_manager.py
+
 #Who am I?
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 
