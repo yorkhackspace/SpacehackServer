@@ -17,11 +17,12 @@ import commands
 import json
 import time
 
+#import game libraries
 sys.path.append('./gamelibs')
-
 import config_manager
+import lcd_manager
 
-#Who am I?
+#Who am I? Get my ip address
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 
 #config
@@ -29,30 +30,30 @@ configFileName = 'game-' + ipaddress +'.config'
 loadConfig(configFileName)
 
 #Vars
-lcd={}
+#lcd={}
 roundconfig = {}
 bar = []
 keypad = None
 hasregistered = False
 timeoutstarted = 0.0
 timeoutdisplayblocks = 0
-    
-sortedlist = [ctrlid for ctrlid in config['local']['controls']]
-sortedlist.sort()
+
+initLCDs(sortedlist, config)
+
 for ctrlid in sortedlist:
-    dispdef = config['local']['controls'][ctrlid]['display']
-    if dispdef['type'] == 'hd44780':
-        newlcd = Adafruit_CharLCD()
-        newlcd.pin_e = dispdef['pin']
-        GPIO.setup(newlcd.pin_e, GPIO.OUT)
-        GPIO.output(newlcd.pin_e, GPIO.LOW)
-        newlcd.begin(dispdef['width'], dispdef['height'])
-        lcd[ctrlid]=newlcd
-        print("Control " + ctrlid + " is hd44780 on pin " + newlcd.pin_e)
-    else:
-        newlcd = NokiaLCD(pin_SCE=dispdef['pin'])
-        lcd[ctrlid]=newlcd
-        print("Control " + ctrlid + " is nokia on pin " + dispdef['pin'])
+    #dispdef = config['local']['controls'][ctrlid]['display']
+    #if dispdef['type'] == 'hd44780':
+    #    newlcd = Adafruit_CharLCD()
+    #    newlcd.pin_e = dispdef['pin']
+    #    GPIO.setup(newlcd.pin_e, GPIO.OUT)
+    #    GPIO.output(newlcd.pin_e, GPIO.LOW)
+    #    newlcd.begin(dispdef['width'], dispdef['height'])
+    #    lcd[ctrlid]=newlcd
+    #    print("Control " + ctrlid + " is hd44780 on pin " + newlcd.pin_e)
+    #else:
+    #    newlcd = NokiaLCD(pin_SCE=dispdef['pin'])
+    #    lcd[ctrlid]=newlcd
+    #    print("Control " + ctrlid + " is nokia on pin " + dispdef['pin'])
     hardwaretype = config['local']['controls'][ctrlid]['hardware'] 
     if hardwaretype != 'instructions':
         pins = config['local']['controls'][ctrlid]['pins']

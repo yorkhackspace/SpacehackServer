@@ -3,6 +3,7 @@ import json
 config = []
 controlids = []
 controldefs = {}
+sortedlist = []
 
 #load configuration file
 def loadConfig(fileName)
@@ -16,3 +17,5 @@ def loadConfig(fileName)
     for control in config['interface']['controls']:
         ctrlid = control['id']
         controldefs[ctrlid] = control
+    sortedlist = [ctrlid for ctrlid in config['local']['controls']]
+    sortedlist.sort()
