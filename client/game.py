@@ -29,6 +29,11 @@ ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 configFileName = 'game-' + ipaddress +'.config'
 config_manager.loadConfig(configFileName)
 
+config = config_manager.config              #Raw JSON config stored here
+controlids = config_manager.controlids     #IDs for all controls
+controldefs = config_manager.controldefs   #JSON config for each control
+sortedlist = config_manager.sortedlist     #TODO understand this! Bob, what is this for?
+
 #Vars
 #lcd={}
 roundconfig = {}
