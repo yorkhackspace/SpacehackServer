@@ -114,6 +114,7 @@ for ctrlid in sortedlist:
             
 #MQTT client
 client = mosquitto.Mosquitto("Game-" + ipaddress) #client ID
+print config['local']
 server = config['local']['server']
 
 #Adafruit I2C 7-segment
