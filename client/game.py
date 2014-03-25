@@ -24,26 +24,18 @@ import config_manager
 #Who am I?
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 
-#Config
-f=open('game-' + ipaddress +'.config')
-config=json.loads(f.read())
-f.close()
+#config
+configFileName = 'game-' + ipaddress +'.config'
+loadConfig(configFileName)
 
 #Vars
 lcd={}
-controlids = [control['id'] for control in config['interface']['controls']]
-controlids.sort()
-controldefs = {}
 roundconfig = {}
 bar = []
 keypad = None
 hasregistered = False
 timeoutstarted = 0.0
 timeoutdisplayblocks = 0
-
-for control in config['interface']['controls']:
-    ctrlid = control['id']
-    controldefs[ctrlid] = control
     
 sortedlist = [ctrlid for ctrlid in config['local']['controls']]
 sortedlist.sort()
