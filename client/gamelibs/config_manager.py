@@ -6,7 +6,7 @@ controldefs = {}
 sortedlist = []
 
 #load configuration file
-def loadConfig(fileName)
+def loadConfig(fileName):
     f=open(fileName)
     config=json.loads(f.read())
     f.close()
