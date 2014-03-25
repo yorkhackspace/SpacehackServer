@@ -1,3 +1,5 @@
+#spacehack game client config manager utility library
+
 import json
 
 config = []
