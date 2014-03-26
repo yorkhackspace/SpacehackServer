@@ -265,13 +265,13 @@ def processControlValueAssignment(value, ctrlid, override=False):
             if roundsetup['enabled']:
                 if ctrltype == 'toggle':
                     if value:
-                        barGraph(10)
+                        #barGraph(10)
                     else:
-                        barGraph(0)
+                        #barGraph(0)
                 elif ctrltype == 'selector':
-                    barGraph(value)
+                    #barGraph(value)
             else:
-                barGraph(0)
+                #barGraph(0)
         elif hardwaretype == 'combo7SegColourRotary':
             RGB = [0.0, 0.0, 0.0]
             if roundsetup['enabled']:
@@ -614,7 +614,7 @@ def pollControls():
                     
 #Setup displays
 displayDigits('    ')
-barGraph(0)
+#barGraph(0)
 
 #Setup MQTT
 client.on_message = on_message
