@@ -172,9 +172,9 @@ def on_message(mosq, obj, msg):
                     client.publish("server/register", json.dumps(config['interface']))
                     
 #Process control value assignment
-def processControlValueAssignment(value, ctrlid, override=False):
-    """Process control value assignment"""
-    roundsetup = roundconfig['controls'][ctrlid]
+#def processControlValueAssignment(value, ctrlid, override=False):
+ #   """Process control value assignment"""
+"""    roundsetup = roundconfig['controls'][ctrlid]
     ctrltype = roundsetup['type']
     ctrldef = roundsetup['definition']
     if 'value' not in ctrldef or ctrldef['value'] != value or override:
@@ -290,7 +290,7 @@ def processControlValueAssignment(value, ctrlid, override=False):
             #no need for cases
             displayValueLine(value)
         ctrldef['value'] = value
-            
+   """         
 #Process an incoming config for a round
 def processRoundConfig(roundconfigstring):
     """Process an incoming config for a round"""
