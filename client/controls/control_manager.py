@@ -16,7 +16,7 @@ class SHControl:
 class SHControlBargraphPot(SHControl):
     
     def __init__(self, controlconfig):
-        super(SHControl, self).__init__(controlconfig)
+        SHControl.__init__(self, controlconfig)
         bar = []
         for barnum in range(10):
             pin = pins['BAR_' + str(barnum+1)]
