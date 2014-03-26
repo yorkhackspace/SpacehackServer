@@ -261,16 +261,16 @@ def processControlValueAssignment(value, ctrlid, override=False):
             PWM.start(pins['RGB_R'], RGB[0])
             PWM.start(pins['RGB_G'], RGB[1])
             PWM.start(pins['RGB_B'], RGB[2])
-        elif hardwaretype == 'bargraphpotentiometer':
-            if roundsetup['enabled']:
-                if ctrltype == 'toggle':
-                    if value:
+        #elif hardwaretype == 'bargraphpotentiometer':
+            #if roundsetup['enabled']:
+            #    if ctrltype == 'toggle':
+            #        if value:
                         #barGraph(10)
-                    else:
+            #        else:
                         #barGraph(0)
-                elif ctrltype == 'selector':
+            #    elif ctrltype == 'selector':
                     #barGraph(value)
-            else:
+            #else:
                 #barGraph(0)
         elif hardwaretype == 'combo7SegColourRotary':
             RGB = [0.0, 0.0, 0.0]
