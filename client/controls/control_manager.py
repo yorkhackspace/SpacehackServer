@@ -120,22 +120,22 @@ class SHControlPhoneStyleMenu(SHControl):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             RGB = [0.0, 0.0, 0.0]
             if self.ctrltype == 'toggle':
-       	        if controlsetup['display']['height'] > 3:
+       	        if self.controlsetup['display']['height'] > 3:
                     if value:
                         displayValueLine("On", ctrlid)
                         RGB = [1.0, 0.0, 0.0]
                     else:
                         displayValueLine("Off", ctrlid)
             elif self.ctrltype == 'selector':
-                if controlsetup['display']['height'] > 3:
+                if self.controlsetup['display']['height'] > 3:
                     displayValueLine(str(value), ctrlid)
             elif self.ctrltype == 'colour':
-                if controlsetup['display']['height'] > 3:
+                if self.controlsetup['display']['height'] > 3:
                     displayValueLine(str(value), ctrlid)
                 #Light the LED the right colours
                 RGB = controlsetup['colours'][str(value)]
             elif self.ctrltype == 'words':
-                if controlsetup['display']['height'] > 3:
+                if self.controlsetup['display']['height'] > 3:
                     displayValueLine(value, ctrlid)
             PWM.start(self.pins['RGB_R'], RGB[0])
             PWM.start(self.pins['RGB_G'], RGB[1])
