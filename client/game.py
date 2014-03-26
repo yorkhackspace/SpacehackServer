@@ -44,7 +44,7 @@ timeoutdisplayblocks = 0
 
 
 #initialisers for all controls
-initialiseControls(config, sortedlist)
+control_manager.initialiseControls(config, sortedlist)
 """
 for ctrlid in sortedlist:
     hardwaretype = config['local']['controls'][ctrlid]['hardware'] 
