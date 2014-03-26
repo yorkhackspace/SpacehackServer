@@ -333,13 +333,13 @@ class SHControlCombo7SegColourRotary(SHControl):
             if self.roundsetup['enabled']:
                 if self.ctrltype == 'toggle':
                     if value:
-                        SHControlCombo7SegColourRotary.__displayDigits('On')
+                        SHControlCombo7SegColourRotary.__displayDigits(self, 'On')
                         RGB = [1.0, 0.0, 0.0]
                     else:
-                        SHControlCombo7SegColourRotary.__displayDigits('Off')
+                        SHControlCombo7SegColourRotary.__displayDigits(self, 'Off')
                         #Switch off LED
                 elif self.ctrltype == 'selector':
-                    SHControlCombo7SegColourRotary.__displayDigits(str(value))
+                    SHControlCombo7SegColourRotary.__displayDigits(self, str(value))
                     #Switch off LED
                 elif self.ctrltype == 'colour':
                     #Light LED appropriate colour
@@ -531,6 +531,7 @@ class SHControlKeypad(SHControl):
 
 def initialiseControls(config, sortedlist, lcds):
     lcd = lcds
+    global allcontrolsconfig
     allcontrolsconfig = config['local']['controls']
     print "#####################################################################\n"
     print "#####################################################################\n"
