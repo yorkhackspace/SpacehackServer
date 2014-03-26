@@ -323,7 +323,7 @@ class SHControlCombo7SegColourRotary(SHControl):
         #rotary movement is handled separately not sampled
         if ctrlstate != state:
             if ctrltype == 'button':
-                value = state
+                value = state[0]
             elif ctrltype == 'toggle':
                 if state:
                     value = int(not ctrlvalue)
