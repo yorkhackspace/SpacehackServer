@@ -209,7 +209,7 @@ class SHControlPot(SHControl):
         SHControl.__init__(self, controlconfig)
         ADC.setup(self.pins['POT'])
 
-    def translateCalibratedValue(rawvalue, calibrationdict):
+    def __translateCalibratedValue(rawvalue, calibrationdict):
         """Calculate a calibrated value from a raw value and translation dictionary"""
         sortedlist = OrderedDict(sorted(calibrationdict.items(), key=lambda t: t[1]))
         for value in sortedlist:
@@ -233,16 +233,16 @@ class SHControlPot(SHControl):
             if state != ctrlstate:
                 value = state
         elif ctrltype == 'selector':
-            state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+            state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
             value = int(state)
         elif ctrltype == 'colour':
-            state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+            state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
             value = str(state)
         elif ctrltype == 'words':
-            state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+            state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
             value = str(ctrldef['pool'][int(state)])
         elif ctrltype == 'verbs':
-            state = translateCalibratedValue(pot, controlsetup['calibration']['words'])
+            state = self.__translateCalibratedValue(pot, controlsetup['calibration']['words'])
             value = str(ctrldef['pool'][int(state)])
         return state
 
