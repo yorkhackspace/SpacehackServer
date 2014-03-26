@@ -172,7 +172,7 @@ class SHControlBargraphPot(SHControlPot):
             if state != ctrlstate:
                 value = state
         elif ctrltype == 'selector':
-            state = super(SHControlPot, self).__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+            state = SHControlPot.__translateCalibratedValue(self, pot, controlsetup['calibration'][ctrltype])
             value = int(state)
         return state
         
