@@ -24,27 +24,32 @@ def initLCDs(sortedlist, config):
 	        print("Control " + ctrlid + " is nokia on pin " + dispdef['pin'])
     return lcd
 
+mytimeoutstarted = 0.0
+mytimeoutdisplayblocks = 0
+
 #Display a timer bar on the bottom row of the instructions display
 def displayTimer(timeoutstarted, timeoutdisplayblocks, timeout):
     """Display a timer bar on the bottom row of the instructions display"""
-    print "timeout:"
-    print timeout
-    if timeoutstarted == 0.0:
-        blockstodisplay = 0
+    global mytimeoutstarted, mytimeoutdisplayblocks
+    mytimeoutstarted = timeoutstarted
+    mytimeoutdisplayblocks = timeoutdisplayblocks
+
+    if mytimeoutstarted == 0.0:
+        mytimeoutdisplayblocks = 0
     else:
-        timesincetimeout = time.time() - timeoutstarted
+        timesincetimeout = time.time() - mytimeoutstarted
         if timesincetimeout > timeout:
             blockstodisplay = 0
         else:
             blockstodisplay = int(0.5 + 20 * (1 - (timesincetimeout / timeout)))
         #Work out diff between currently displayed blocks and intended, to minimise amount to draw
-        if blockstodisplay > timeoutdisplayblocks:
+        if blockstodisplay > mytimeoutdisplayblocks:
             lcd["0"].setCursor(timeoutdisplayblocks, 3)
             lcd["0"].message((blockstodisplay - timeoutdisplayblocks) * chr(255))
-        elif timeoutdisplayblocks > blockstodisplay:
+        elif mytimeoutdisplayblocks > blockstodisplay:
             lcd["0"].setCursor(blockstodisplay, 3)
-            lcd["0"].message((timeoutdisplayblocks - blockstodisplay ) * ' ')
-        timeoutdisplayblocks = blockstodisplay
+            lcd["0"].message((mytimeoutdisplayblocks - blockstodisplay ) * ' ')
+        mytimeoutdisplayblocks = blockstodisplay
 
 #Pretty print to the LCDs taking into account width
 def display(message, width, ctrlid):
