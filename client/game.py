@@ -19,8 +19,10 @@ import time
 
 #import game libraries
 sys.path.append('./gamelibs')
+sys.path.append('./controls')
 import config_manager
 import lcd_manager
+import control_manager
 
 #Who am I? Get my ip address
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
@@ -42,6 +44,8 @@ timeoutdisplayblocks = 0
 
 
 #initialisers for all controls
+initialiseControls(config, sortedlist)
+"""
 for ctrlid in sortedlist:
     hardwaretype = config['local']['controls'][ctrlid]['hardware'] 
     if hardwaretype != 'instructions':
@@ -87,6 +91,7 @@ for ctrlid in sortedlist:
         elif hardwaretype == 'keypad': #four rows, four cols
             keypad = Keypad_BBB.keypad(pins['ROW_1'], pins['ROW_2'], pins['ROW_3'], pins['ROW_4'], 
                                        pins['COL_1'], pins['COL_2'], pins['COL_3'], pins['COL_4'])
+"""
             
 #MQTT client
 client = mosquitto.Mosquitto("Game-" + ipaddress) #client ID
