@@ -97,7 +97,7 @@ class SHControlPhoneStyleMenu(SHControl):
         return state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             RGB = [0.0, 0.0, 0.0]
             if ctrltype == 'toggle':
        	        if controlsetup['display']['height'] > 3:
@@ -165,7 +165,7 @@ class SHControlPot(SHControl):
         return state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             if ctrltype == 'toggle':
                 if controlsetup['display']['height']>3:
                     if value:
@@ -238,7 +238,7 @@ class SHControlBargraphPot(SHControlPot):
         return state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             if roundsetup['enabled']:
                 if ctrltype == 'toggle':
                     if value:
@@ -274,7 +274,7 @@ class SHControlCombo7SegColourRotary(SHControl):
         return state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             RGB = [0.0, 0.0, 0.0]
             if roundsetup['enabled']:
                 if ctrltype == 'toggle':
@@ -339,7 +339,7 @@ class SHControlSwitchbank(SHControl):
         return state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             #TODO
             print "todo\n"
 
@@ -365,7 +365,7 @@ class SHControlIlluminatedButton(SHControl):
         return state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             if ctrltype == 'toggle':
                 if value:
                     GPIO.output(self.pins['LED'], GPIO.HIGH)
@@ -390,7 +390,7 @@ class SHControlIlluminatedToggle(SHControl):
         return state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             if ctrltype == 'toggle':
                 if controlsetup['display']['height']>3:
                     if value:
@@ -424,7 +424,7 @@ class SHControlFourButtons(SHControl):
         return state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             #TODO
             print "todo\n"
 
