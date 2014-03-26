@@ -3,7 +3,7 @@ import Adafruit_BBIO.PWM as PWM
 import Adafruit_BBIO.ADC as ADC
 import Keypad_BBB
 
-def initialiseControls(config, sortedlist)
+def initialiseControls(config, sortedlist):
     for ctrlid in sortedlist:
         hardwaretype = config['local']['controls'][ctrlid]['hardware'] 
         if hardwaretype != 'instructions':
