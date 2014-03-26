@@ -18,7 +18,13 @@ class SHControl:
         print "Error: SHControl.poll() should never be called. Please override it."
 
     def processValueAssignment(self, value, ctrlid, override=False):
-        print "Error: SHControl.processValueAssignment() should never be called. Please override it."
+        self.roundsetup = roundconfig['controls'][ctrlid]
+        self.ctrltype = roundsetup['type']
+        self.ctrldef = roundsetup['definition']
+        if 'value' not in ctrldef or ctrldef['value'] != value or override:
+            self.controlsetup = config['local']['controls'][ctrlid]
+            return True
+        return False
 
 class SHControlPhoneStyleMenu(SHControl):
     
@@ -90,6 +96,31 @@ class SHControlPhoneStyleMenu(SHControl):
                     value = str(ctrldef['pool'][0])
         return state
 
+    def processValueAssignment(self, value, ctrlid, override=False):
+        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+            RGB = [0.0, 0.0, 0.0]
+            if ctrltype == 'toggle':
+       	        if controlsetup['display']['height'] > 3:
+                    if value:
+                        displayValueLine("On", ctrlid)
+                        RGB = [1.0, 0.0, 0.0]
+                    else:
+                        displayValueLine("Off", ctrlid)
+            elif ctrltype == 'selector':
+                if controlsetup['display']['height'] > 3:
+                    displayValueLine(str(value), ctrlid)
+            elif ctrltype == 'colour':
+                if controlsetup['display']['height'] > 3:
+                    displayValueLine(str(value), ctrlid)
+                #Light the LED the right colours
+                RGB = controlsetup['colours'][str(value)]
+            elif ctrltype == 'words':
+                if controlsetup['display']['height'] > 3:
+                    displayValueLine(value, ctrlid)
+            PWM.start(self.pins['RGB_R'], RGB[0])
+            PWM.start(self.pins['RGB_G'], RGB[1])
+            PWM.start(self.pins['RGB_B'], RGB[2])
+
 class SHControlPot(SHControl):
     
     def __init__(self, controlconfig):
@@ -132,7 +163,31 @@ class SHControlPot(SHControl):
             state = SHControlPot.__translateCalibratedValue(self, pot, controlsetup['calibration']['words'])
             value = str(ctrldef['pool'][int(state)])
         return state
-        
+
+    def processValueAssignment(self, value, ctrlid, override=False):
+        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+            if ctrltype == 'toggle':
+                if controlsetup['display']['height']>3:
+                    if value:
+                        displayValueLine("On", ctrlid)
+                        #Light the LED red
+                    else:
+                        displayValueLine("Off", ctrlid)
+                        #Switch off LED
+            elif ctrltype == 'selector':
+                if controlsetup['display']['height']>3:
+                    displayValueLine(str(value), ctrlid)
+            elif ctrltype == 'colour':
+                if controlsetup['display']['height']>3:
+                    displayValueLine(str(value), ctrlid)
+                #Light the LED the right colours
+            elif ctrltype == 'words':
+                if controlsetup['display']['height']>3:
+                    displayValueLine(value, ctrlid)
+            elif ctrltype == 'verbs':
+                if controlsetup['display']['height']>3:
+                    displayValueLine(value, ctrlid)      
+
 class SHControlBargraphPot(SHControlPot):   
 
     def __init__(self, controlconfig):
@@ -172,9 +227,22 @@ class SHControlBargraphPot(SHControlPot):
             if state != ctrlstate:
                 value = state
         elif ctrltype == 'selector':
-            state = __translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+            state = SHControlBargraphPot.__translateCalibratedValue(self, pot, controlsetup['calibration'][ctrltype])
             value = int(state)
         return state
+
+    def processValueAssignment(self, value, ctrlid, override=False):
+        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+            if roundsetup['enabled']:
+                if ctrltype == 'toggle':
+                    if value:
+                        SHControlBargraphPot.__updateDisplay(self, 10)
+                    else:
+                        SHControlBargraphPot.__updateDisplay(self, 0)
+                elif ctrltype == 'selector':
+                    SHControlBargraphPot.__updateDisplay(self, value)
+            else:
+                SHControlBargraphPot.__updateDisplay(self, 0)
         
 class SHControlCombo7SegColourRotary(SHControl):
     
@@ -198,6 +266,42 @@ class SHControlCombo7SegColourRotary(SHControl):
                 if state:
                     value = int(not ctrlvalue)
         return state
+
+    def processValueAssignment(self, value, ctrlid, override=False):
+        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+            RGB = [0.0, 0.0, 0.0]
+            if roundsetup['enabled']:
+                if ctrltype == 'toggle':
+                    if value:
+                        displayDigits('On')
+                        RGB = [1.0, 0.0, 0.0]
+                    else:
+                        displayDigits('Off')
+                        #Switch off LED
+                elif ctrltype == 'selector':
+                    displayDigits(str(value))
+                    #Switch off LED
+                elif ctrltype == 'colour':
+                    #Light LED appropriate colour
+                    if value == 'red':
+                        displayDigits("RED")
+                    elif value == 'green':
+                        displayDigits("GREN")
+                    elif value == 'blue':
+                        displayDigits("BLUE")
+                    elif value == 'yellow':
+                        displayDigits("YELO")
+                    elif value == 'cyan':
+                        displayDigits("CYAN")
+                    RGB = controlsetup['colours'][str(value)]
+                elif ctrltype == 'words':
+                    #Switch off LED
+                    displayDigits(value.upper())
+            else:
+                displayDigits("    ")
+            PWM.start(self.pins['RGB_R'], 1.0 - RGB[0])
+            PWM.start(self.pins['RGB_G'], 1.0 - RGB[1])
+            PWM.start(self.pins['RGB_B'], 1.0 - RGB[2])
 
 class SHControlSwitchbank(SHControl):
     
@@ -228,6 +332,10 @@ class SHControlSwitchbank(SHControl):
                     value = ctrlvalue
         return state
 
+    def processValueAssignment(self, value, ctrlid, override=False):
+        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+            #TODO
+
 class SHControlIlluminatedButton(SHControl):
     
     def __init__(self, controlconfig):
@@ -249,6 +357,14 @@ class SHControlIlluminatedButton(SHControl):
                     GPIO.output(self.pins['LED'], value)
         return state
 
+    def processValueAssignment(self, value, ctrlid, override=False):
+        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+            if ctrltype == 'toggle':
+                if value:
+                    GPIO.output(self.pins['LED'], GPIO.HIGH)
+                else:
+                    GPIO.output(self.pins['LED'], GPIO.LOW)
+
 class SHControlIlluminatedToggle(SHControl):
     
     def __init__(self, controlconfig):
@@ -265,6 +381,17 @@ class SHControlIlluminatedToggle(SHControl):
                 if state:
                     int(value = not ctrlvalue)
         return state
+
+    def processValueAssignment(self, value, ctrlid, override=False):
+        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+            if ctrltype == 'toggle':
+                if controlsetup['display']['height']>3:
+                    if value:
+    	                displayValueLine("On", ctrlid)
+                        GPIO.output(self.pins['LED'], GPIO.LOW)
+                    else:
+                        displayValueLine("Off", ctrlid)
+                        GPIO.output(self.pins['LED'], GPIO.HIGH)
 
 class SHControlFourButtons(SHControl):
     
@@ -288,6 +415,10 @@ class SHControlFourButtons(SHControl):
                     elif ctrltype == 'colour':
                         value = str(ctrldef['values'][i])
         return state
+
+    def processValueAssignment(self, value, ctrlid, override=False):
+        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+            #TODO
 
 class SHControlKeypad(SHControl):
     
@@ -326,6 +457,10 @@ class SHControlKeypad(SHControl):
                     value = ctrldef['buffer']
                     ctrldef['buffer'] = ''
         return state
+
+    def processValueAssignment(self, value, ctrlid, override=False):
+        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+            displayValueLine(value)
 
 def initialiseControls(config, sortedlist):
     for ctrlid in sortedlist:
@@ -388,3 +523,14 @@ def pollControls(config, roundconfig, controlids, mqttclient, ipaddress):
                     mqttclient.publish("clients/" + ipaddress + "/" + ctrlid + "/value", value)
                     ctrldef['value'] = value
                 ctrldef['state'] = state
+
+
+#Process control value assignment
+def processControlValueAssignment(value, ctrlid, override=False):
+    """Process control value assignment"""
+    roundsetup = roundconfig['controls'][ctrlid]
+    ctrltype = roundsetup['type']
+    ctrldef = roundsetup['definition']
+    if 'value' not in ctrldef or ctrldef['value'] != value or override:
+        controlsetup = config['local']['controls'][ctrlid]  
+        ctrldef['value'] = value
