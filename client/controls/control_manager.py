@@ -532,7 +532,7 @@ def initialiseControls(config, sortedlist, lcds):
     lcd = lcds
     allcontrolsconfig = config['local']['controls']
     for ctrlid in sortedlist:
-        hardwaretype = config['local']['controls'][ctrlid]['hardware'] 
+        hardwaretype = allcontrolsconfig[ctrlid]['hardware'] 
         if hardwaretype != 'instructions':
             controlconfig = config['local']['controls'][ctrlid]
             if hardwaretype == 'phonestylemenu': # 2 buttons, RGB LED
