@@ -585,6 +585,6 @@ for controlid in [x['id'] for x in config['interface']['controls']]:
     
 #Main loop
 while(client.loop(0) == 0):
-    control_manager.pollControls(roundconfig, client, ipadress)
+    control_manager.pollControls(roundconfig, client, ipaddress)
     displayTimer()
     
