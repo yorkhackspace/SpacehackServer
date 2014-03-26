@@ -119,17 +119,17 @@ class SHControlPot(SHControl):
             if state != ctrlstate:
                 value = state
         elif ctrltype == 'selector':
-            state = SHControlPot.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+            state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
             value = int(state)
         elif ctrltype == 'colour':
             #state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
-            state = SHControlPot.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+            state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
             value = str(state)
         elif ctrltype == 'words':
-            state = SHControlPot.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+            state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
             value = str(ctrldef['pool'][int(state)])
         elif ctrltype == 'verbs':
-            state = SHControlPot.__translateCalibratedValue(pot, controlsetup['calibration']['words'])
+            state = self.__translateCalibratedValue(pot, controlsetup['calibration']['words'])
             value = str(ctrldef['pool'][int(state)])
         return state
         
