@@ -92,7 +92,7 @@ class SHControlPhoneStyleMenu(SHControl):
         
 class SHControlBargraphPot(SHControl):
 
-    def __updateDisplay(digit):
+    def __updateDisplay(self, digit):
         """Display Bar graph"""
         for i in range(10):
             if digit > i:
