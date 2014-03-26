@@ -45,7 +45,7 @@ def displayTimer(timeoutstarted, timeoutdisplayblocks, timeout):
         #Work out diff between currently displayed blocks and intended, to minimise amount to draw
         if blockstodisplay > mytimeoutdisplayblocks:
             lcd["0"].setCursor(mytimeoutdisplayblocks, 3)
-            lcd["0"].message((blockstodisplay - timeoutdisplayblocks) * chr(255))
+            lcd["0"].message((blockstodisplay - mytimeoutdisplayblocks) * chr(255))
         elif mytimeoutdisplayblocks > blockstodisplay:
             lcd["0"].setCursor(blockstodisplay, 3)
             lcd["0"].message((mytimeoutdisplayblocks - blockstodisplay ) * ' ')
