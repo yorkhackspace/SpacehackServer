@@ -6,6 +6,25 @@ from collections import OrderedDict
 import Keypad_BBB
 
 controls = {}
+lcd = {}
+
+#Display words on the left and right sides of the bottom row, for Nokia displays
+def displayButtonsLine(leftstr, rightstr, ctrlid):
+    """Display words on the left and right sides of the bottom row, for Nokia displays"""
+    ctrldef = config['local']['controls'][ctrlid]['display']
+    combinedstr = leftstr + " "*(ctrldef['width'] - len(leftstr) - len(rightstr)) + rightstr
+    lcd[ctrlid].setCursor(0, ctrldef['height']-1)
+    lcd[ctrlid].message(combinedstr)
+
+#Display values centred on the fourth row, for Nokia displays
+def displayValueLine(valuestr, ctrlid):
+    """Display values centred on the fourth row, for Nokia displays"""
+    ctrldef = config['local']['controls'][ctrlid]['display']
+    if ctrldef['height'] > 4:
+        leftpad = (ctrldef['width'] - len(valuestr)) // 2
+        combinedstr = (" " * leftpad) + valuestr + (" " * (ctrldef['width'] - len(valuestr) - leftpad))
+        lcd[ctrlid].setCursor(0, ctrldef['height']-3)
+        lcd[ctrlid].message(combinedstr)
 
 class SHControl(object):
     """Spacehack control abstract type"""
@@ -508,7 +527,8 @@ class SHControlKeypad(SHControl):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
             displayValueLine(value)
 
-def initialiseControls(config, sortedlist):
+def initialiseControls(config, sortedlist, lcds):
+    lcd = lcds
     for ctrlid in sortedlist:
         hardwaretype = config['local']['controls'][ctrlid]['hardware'] 
         if hardwaretype != 'instructions':
