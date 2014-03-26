@@ -90,15 +90,7 @@ class SHControlPhoneStyleMenu(SHControl):
         return state
 
         
-class SHControlBargraphPot(SHControl):
-
-    def __updateDisplay(self, digit):
-        """Display Bar graph"""
-        for i in range(10):
-            if digit > i:
-                GPIO.output(self.bar[i], GPIO.HIGH)
-            else:
-                GPIO.output(self.bar[i], GPIO.LOW)    
+class SHControlBargraphPot(SHControl):   
 
     def __init__(self, controlconfig):
         SHControl.__init__(self, controlconfig)
@@ -106,12 +98,17 @@ class SHControlBargraphPot(SHControl):
         for barnum in range(10):
             pin = self.pins['BAR_' + str(barnum+1)]
             GPIO.setup(pin, GPIO.OUT)
-            GPIO.output(pin, GPIO.HIGH)
-            bar.append(pin)
+            GPIO.output(pin, GPIO.LOW)
+            self.bar.append(pin)
             ADC.setup(self.pins['POT'])
-        self.__updateDisplay(0) #initialise display
 
-    
+    def __updateDisplay(self, digit):
+        """Display Bar graph"""
+        for i in range(10):
+            if digit > i:
+                GPIO.output(self.bar[i], GPIO.HIGH)
+            else:
+                GPIO.output(self.bar[i], GPIO.LOW) 
 
     def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         pot = ADC.read(self.pins['POT'])
