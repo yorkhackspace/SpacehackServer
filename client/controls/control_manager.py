@@ -11,6 +11,7 @@ class SHControl(object):
 
     #constructor
     def __init__(self, controlconfig):
+        self.controlsetup = controlconfig
         self.pins=controlconfig['pins']
         self.hardwaretype = controlconfig['hardware']
 
@@ -21,10 +22,7 @@ class SHControl(object):
         self.roundsetup = roundconfig['controls'][ctrlid]
         self.ctrltype = self.roundsetup['type']
         self.ctrldef = self.roundsetup['definition']
-        if 'value' not in ctrldef or ctrldef['value'] != value or override:
-            self.controlsetup = config['local']['controls'][ctrlid]
-            return True
-        return False
+        return 'value' not in self.ctrldef or self.ctrldef['value'] != value or override
 
 class SHControlPhoneStyleMenu(SHControl):
     
