@@ -189,6 +189,7 @@ class SHControlCombo7SegColourRotary(SHControl):
 
     def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         btn = GPIO.input(self.pins['BTN'])
+        state = [btn]
         #rotary movement is handled separately not sampled
         if ctrlstate != state:
             if ctrltype == 'button':
