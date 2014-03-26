@@ -112,15 +112,6 @@ def displayDigits(digits):
         else:
             idx = i+1
         segment.writeDigitRaw(idx,lookup7segchar[digit])
-        
-#Bar graph
-def barGraph(digit):
-    """Display Bar graph"""
-    for i in range(10):
-        if digit > i:
-            GPIO.output(bar[i], GPIO.HIGH)
-        else:
-            GPIO.output(bar[i], GPIO.LOW)
 
 #Display a timer bar on the bottom row of the instructions display
 def displayTimer():
@@ -329,12 +320,7 @@ def processRoundConfig(roundconfigstring):
             if 'value' in ctrldef:
                 processControlValueAssignment(ctrldef['value'], ctrlid, True)
 
-def translateCalibratedValue(rawvalue, calibrationdict):
-    """Calculate a calibrated value from a raw value and translation dictionary"""
-    sortedlist = OrderedDict(sorted(calibrationdict.items(), key=lambda t: t[1]))
-    for value in sortedlist:
-        if rawvalue < calibrationdict[value]:
-            return value
+
     
 #Poll controls, interpret into values, recognise changes, inform server
 

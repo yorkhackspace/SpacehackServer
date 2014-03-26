@@ -101,6 +101,15 @@ class SHControlBargraphPot(SHControl):
             GPIO.output(pin, GPIO.HIGH)
             bar.append(pin)
             ADC.setup(self.pins['POT'])
+        __updateDisplay(0) #initialise display
+
+    def __updateDisplay(digit):
+        """Display Bar graph"""
+        for i in range(10):
+            if digit > i:
+                GPIO.output(self.bar[i], GPIO.HIGH)
+            else:
+                GPIO.output(self.bar[i], GPIO.LOW)
 
     def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         pot = ADC.read(self.pins['POT'])
@@ -200,6 +209,13 @@ class SHControlPot(SHControl):
     def __init__(self, controlconfig):
         SHControl.__init__(self, controlconfig)
         ADC.setup(self.pins['POT'])
+
+    def translateCalibratedValue(rawvalue, calibrationdict):
+        """Calculate a calibrated value from a raw value and translation dictionary"""
+        sortedlist = OrderedDict(sorted(calibrationdict.items(), key=lambda t: t[1]))
+        for value in sortedlist:
+            if rawvalue < calibrationdict[value]:
+                return value
 
     def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         pot = ADC.read(self.pins['POT'])
