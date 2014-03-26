@@ -353,6 +353,7 @@ def pollControls(config, roundconfig, controlids, mqttclient, ipaddress):
                 hardwaretype = config['local']['controls'][ctrlid]['hardware'] #Which hardware implementation
                 #For the particular hardware, poll the controls and decide what it means
                 value = ctrlvalue
+                print ctrlstate
                 controls[ctrlid].poll(ctrldef, ctrltype, [ctrlstate], ctrlvalue)
                     
                 if value != ctrlvalue:
