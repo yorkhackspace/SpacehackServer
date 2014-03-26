@@ -27,8 +27,8 @@ def initLCDs(sortedlist, config):
 #Display a timer bar on the bottom row of the instructions display
 def displayTimer(timeoutstarted, timeoutdisplayblocks, timeout):
     """Display a timer bar on the bottom row of the instructions display"""
-	print "timeout:"
-	print timeout
+    print "timeout:"
+    print timeout
     if timeoutstarted == 0.0:
         blockstodisplay = 0
     else:
