@@ -332,13 +332,13 @@ class SHControlCombo7SegColourRotary(SHControl):
             if self.roundsetup['enabled']:
                 if self.ctrltype == 'toggle':
                     if value:
-                        displayDigits('On')
+                        SHControlCombo7SegColourRotary.__displayDigits('On')
                         RGB = [1.0, 0.0, 0.0]
                     else:
-                        __displayDigits('Off')
+                        SHControlCombo7SegColourRotary.__displayDigits('Off')
                         #Switch off LED
                 elif self.ctrltype == 'selector':
-                    displayDigits(str(value))
+                    SHControlCombo7SegColourRotary.__displayDigits(str(value))
                     #Switch off LED
                 elif self.ctrltype == 'colour':
                     #Light LED appropriate colour
