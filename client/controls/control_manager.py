@@ -3,7 +3,7 @@ import Adafruit_BBIO.PWM as PWM
 import Adafruit_BBIO.ADC as ADC
 import Keypad_BBB
 
-controls = []
+controls = {}
 
 class SHControl:
     """Spacehack control abstract type"""
