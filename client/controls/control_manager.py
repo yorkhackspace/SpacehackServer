@@ -1,6 +1,7 @@
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
 import Adafruit_BBIO.ADC as ADC
+from collections import OrderedDict
 import Keypad_BBB
 
 controls = {}
