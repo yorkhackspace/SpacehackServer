@@ -29,7 +29,7 @@ roundconfig = {}
 keypad = None
 hasregistered = False
 timeoutstarted = 0.0
-timeoutdisplayblocks = 0
+resetBlocks = False
 
 #Who am I? Get my ip address
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
@@ -65,7 +65,7 @@ def on_message(mosq, obj, msg):
             lcd_manager.display(str(msg.payload), 20, "0")
             #start timer?
             if 'timeout' in roundconfig and roundconfig['timeout'] > 0.0:
-                timeoutdisplayblocks = 0
+                resetBlocks = True
                 timeoutstarted = time.time()
         elif nodes[2] in controlids:
             ctrlid = nodes[2]
@@ -131,5 +131,8 @@ for controlid in [x['id'] for x in config['interface']['controls']]:
 #Main loop
 while(client.loop(0) == 0):
     control_manager.pollControls(config, roundconfig, controlids, client, ipaddress)
-    lcd_manager.displayTimer(timeoutstarted, timeoutdisplayblocks, roundconfig.get('timeout', 0))
+    lcd_manager.displayTimer(timeoutstarted, resetBlocks, roundconfig.get('timeout', 0))
+    if resetBlocks:    
+        resetBlocks = False
+        
     
