@@ -12,6 +12,7 @@ lcd = {}
 #Display words on the left and right sides of the bottom row, for Nokia displays
 def displayButtonsLine(leftstr, rightstr, ctrlid):
     """Display words on the left and right sides of the bottom row, for Nokia displays"""
+    global allcontrolsconfig, lcd
     ctrldef = allcontrolsconfig[ctrlid]['display']
     combinedstr = leftstr + " "*(ctrldef['width'] - len(leftstr) - len(rightstr)) + rightstr
     lcd[ctrlid].setCursor(0, ctrldef['height']-1)
@@ -20,8 +21,8 @@ def displayButtonsLine(leftstr, rightstr, ctrlid):
 #Display values centred on the fourth row, for Nokia displays
 def displayValueLine(valuestr, ctrlid):
     """Display values centred on the fourth row, for Nokia displays"""
-    global allcontrolsconfig
-    #print allcontrolsconfig
+    global allcontrolsconfig, lcd
+    print allcontrolsconfig
     ctrldef = allcontrolsconfig[ctrlid]['display']
     if ctrldef['height'] > 4:
         leftpad = (ctrldef['width'] - len(valuestr)) // 2
@@ -531,8 +532,9 @@ class SHControlKeypad(SHControl):
             displayValueLine(value)
 
 def initialiseControls(config, sortedlist, lcds):
+
+    global allcontrolsconfig, lcd
     lcd = lcds
-    global allcontrolsconfig
     allcontrolsconfig = config['local']['controls']
     for ctrlid in sortedlist:
         hardwaretype = allcontrolsconfig[ctrlid]['hardware'] 
