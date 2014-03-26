@@ -532,6 +532,7 @@ class SHControlKeypad(SHControl):
 def initialiseControls(config, sortedlist, lcds):
     lcd = lcds
     allcontrolsconfig = config['local']['controls']
+    print allcontrolsconfig
     for ctrlid in sortedlist:
         hardwaretype = allcontrolsconfig[ctrlid]['hardware'] 
         if hardwaretype != 'instructions':
