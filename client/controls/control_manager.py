@@ -17,7 +17,7 @@ class SHControl(object):
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         print "Error: SHControl.poll() should never be called. Please override it."
 
-    def processValueAssignment(self, value, ctrlid, override=False):
+    def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         self.roundsetup = roundconfig['controls'][ctrlid]
         self.ctrltype = roundsetup['type']
         self.ctrldef = roundsetup['definition']
@@ -96,7 +96,7 @@ class SHControlPhoneStyleMenu(SHControl):
                     value = str(ctrldef['pool'][0])
         return state
 
-    def processValueAssignment(self, value, ctrlid, override=False):
+    def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
             RGB = [0.0, 0.0, 0.0]
             if ctrltype == 'toggle':
@@ -164,7 +164,7 @@ class SHControlPot(SHControl):
             value = str(ctrldef['pool'][int(state)])
         return state
 
-    def processValueAssignment(self, value, ctrlid, override=False):
+    def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
             if ctrltype == 'toggle':
                 if controlsetup['display']['height']>3:
@@ -237,7 +237,7 @@ class SHControlBargraphPot(SHControlPot):
             value = int(state)
         return state
 
-    def processValueAssignment(self, value, ctrlid, override=False):
+    def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
             if roundsetup['enabled']:
                 if ctrltype == 'toggle':
@@ -273,7 +273,7 @@ class SHControlCombo7SegColourRotary(SHControl):
                     value = int(not ctrlvalue)
         return state
 
-    def processValueAssignment(self, value, ctrlid, override=False):
+    def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
             RGB = [0.0, 0.0, 0.0]
             if roundsetup['enabled']:
@@ -338,7 +338,7 @@ class SHControlSwitchbank(SHControl):
                     value = ctrlvalue
         return state
 
-    def processValueAssignment(self, value, ctrlid, override=False):
+    def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
             #TODO
             print "todo\n"
@@ -364,7 +364,7 @@ class SHControlIlluminatedButton(SHControl):
                     GPIO.output(self.pins['LED'], value)
         return state
 
-    def processValueAssignment(self, value, ctrlid, override=False):
+    def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
             if ctrltype == 'toggle':
                 if value:
@@ -389,7 +389,7 @@ class SHControlIlluminatedToggle(SHControl):
                     int(value = not ctrlvalue)
         return state
 
-    def processValueAssignment(self, value, ctrlid, override=False):
+    def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
             if ctrltype == 'toggle':
                 if controlsetup['display']['height']>3:
@@ -423,7 +423,7 @@ class SHControlFourButtons(SHControl):
                         value = str(ctrldef['values'][i])
         return state
 
-    def processValueAssignment(self, value, ctrlid, override=False):
+    def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
             #TODO
             print "todo\n"
@@ -466,7 +466,7 @@ class SHControlKeypad(SHControl):
                     ctrldef['buffer'] = ''
         return state
 
-    def processValueAssignment(self, value, ctrlid, override=False):
+    def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
             displayValueLine(value)
 
@@ -534,6 +534,6 @@ def pollControls(config, roundconfig, controlids, mqttclient, ipaddress):
 
 
 #Process control value assignment
-def processControlValueAssignment(value, ctrlid, override=False):
+def processControlValueAssignment(roundconfig, value, ctrlid, override=False):
     """Process control value assignment"""
     controls[ctrlid].processValueAssignment(value, ctrlid)
