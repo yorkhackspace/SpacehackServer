@@ -6,7 +6,7 @@ from collections import OrderedDict
 import Keypad_BBB
 
 controls = {}
-allcontrolsconfig = []
+allcontrolsconfig = {}
 lcd = {}
 
 #Display words on the left and right sides of the bottom row, for Nokia displays
