@@ -92,7 +92,7 @@ class SHControlPhoneStyleMenu(SHControl):
                     value = str(ctrldef['pool'][1])
                 elif leftchanged and leftpressed:
                     value = str(ctrldef['pool'][0])
-        return state
+        return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
@@ -160,7 +160,7 @@ class SHControlPot(SHControl):
         elif ctrltype == 'verbs':
             state = SHControlPot.__translateCalibratedValue(self, pot, controlsetup['calibration']['words'])
             value = str(ctrldef['pool'][int(state)])
-        return state
+        return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
@@ -233,7 +233,7 @@ class SHControlBargraphPot(SHControlPot):
         elif ctrltype == 'selector':
             state = SHControlBargraphPot.__translateCalibratedValue(self, pot, controlsetup['calibration'][ctrltype])
             value = int(state)
-        return state
+        return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
@@ -269,7 +269,7 @@ class SHControlCombo7SegColourRotary(SHControl):
             elif ctrltype == 'toggle':
                 if state:
                     value = int(not ctrlvalue)
-        return state
+        return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
@@ -334,7 +334,7 @@ class SHControlSwitchbank(SHControl):
                     value = 0
                 else:
                     value = ctrlvalue
-        return state
+        return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
@@ -360,7 +360,7 @@ class SHControlIlluminatedButton(SHControl):
                 if state:
                     value = int(not ctrlvalue)
                     GPIO.output(self.pins['LED'], value)
-        return state
+        return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
@@ -385,7 +385,7 @@ class SHControlIlluminatedToggle(SHControl):
             if ctrltype == 'toggle':
                 if state:
                     int(value = not ctrlvalue)
-        return state
+        return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
@@ -419,7 +419,7 @@ class SHControlFourButtons(SHControl):
                         value = str(ctrldef['list'][i])
                     elif ctrltype == 'colour':
                         value = str(ctrldef['values'][i])
-        return state
+        return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
@@ -462,7 +462,7 @@ class SHControlKeypad(SHControl):
                 elif state == '#':
                     value = ctrldef['buffer']
                     ctrldef['buffer'] = ''
-        return state
+        return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
@@ -519,11 +519,12 @@ def pollControls(config, roundconfig, controlids, mqttclient, ipaddress):
                     ctrlvalue = None
                 hardwaretype = config['local']['controls'][ctrlid]['hardware'] #Which hardware implementation
                 #For the particular hardware, poll the controls and decide what it means
+
                 value = ctrlvalue
-                state = controls[ctrlid].poll(controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue)
+                value, state = controls[ctrlid].poll(controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue)
                     
                 if value != ctrlvalue:
-                    controls[ctrlid].processValueAssignment(value, ctrlid)
+                    controls[ctrlid].processValueAssignment(roundconfig, value, ctrlid)
                     print("Publishing control " + ctrlid + " which is " + hardwaretype + " / " + ctrltype)
                     print ("value = " + str(value))
                     mqttclient.publish("clients/" + ipaddress + "/" + ctrlid + "/value", value)
