@@ -199,7 +199,9 @@ class SHControlBargraphPot(SHControlPot):
             GPIO.setup(pin, GPIO.OUT)
             GPIO.output(pin, GPIO.LOW)
             self.bar.append(pin)
-        
+
+    def __translateCalibratedValue(self, rawvalue, calibrationdict):
+        return SHControlPot.__translateCalibratedValue(self, rawvalue, calibrationdict)
 
     def __updateDisplay(self, digit):
         """Display Bar graph"""
