@@ -103,7 +103,7 @@ class SHControlBargraphPot(SHControl):
             ADC.setup(self.pins['POT'])
 
     def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
-        pot = ADC.read(pins['POT'])
+        pot = ADC.read(self.pins['POT'])
         #Interpretation varies by control type
         if ctrltype == 'toggle':
             if ctrlvalue == None: #We'll take the mid line to decide
@@ -136,7 +136,7 @@ class SHControlCombo7SegColourRotary(SHControl):
         #What to do about rotary?
 
     def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
-        btn = GPIO.input(pins['BTN'])
+        btn = GPIO.input(self.pins['BTN'])
         #rotary movement is handled separately not sampled
         if ctrlstate != state:
             if ctrltype == 'button':
@@ -156,14 +156,14 @@ class SHControlSwitchbank(SHControl):
             GPIO.output(self.pins['LED_' + str(i)], GPIO.LOW)
 
     def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
-        sw1 = GPIO.input(pins['SW_1'])
-        sw2 = GPIO.input(pins['SW_2'])
-        sw3 = GPIO.input(pins['SW_3'])
-        sw4 = GPIO.input(pins['SW_4'])
-        GPIO.output(pins['LED_1'], sw1)
-        GPIO.output(pins['LED_2'], sw2)
-        GPIO.output(pins['LED_3'], sw3)
-        GPIO.output(pins['LED_4'], sw4)
+        sw1 = GPIO.input(self.pins['SW_1'])
+        sw2 = GPIO.input(self.pins['SW_2'])
+        sw3 = GPIO.input(self.pins['SW_3'])
+        sw4 = GPIO.input(self.pins['SW_4'])
+        GPIO.output(self.pins['LED_1'], sw1)
+        GPIO.output(self.pins['LED_2'], sw2)
+        GPIO.output(self.pins['LED_3'], sw3)
+        GPIO.output(self.pins['LED_4'], sw4)
         state = [sw1, sw2, sw3, sw4]
         if not ctrlstate == state:
             if ctrltype == 'toggle':
@@ -184,7 +184,7 @@ class SHControlIlluminatedButton(SHControl):
         GPIO.output(self.pins['LED'], GPIO.LOW)
 
     def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
-        btn = GPIO.input(pins['BTN'])
+        btn = GPIO.input(self.pins['BTN'])
         state = btn
         if ctrlstate != state:
             if ctrltype == 'button':
@@ -192,7 +192,7 @@ class SHControlIlluminatedButton(SHControl):
             elif ctrltype == 'toggle':
                 if state:
                     value = int(not ctrlvalue)
-            GPIO.output(pins['LED'], value)
+            GPIO.output(self.pins['LED'], value)
         return state
 
 class SHControlPot(SHControl):
@@ -202,7 +202,7 @@ class SHControlPot(SHControl):
         ADC.setup(self.pins['POT'])
 
     def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
-        pot = ADC.read(pins['POT'])
+        pot = ADC.read(self.pins['POT'])
         if ctrltype == 'toggle':
             if ctrlvalue == None: #We'll take the mid line to decide
                 if pot < 0.5:
@@ -236,12 +236,11 @@ class SHControlIlluminatedToggle(SHControl):
     def __init__(self, controlconfig):
         SHControl.__init__(self, controlconfig)
         GPIO.setup(self.pins['SW'], GPIO.IN, GPIO.PUD_DOWN)    
-    def __init__(self, controlconfig):
         GPIO.setup(self.pins['LED'], GPIO.OUT)
         GPIO.output(self.pins['LED'], GPIO.HIGH) #common anode, so HIGH for off, LOW for on
 
     def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
-        sw = GPIO.input(pins['SW'])
+        sw = GPIO.input(self.pins['SW'])
         state = sw
         if ctrlstate != state:
             if ctrltype == 'toggle':
@@ -257,10 +256,10 @@ class SHControlFourButtons(SHControl):
             GPIO.setup(self.pins['BTN_' + str(i)], GPIO.IN, GPIO.PUD_DOWN)
 
     def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
-        btn1 = GPIO.input(pins['BTN1'])
-        btn2 = GPIO.input(pins['BTN2'])
-        btn3 = GPIO.input(pins['BTN3'])
-        btn4 = GPIO.input(pins['BTN4'])
+        btn1 = GPIO.input(self.pins['BTN1'])
+        btn2 = GPIO.input(self.pins['BTN2'])
+        btn3 = GPIO.input(self.pins['BTN3'])
+        btn4 = GPIO.input(self.pins['BTN4'])
         state = [btn1, btn2, btn3, btn4]
         if not ctrlstate == state:
             for i in range(4):
