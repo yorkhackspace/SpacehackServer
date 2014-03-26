@@ -318,7 +318,7 @@ def processRoundConfig(roundconfigstring):
                 if ctrltype == 'button':
                     displayDigits("PUSH")
             if 'value' in ctrldef:
-                processControlValueAssignment(ctrldef['value'], ctrlid, True)
+                control_manager.processControlValueAssignment(ctrldef['value'], ctrlid, True)
                       
                     
 #Setup displays

@@ -201,7 +201,11 @@ class SHControlBargraphPot(SHControlPot):
             self.bar.append(pin)
 
     def __translateCalibratedValue(self, rawvalue, calibrationdict):
-        return super(SHControlBargraphPot, self).__translateCalibratedValue(rawvalue, calibrationdict)
+        """Calculate a calibrated value from a raw value and translation dictionary"""
+        sortedlist = OrderedDict(sorted(calibrationdict.items(), key=lambda t: t[1]))
+        for value in sortedlist:
+            if rawvalue < calibrationdict[value]:
+                return value
 
     def __updateDisplay(self, digit):
         """Display Bar graph"""
@@ -532,9 +536,4 @@ def pollControls(config, roundconfig, controlids, mqttclient, ipaddress):
 #Process control value assignment
 def processControlValueAssignment(value, ctrlid, override=False):
     """Process control value assignment"""
-    roundsetup = roundconfig['controls'][ctrlid]
-    ctrltype = roundsetup['type']
-    ctrldef = roundsetup['definition']
-    if 'value' not in ctrldef or ctrldef['value'] != value or override:
-        controlsetup = config['local']['controls'][ctrlid]  
-        ctrldef['value'] = value
+    controls[ctrlid].processValueAssignment(value, ctrlid)
