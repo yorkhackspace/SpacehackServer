@@ -32,7 +32,7 @@ def displayTimer(timeoutstarted, timeoutdisplayblocks, timeout):
     """Display a timer bar on the bottom row of the instructions display"""
     global mytimeoutstarted, mytimeoutdisplayblocks
     mytimeoutstarted = timeoutstarted
-    mytimeoutdisplayblocks = timeoutdisplayblocks
+    #mytimeoutdisplayblocks = timeoutdisplayblocks
 
     if mytimeoutstarted == 0.0:
         mytimeoutdisplayblocks = 0
