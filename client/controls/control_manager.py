@@ -168,7 +168,7 @@ class SHControlPot(SHControl):
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             if self.ctrltype == 'toggle':
-                if controlsetup['display']['height']>3:
+                if self.controlsetup['display']['height']>3:
                     if value:
                         displayValueLine("On", ctrlid)
                         #Light the LED red
@@ -176,17 +176,17 @@ class SHControlPot(SHControl):
                         displayValueLine("Off", ctrlid)
                         #Switch off LED
             elif self.ctrltype == 'selector':
-                if controlsetup['display']['height']>3:
+                if self.controlsetup['display']['height']>3:
                     displayValueLine(str(value), ctrlid)
             elif self.ctrltype == 'colour':
-                if controlsetup['display']['height']>3:
+                if self.controlsetup['display']['height']>3:
                     displayValueLine(str(value), ctrlid)
                 #Light the LED the right colours
             elif self.ctrltype == 'words':
-                if controlsetup['display']['height']>3:
+                if self.controlsetup['display']['height']>3:
                     displayValueLine(value, ctrlid)
             elif self.ctrltype == 'verbs':
-                if controlsetup['display']['height']>3:
+                if self.controlsetup['display']['height']>3:
                     displayValueLine(value, ctrlid)      
 
 class SHControlBargraphPot(SHControlPot):   
