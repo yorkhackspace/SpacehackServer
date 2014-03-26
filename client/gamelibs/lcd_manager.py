@@ -34,31 +34,21 @@ def displayTimer(timeoutstarted, timeoutdisplayblocks, timeout):
     mytimeoutstarted = timeoutstarted
     mytimeoutdisplayblocks = timeoutdisplayblocks
 
-    print "mytimeoutstarted: "
-    print mytimeoutstarted
-    print "\nmytimeoutdisplayblocks: "
-    print mytimeoutdisplayblocks
-    print "\n"
-
     if mytimeoutstarted == 0.0:
         mytimeoutdisplayblocks = 0
     else:
         timesincetimeout = time.time() - mytimeoutstarted
-        print "timesincetimeout: "
-        print timesincetimeout
-        print "\n"
         if timesincetimeout > timeout:
             blockstodisplay = 0
         else:
-            blockstodisplay = int(0.5 + 20 * (1 - (timesincetimeout / timeout)))
-        print "blockstodisplay: "
-        print blockstodisplay
-        print "\n"        
+            blockstodisplay = int(0.5 + 20 * (1 - (timesincetimeout / timeout)))       
         #Work out diff between currently displayed blocks and intended, to minimise amount to draw
         if blockstodisplay > mytimeoutdisplayblocks:
+            print "adding blocks\n"
             lcd["0"].setCursor(mytimeoutdisplayblocks, 3)
             lcd["0"].message((blockstodisplay - mytimeoutdisplayblocks) * chr(255))
         elif mytimeoutdisplayblocks > blockstodisplay:
+            print "removing blocks\n"
             lcd["0"].setCursor(blockstodisplay, 3)
             lcd["0"].message((mytimeoutdisplayblocks - blockstodisplay ) * ' ')
         mytimeoutdisplayblocks = blockstodisplay
