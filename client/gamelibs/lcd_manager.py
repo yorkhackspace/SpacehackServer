@@ -24,21 +24,20 @@ def initLCDs(sortedlist, config):
 	        print("Control " + ctrlid + " is nokia on pin " + dispdef['pin'])
     return lcd
 
-mytimeoutstarted = 0.0
 mytimeoutdisplayblocks = 0
 
 #Display a timer bar on the bottom row of the instructions display
 def displayTimer(timeoutstarted, resetBlocks, timeout):
     """Display a timer bar on the bottom row of the instructions display"""
-    global mytimeoutstarted, mytimeoutdisplayblocks
-    mytimeoutstarted = timeoutstarted
+    global timeoutstarted, mytimeoutdisplayblocks
+    timeoutstarted = timeoutstarted
     if resetBlocks:
         mytimeoutdisplayblocks = 0
 
-    if mytimeoutstarted == 0.0:
+    if timeoutstarted == 0.0:
         mytimeoutdisplayblocks = 0
     else:
-        timesincetimeout = time.time() - mytimeoutstarted
+        timesincetimeout = time.time() - timeoutstarted
         if timesincetimeout > timeout:
             blockstodisplay = 0
         else:
