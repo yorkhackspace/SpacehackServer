@@ -34,7 +34,7 @@ def displayTimer(timeoutstarted, timeoutdisplayblocks, timeout):
         if timesincetimeout > timeout:
             blockstodisplay = 0
         else:
-            blockstodisplay = int(0.5 + 20 * (1 - (timesincetimeout / roundconfig['timeout'])))
+            blockstodisplay = int(0.5 + 20 * (1 - (timesincetimeout / timeout)))
         #Work out diff between currently displayed blocks and intended, to minimise amount to draw
         if blockstodisplay > timeoutdisplayblocks:
             lcd["0"].setCursor(timeoutdisplayblocks, 3)
