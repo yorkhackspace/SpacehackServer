@@ -20,7 +20,8 @@ def displayButtonsLine(leftstr, rightstr, ctrlid):
 #Display values centred on the fourth row, for Nokia displays
 def displayValueLine(valuestr, ctrlid):
     """Display values centred on the fourth row, for Nokia displays"""
-    print allcontrolsconfig
+    global allcontrolsconfig
+    #print allcontrolsconfig
     ctrldef = allcontrolsconfig[ctrlid]['display']
     if ctrldef['height'] > 4:
         leftpad = (ctrldef['width'] - len(valuestr)) // 2
@@ -533,12 +534,6 @@ def initialiseControls(config, sortedlist, lcds):
     lcd = lcds
     global allcontrolsconfig
     allcontrolsconfig = config['local']['controls']
-    print "#####################################################################\n"
-    print "#####################################################################\n"
-
-    print allcontrolsconfig
-    print "#####################################################################\n"
-    print "#####################################################################\n"
     for ctrlid in sortedlist:
         hardwaretype = allcontrolsconfig[ctrlid]['hardware'] 
         if hardwaretype != 'instructions':
