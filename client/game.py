@@ -470,6 +470,7 @@ def pollControls():
                         elif ctrltype == 'toggle':
                             if state:
                                 value = int(not ctrlvalue)
+                        GPIO.output(pins['LED'], value)
                 elif hardwaretype == 'illuminatedtoggle':
                     sw = GPIO.input(pins['SW'])
                     state = sw
