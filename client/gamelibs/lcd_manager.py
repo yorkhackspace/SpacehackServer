@@ -25,13 +25,13 @@ def initLCDs(sortedlist, config):
     return lcd
 
 #Display a timer bar on the bottom row of the instructions display
-def displayTimer(timeoutstarted, timeoutdisplayblocks):
+def displayTimer(timeoutstarted, timeoutdisplayblocks, timeout):
     """Display a timer bar on the bottom row of the instructions display"""
     if timeoutstarted == 0.0:
         blockstodisplay = 0
     else:
         timesincetimeout = time.time() - timeoutstarted
-        if timesincetimeout > roundconfig['timeout']:
+        if timesincetimeout > timeout:
             blockstodisplay = 0
         else:
             blockstodisplay = int(0.5 + 20 * (1 - (timesincetimeout / roundconfig['timeout'])))
