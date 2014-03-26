@@ -6,12 +6,13 @@ from collections import OrderedDict
 import Keypad_BBB
 
 controls = {}
+allcontrolsconfig = []
 lcd = {}
 
 #Display words on the left and right sides of the bottom row, for Nokia displays
 def displayButtonsLine(leftstr, rightstr, ctrlid):
     """Display words on the left and right sides of the bottom row, for Nokia displays"""
-    ctrldef = config['local']['controls'][ctrlid]['display']
+    ctrldef = allcontrolsconfig[ctrlid]['display']
     combinedstr = leftstr + " "*(ctrldef['width'] - len(leftstr) - len(rightstr)) + rightstr
     lcd[ctrlid].setCursor(0, ctrldef['height']-1)
     lcd[ctrlid].message(combinedstr)
@@ -19,7 +20,7 @@ def displayButtonsLine(leftstr, rightstr, ctrlid):
 #Display values centred on the fourth row, for Nokia displays
 def displayValueLine(valuestr, ctrlid):
     """Display values centred on the fourth row, for Nokia displays"""
-    ctrldef = config['local']['controls'][ctrlid]['display']
+    ctrldef = allcontrolsconfig[ctrlid]['display']
     if ctrldef['height'] > 4:
         leftpad = (ctrldef['width'] - len(valuestr)) // 2
         combinedstr = (" " * leftpad) + valuestr + (" " * (ctrldef['width'] - len(valuestr) - leftpad))
@@ -529,6 +530,7 @@ class SHControlKeypad(SHControl):
 
 def initialiseControls(config, sortedlist, lcds):
     lcd = lcds
+    allcontrolsconfig = config['local']['controls']
     for ctrlid in sortedlist:
         hardwaretype = config['local']['controls'][ctrlid]['hardware'] 
         if hardwaretype != 'instructions':
