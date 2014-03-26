@@ -536,4 +536,4 @@ def pollControls(config, roundconfig, controlids, mqttclient, ipaddress):
 #Process control value assignment
 def processControlValueAssignment(roundconfig, value, ctrlid, override=False):
     """Process control value assignment"""
-    controls[ctrlid].processValueAssignment(value, ctrlid)
+    controls[ctrlid].processValueAssignment(roundconfig, value, ctrlid, override)
