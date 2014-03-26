@@ -335,6 +335,7 @@ class SHControlSwitchbank(SHControl):
     def processValueAssignment(self, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
             #TODO
+            print "todo\n"
 
 class SHControlIlluminatedButton(SHControl):
     
@@ -419,6 +420,7 @@ class SHControlFourButtons(SHControl):
     def processValueAssignment(self, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
             #TODO
+            print "todo\n"
 
 class SHControlKeypad(SHControl):
     
