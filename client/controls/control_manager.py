@@ -19,8 +19,8 @@ class SHControl(object):
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         self.roundsetup = roundconfig['controls'][ctrlid]
-        self.ctrltype = roundsetup['type']
-        self.ctrldef = roundsetup['definition']
+        self.ctrltype = self.roundsetup['type']
+        self.ctrldef = self.roundsetup['definition']
         if 'value' not in ctrldef or ctrldef['value'] != value or override:
             self.controlsetup = config['local']['controls'][ctrlid]
             return True
