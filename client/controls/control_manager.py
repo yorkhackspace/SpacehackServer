@@ -330,7 +330,7 @@ def initialiseControls(config, sortedlist):
 
 
 #Poll controls, interpret into values, recognise changes, inform server
-def pollControls(roundconfig, mqttclient, ipaddress):
+def pollControls(roundconfig, controlids, mqttclient, ipaddress):
     """Poll controls, interpret into values, recognise changes, inform server"""
     if len(roundconfig) > 0:
         for ctrlid in controlids:
