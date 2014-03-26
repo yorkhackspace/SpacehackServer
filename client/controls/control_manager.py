@@ -87,6 +87,7 @@ class SHControlPhoneStyleMenu(SHControl):
                     value = str(ctrldef['pool'][1])
                 elif leftchanged and leftpressed:
                     value = str(ctrldef['pool'][0])
+        return state
 
         
 class SHControlBargraphPot(SHControl):
@@ -121,6 +122,7 @@ class SHControlBargraphPot(SHControl):
         elif ctrltype == 'selector':
             state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
             value = int(state)
+        return state
         
 class SHControlCombo7SegColourRotary(SHControl):
     
@@ -142,6 +144,7 @@ class SHControlCombo7SegColourRotary(SHControl):
             elif ctrltype == 'toggle':
                 if state:
                     value = int(not ctrlvalue)
+        return state
 
 class SHControlSwitchbank(SHControl):
     
@@ -170,6 +173,7 @@ class SHControlSwitchbank(SHControl):
                     value = 0
                 else:
                     value = ctrlvalue
+        return state
 
 class SHControlIlluminatedButton(SHControl):
     
@@ -189,6 +193,7 @@ class SHControlIlluminatedButton(SHControl):
                 if state:
                     value = int(not ctrlvalue)
             GPIO.output(pins['LED'], value)
+        return state
 
 class SHControlPot(SHControl):
     
@@ -224,6 +229,7 @@ class SHControlPot(SHControl):
         elif ctrltype == 'verbs':
             state = translateCalibratedValue(pot, controlsetup['calibration']['words'])
             value = str(ctrldef['pool'][int(state)])
+        return state
 
 class SHControlIlluminatedToggle(SHControl):
     
@@ -241,6 +247,7 @@ class SHControlIlluminatedToggle(SHControl):
             if ctrltype == 'toggle':
                 if state:
                     int(value = not ctrlvalue)
+        return state
 
 class SHControlFourButtons(SHControl):
     
@@ -263,6 +270,7 @@ class SHControlFourButtons(SHControl):
                         value = str(ctrldef['list'][i])
                     elif ctrltype == 'colour':
                         value = str(ctrldef['values'][i])
+        return state
 
 class SHControlKeypad(SHControl):
     
@@ -300,6 +308,7 @@ class SHControlKeypad(SHControl):
                 elif state == '#':
                     value = ctrldef['buffer']
                     ctrldef['buffer'] = ''
+        return state
 
 def initialiseControls(config, sortedlist):
     for ctrlid in sortedlist:
@@ -353,7 +362,7 @@ def pollControls(config, roundconfig, controlids, mqttclient, ipaddress):
                 hardwaretype = config['local']['controls'][ctrlid]['hardware'] #Which hardware implementation
                 #For the particular hardware, poll the controls and decide what it means
                 value = ctrlvalue
-                controls[ctrlid].poll(ctrldef, ctrltype, ctrlstate, ctrlvalue)
+                state = controls[ctrlid].poll(ctrldef, ctrltype, ctrlstate, ctrlvalue)
                     
                 if value != ctrlvalue:
                     controls[ctrlid].processValueAssignment(value, ctrlid)
