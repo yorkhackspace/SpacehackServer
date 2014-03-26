@@ -109,7 +109,7 @@ class SHControlBargraphPot(SHControl):
             GPIO.output(pin, GPIO.HIGH)
             bar.append(pin)
             ADC.setup(self.pins['POT'])
-        __updateDisplay(0) #initialise display
+        self.__updateDisplay(0) #initialise display
 
     
 
