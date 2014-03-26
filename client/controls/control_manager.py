@@ -270,7 +270,7 @@ class SHControlCombo7SegColourRotary(SHControl):
                   }
 
     #Print to the 7-seg
-    def __displayDigits(digits):
+    def __displayDigits(self, digits):
         """Print to the 7-seg"""
         disp = -len(digits) % 4 * ' ' + digits
         for i in range(4):
