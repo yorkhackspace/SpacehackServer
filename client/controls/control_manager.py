@@ -89,18 +89,61 @@ class SHControlPhoneStyleMenu(SHControl):
                     value = str(ctrldef['pool'][0])
         return state
 
+class SHControlPot(SHControl):
+    
+    def __init__(self, controlconfig):
+        SHControl.__init__(self, controlconfig)
+        ADC.setup(self.pins['POT'])
+
+    def __translateCalibratedValue(rawvalue, calibrationdict):
+        """Calculate a calibrated value from a raw value and translation dictionary"""
+        sortedlist = OrderedDict(sorted(calibrationdict.items(), key=lambda t: t[1]))
+        for value in sortedlist:
+            if rawvalue < calibrationdict[value]:
+                return value
+
+    def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
+        pot = ADC.read(self.pins['POT'])
+        if ctrltype == 'toggle':
+            if ctrlvalue == None: #We'll take the mid line to decide
+                if pot < 0.5:
+                    state = 0
+                else:
+                    state = 1
+            elif pot < 0.4: #Dead zone in the middle
+                state = 0
+            elif pot > 0.6:
+                state = 1
+            else:
+                state = ctrlstate #if not decisively left or right, stay the same
+            if state != ctrlstate:
+                value = state
+        elif ctrltype == 'selector':
+            state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+            value = int(state)
+        elif ctrltype == 'colour':
+            state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+            value = str(state)
+        elif ctrltype == 'words':
+            state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+            value = str(ctrldef['pool'][int(state)])
+        elif ctrltype == 'verbs':
+            state = self.__translateCalibratedValue(pot, controlsetup['calibration']['words'])
+            value = str(ctrldef['pool'][int(state)])
+        return state
         
-class SHControlBargraphPot(SHControl):   
+class SHControlBargraphPot(SHControlPot):   
 
     def __init__(self, controlconfig):
         SHControl.__init__(self, controlconfig)
+        SHControlPot.__init__(self, controlconfig)
         self.bar = []
         for barnum in range(10):
             pin = self.pins['BAR_' + str(barnum+1)]
             GPIO.setup(pin, GPIO.OUT)
             GPIO.output(pin, GPIO.LOW)
             self.bar.append(pin)
-            ADC.setup(self.pins['POT'])
+        
 
     def __updateDisplay(self, digit):
         """Display Bar graph"""
@@ -128,7 +171,7 @@ class SHControlBargraphPot(SHControl):
             if state != ctrlstate:
                 value = state
         elif ctrltype == 'selector':
-            state = translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
+            state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
             value = int(state)
         return state
         
@@ -201,49 +244,6 @@ class SHControlIlluminatedButton(SHControl):
                 if state:
                     value = int(not ctrlvalue)
             GPIO.output(self.pins['LED'], value)
-        return state
-
-class SHControlPot(SHControl):
-    
-    def __init__(self, controlconfig):
-        SHControl.__init__(self, controlconfig)
-        ADC.setup(self.pins['POT'])
-
-    def __translateCalibratedValue(rawvalue, calibrationdict):
-        """Calculate a calibrated value from a raw value and translation dictionary"""
-        sortedlist = OrderedDict(sorted(calibrationdict.items(), key=lambda t: t[1]))
-        for value in sortedlist:
-            if rawvalue < calibrationdict[value]:
-                return value
-
-    def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
-        pot = ADC.read(self.pins['POT'])
-        if ctrltype == 'toggle':
-            if ctrlvalue == None: #We'll take the mid line to decide
-                if pot < 0.5:
-                    state = 0
-                else:
-                    state = 1
-            elif pot < 0.4: #Dead zone in the middle
-                state = 0
-            elif pot > 0.6:
-                state = 1
-            else:
-                state = ctrlstate #if not decisively left or right, stay the same
-            if state != ctrlstate:
-                value = state
-        elif ctrltype == 'selector':
-            state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
-            value = int(state)
-        elif ctrltype == 'colour':
-            state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
-            value = str(state)
-        elif ctrltype == 'words':
-            state = self.__translateCalibratedValue(pot, controlsetup['calibration'][ctrltype])
-            value = str(ctrldef['pool'][int(state)])
-        elif ctrltype == 'verbs':
-            state = self.__translateCalibratedValue(pot, controlsetup['calibration']['words'])
-            value = str(ctrldef['pool'][int(state)])
         return state
 
 class SHControlIlluminatedToggle(SHControl):
