@@ -6,7 +6,7 @@ import Keypad_BBB
 
 controls = {}
 
-class SHControl:
+class SHControl():
     """Spacehack control abstract type"""
 
     #constructor
