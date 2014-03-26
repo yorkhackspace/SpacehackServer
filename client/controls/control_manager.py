@@ -3,6 +3,29 @@ import Adafruit_BBIO.PWM as PWM
 import Adafruit_BBIO.ADC as ADC
 import Keypad_BBB
 
+controls = []
+
+class SHControl:
+    """Spacehack control abstract type"""
+
+    #constructor
+    def __init__(self, controlconfig):
+        self.pins=controlconfig['pins']
+        self.hardwaretype = controlconfig['hardware']
+        
+class SHControlBargraphPot(SHControl):
+    
+    def __init__(self, controlconfig)
+        super().__init__(controlconfig)
+        bar = []
+        for barnum in range(10):
+            pin = pins['BAR_' + str(barnum+1)]
+            GPIO.setup(pin, GPIO.OUT)
+            GPIO.output(pin, GPIO.HIGH)
+            bar.append(pin)
+            ADC.setup(pins['POT'])
+        
+
 def initialiseControls(config, sortedlist):
     for ctrlid in sortedlist:
         hardwaretype = config['local']['controls'][ctrlid]['hardware'] 
@@ -15,12 +38,7 @@ def initialiseControls(config, sortedlist):
                 PWM.start(pins['RGB_G'], 0.0)
                 PWM.start(pins['RGB_B'], 0.0)
             elif hardwaretype == 'bargraphpotentiometer': #10k pot, 10 LEDs
-                for barnum in range(10):
-                    pin = pins['BAR_' + str(barnum+1)]
-                    GPIO.setup(pin, GPIO.OUT)
-                    GPIO.output(pin, GPIO.HIGH)
-                    bar.append(pin)
-                ADC.setup(pins['POT'])
+                controls.append(SHControlBargraphPot(config['local']['controls'][ctrlid]))
             elif hardwaretype == 'combo7SegColourRotary': #I2C 7Seg, button, rotary, RGB
                 #segment defined at module scope
                 GPIO.setup(pins['BTN'], GPIO.IN, GPIO.PUD_DOWN)
@@ -49,3 +67,5 @@ def initialiseControls(config, sortedlist):
             elif hardwaretype == 'keypad': #four rows, four cols
                 keypad = Keypad_BBB.keypad(pins['ROW_1'], pins['ROW_2'], pins['ROW_3'], pins['ROW_4'], 
                                            pins['COL_1'], pins['COL_2'], pins['COL_3'], pins['COL_4'])
+            else
+                controls.append(SHControl(config['local']['controls'][ctrlid]))
