@@ -242,10 +242,11 @@ class SHControlIlluminatedButton(SHControl):
         if ctrlstate != state:
             if ctrltype == 'button':
                 value = state
+                GPIO.output(self.pins['LED'], value)
             elif ctrltype == 'toggle':
                 if state:
                     value = int(not ctrlvalue)
-            GPIO.output(self.pins['LED'], value)
+                    GPIO.output(self.pins['LED'], value)
         return state
 
 class SHControlIlluminatedToggle(SHControl):
