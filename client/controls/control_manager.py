@@ -19,7 +19,7 @@ class SHControlBargraphPot(SHControl):
         SHControl.__init__(self, controlconfig)
         bar = []
         for barnum in range(10):
-            pin = pins['BAR_' + str(barnum+1)]
+            pin = self.pins['BAR_' + str(barnum+1)]
             GPIO.setup(pin, GPIO.OUT)
             GPIO.output(pin, GPIO.HIGH)
             bar.append(pin)
