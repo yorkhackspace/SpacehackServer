@@ -23,7 +23,7 @@ class SHControlBargraphPot(SHControl):
             GPIO.setup(pin, GPIO.OUT)
             GPIO.output(pin, GPIO.HIGH)
             bar.append(pin)
-            ADC.setup(pins['POT'])
+            ADC.setup(self.pins['POT'])
         
 
 def initialiseControls(config, sortedlist):
