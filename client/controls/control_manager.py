@@ -201,7 +201,7 @@ class SHControlBargraphPot(SHControlPot):
             self.bar.append(pin)
 
     def __translateCalibratedValue(self, rawvalue, calibrationdict):
-        return super(SHControlPot, self).__translateCalibratedValue(rawvalue, calibrationdict)
+        return super(SHControlBargraphPot, self).__translateCalibratedValue(rawvalue, calibrationdict)
 
     def __updateDisplay(self, digit):
         """Display Bar graph"""
