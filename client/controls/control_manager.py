@@ -279,7 +279,7 @@ class SHControlCombo7SegColourRotary(SHControl):
                 idx = i
             else:
                 idx = i+1
-            segment.writeDigitRaw(idx,lookup7segchar[digit])
+            self.segment.writeDigitRaw(idx,self.lookup7segchar[digit])
 
     def __init__(self, controlconfig):
         SHControl.__init__(self, controlconfig)
