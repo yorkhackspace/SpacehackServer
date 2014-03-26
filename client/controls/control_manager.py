@@ -13,10 +13,10 @@ class SHControl:
         self.pins=controlconfig['pins']
         self.hardwaretype = controlconfig['hardware']
 
-    def poll(ctrldef, ctrltype, ctrlstate, ctrlvalue):
+    def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         print "Error: SHControl.poll() should never be called. Please override it."
 
-    def processValueAssignment(value, ctrlid, override=False):
+    def processValueAssignment(self, value, ctrlid, override=False):
         print "Error: SHControl.processValueAssignment() should never be called. Please override it."
 
 class SHControlPhoneStyleMenu(SHControl):
@@ -29,7 +29,7 @@ class SHControlPhoneStyleMenu(SHControl):
         PWM.start(self.pins['RGB_G'], 0.0)
         PWM.start(self.pins['RGB_B'], 0.0)
 
-    def poll(ctrldef, ctrltype, ctrlstate, ctrlvalue):
+    def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         btn1 = GPIO.input(self.pins['BTN_1'])
         btn2 = GPIO.input(self.pins['BTN_2'])
         state = [btn1, btn2]
@@ -101,7 +101,7 @@ class SHControlBargraphPot(SHControl):
             bar.append(pin)
             ADC.setup(self.pins['POT'])
 
-    def poll(ctrldef, ctrltype, ctrlstate, ctrlvalue):
+    def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         pot = ADC.read(pins['POT'])
         #Interpretation varies by control type
         if ctrltype == 'toggle':
@@ -133,7 +133,7 @@ class SHControlCombo7SegColourRotary(SHControl):
         PWM.start(self.pins['RGB_B'], 1.0)
         #What to do about rotary?
 
-    def poll(ctrldef, ctrltype, ctrlstate, ctrlvalue):
+    def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         btn = GPIO.input(pins['BTN'])
         #rotary movement is handled separately not sampled
         if ctrlstate != state:
@@ -152,7 +152,7 @@ class SHControlSwitchbank(SHControl):
             GPIO.setup(self.pins['LED_' + str(i)], GPIO.OUT)
             GPIO.output(self.pins['LED_' + str(i)], GPIO.LOW)
 
-    def poll(ctrldef, ctrltype, ctrlstate, ctrlvalue):
+    def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         sw1 = GPIO.input(pins['SW_1'])
         sw2 = GPIO.input(pins['SW_2'])
         sw3 = GPIO.input(pins['SW_3'])
@@ -179,7 +179,7 @@ class SHControlIlluminatedButton(SHControl):
         GPIO.setup(self.pins['LED'], GPIO.OUT)
         GPIO.output(self.pins['LED'], GPIO.LOW)
 
-    def poll(ctrldef, ctrltype, ctrlstate, ctrlvalue):
+    def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         btn = GPIO.input(pins['BTN'])
         state = btn
         if ctrlstate != state:
@@ -196,7 +196,7 @@ class SHControlPot(SHControl):
         SHControl.__init__(self, controlconfig)
         ADC.setup(self.pins['POT'])
 
-    def poll(ctrldef, ctrltype, ctrlstate, ctrlvalue):
+    def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         pot = ADC.read(pins['POT'])
         if ctrltype == 'toggle':
             if ctrlvalue == None: #We'll take the mid line to decide
@@ -234,7 +234,7 @@ class SHControlIlluminatedToggle(SHControl):
         GPIO.setup(self.pins['LED'], GPIO.OUT)
         GPIO.output(self.pins['LED'], GPIO.HIGH) #common anode, so HIGH for off, LOW for on
 
-    def poll(ctrldef, ctrltype, ctrlstate, ctrlvalue):
+    def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         sw = GPIO.input(pins['SW'])
         state = sw
         if ctrlstate != state:
@@ -249,7 +249,7 @@ class SHControlFourButtons(SHControl):
         for i in range(1,5):
             GPIO.setup(self.pins['BTN_' + str(i)], GPIO.IN, GPIO.PUD_DOWN)
 
-    def poll(ctrldef, ctrltype, ctrlstate, ctrlvalue):
+    def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         btn1 = GPIO.input(pins['BTN1'])
         btn2 = GPIO.input(pins['BTN2'])
         btn3 = GPIO.input(pins['BTN3'])
@@ -270,7 +270,7 @@ class SHControlKeypad(SHControl):
         SHControl.__init__(self, controlconfig)
         keypad = Keypad_BBB.keypad(self.pins['ROW_1'], self.pins['ROW_2'], self.pins['ROW_3'], self.pins['ROW_4'], self.pins['COL_1'], self.pins['COL_2'], self.pins['COL_3'], self.pins['COL_4'])
 
-    def poll(ctrldef, ctrltype, ctrlstate, ctrlvalue):
+    def poll(self, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         state = keypad.getKey()
         if (ctrlstate != state) and (state != None):
             if not 'buffer' in ctrldef:
@@ -353,16 +353,7 @@ def pollControls(config, roundconfig, controlids, mqttclient, ipaddress):
                 hardwaretype = config['local']['controls'][ctrlid]['hardware'] #Which hardware implementation
                 #For the particular hardware, poll the controls and decide what it means
                 value = ctrlvalue
-                print "Ctrldef: "
-                print ctrldef
-                print "\nCtrltype"
-                print ctrltype
-                print "\nCtrlstate"
-                print ctrlstate
-                print "\nCtrlvalue"
-                print ctrlvalue
-                print "\n"
-                controls[ctrlid].poll([ctrldef], [ctrltype], [ctrlstate], [ctrlvalue])
+                controls[ctrlid].poll(ctrldef, ctrltype, ctrlstate, ctrlvalue)
                     
                 if value != ctrlvalue:
                     controls[ctrlid].processValueAssignment(value, ctrlid)
