@@ -1,6 +1,7 @@
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
 import Adafruit_BBIO.ADC as ADC
+from Adafruit_7Segment import SevenSegment
 from collections import OrderedDict
 import Keypad_BBB
 
@@ -240,7 +241,7 @@ class SHControlBargraphPot(SHControlPot):
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
-            if roundsetup['enabled']:
+            if self.roundsetup['enabled']:
                 if self.ctrltype == 'toggle':
                     if value:
                         SHControlBargraphPot.__updateDisplay(self, 10)
@@ -253,6 +254,33 @@ class SHControlBargraphPot(SHControlPot):
         
 class SHControlCombo7SegColourRotary(SHControl):
     
+    #Adafruit I2C 7-segment
+    segment = SevenSegment(address=0x70)
+    lookup7segchar = {'0': 0x3F, '1': 0x06, '2': 0x5B, '3': 0x4F, '4': 0x66, '5': 0x6D,
+                  '6': 0x7D, '7': 0x07, '8': 0x7F, '9': 0x6F, ' ': 0x00, '_': 0x08,
+                  'a': 0x5F, 'A': 0x77, 'b': 0x7C, 'B': 0x7C, 'c': 0x58, 'C': 0x39,
+                  'd': 0x5E, 'D': 0x5E, 'e': 0x7B, 'E': 0x79, 'f': 0x71, 'F': 0x71,
+                  'g': 0x6F, 'G': 0x3D, 'h': 0x74, 'H': 0x76, 'i': 0x04, 'I': 0x06,
+                  'j': 0x1E, 'J': 0x1E, 'k': 0x08, 'K': 0x08, 'l': 0x06, 'L': 0x38,
+                  'm': 0x08, 'M': 0x08, 'n': 0x54, 'N': 0x37, 'o': 0x5C, 'O': 0x3F,
+                  'p': 0x73, 'P': 0x73, 'q': 0x67, 'Q': 0x67, 'r': 0x50, 'R': 0x31,
+                  's': 0x6D, 'S': 0x6D, 't': 0x78, 'T': 0x78, 'u': 0x1C, 'U': 0x3E,
+                  'v': 0x08, 'V': 0x07, 'w': 0x08, 'W': 0x08, 'x': 0x08, 'X': 0x08,
+                  'y': 0x6E, 'Y': 0x6E, 'z': 0x5B, 'Z': 0x5B, '-': 0x40
+                  }
+
+    #Print to the 7-seg
+    def __displayDigits(digits):
+        """Print to the 7-seg"""
+        disp = -len(digits) % 4 * ' ' + digits
+        for i in range(4):
+            digit=disp[i]
+            if i < 2:
+                idx = i
+            else:
+                idx = i+1
+            segment.writeDigitRaw(idx,lookup7segchar[digit])
+
     def __init__(self, controlconfig):
         SHControl.__init__(self, controlconfig)
         #segment defined at module scope
@@ -260,7 +288,10 @@ class SHControlCombo7SegColourRotary(SHControl):
         PWM.start(self.pins['RGB_R'], 1.0) #common anode so 1.0 = off, 0.0 = on
         PWM.start(self.pins['RGB_G'], 1.0)
         PWM.start(self.pins['RGB_B'], 1.0)
+        SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
         #What to do about rotary?
+
+    
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
@@ -278,13 +309,13 @@ class SHControlCombo7SegColourRotary(SHControl):
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             RGB = [0.0, 0.0, 0.0]
-            if roundsetup['enabled']:
+            if self.roundsetup['enabled']:
                 if self.ctrltype == 'toggle':
                     if value:
                         displayDigits('On')
                         RGB = [1.0, 0.0, 0.0]
                     else:
-                        displayDigits('Off')
+                        __displayDigits('Off')
                         #Switch off LED
                 elif self.ctrltype == 'selector':
                     displayDigits(str(value))
@@ -292,21 +323,21 @@ class SHControlCombo7SegColourRotary(SHControl):
                 elif self.ctrltype == 'colour':
                     #Light LED appropriate colour
                     if value == 'red':
-                        displayDigits("RED")
+                        SHControlCombo7SegColourRotary.__displayDigits(self, "RED")
                     elif value == 'green':
-                        displayDigits("GREN")
+                        SHControlCombo7SegColourRotary.__displayDigits(self, "GREN")
                     elif value == 'blue':
-                        displayDigits("BLUE")
+                        SHControlCombo7SegColourRotary.__displayDigits(self, "BLUE")
                     elif value == 'yellow':
-                        displayDigits("YELO")
+                        SHControlCombo7SegColourRotary.__displayDigits(self, "YELO")
                     elif value == 'cyan':
-                        displayDigits("CYAN")
+                        SHControlCombo7SegColourRotary.__displayDigits(self, "CYAN")
                     RGB = controlsetup['colours'][str(value)]
                 elif self.ctrltype == 'words':
                     #Switch off LED
-                    displayDigits(value.upper())
+                    SHControlCombo7SegColourRotary.__displayDigits(self, value.upper())
             else:
-                displayDigits("    ")
+                SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
             PWM.start(self.pins['RGB_R'], 1.0 - RGB[0])
             PWM.start(self.pins['RGB_G'], 1.0 - RGB[1])
             PWM.start(self.pins['RGB_B'], 1.0 - RGB[2])
