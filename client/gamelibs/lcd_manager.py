@@ -3,6 +3,7 @@
 import Adafruit_BBIO.GPIO as GPIO
 from Adafruit_CharLCD import Adafruit_CharLCD
 from NokiaLCD import NokiaLCD
+import time
 
 lcd={}
 
