@@ -72,8 +72,8 @@ class LcdManager(object):
     #Display words on the left and right sides of the bottom row, for Nokia displays
     def displayButtonsLine(self, leftstr, rightstr, ctrlid):
         """Display words on the left and right sides of the bottom row, for Nokia displays"""
-        lcdWidth = self.lcd[crtlid].getwidth()
-        lcdHeight = self.lcd[crtlid].getheight()
+        lcdWidth = self.lcd[ctrlid].getwidth()
+        lcdHeight = self.lcd[ctrlid].getheight()
         combinedstr = leftstr + " "*(lcdWidth - len(leftstr) - len(rightstr)) + rightstr
         self.lcd[ctrlid].setCursor(0, lcdHeight-1)
         self.lcd[ctrlid].message(combinedstr)
@@ -81,8 +81,8 @@ class LcdManager(object):
 	#Display values centred on the fourth row, for Nokia displays
     def displayValueLine(self, valuestr, ctrlid):
         """Display values centred on the fourth row, for Nokia displays"""
-        lcdWidth = self.lcd[crtlid].getwidth()
-        lcdHeight = self.lcd[crtlid].getheight()
+        lcdWidth = self.lcd[ctrlid].getwidth()
+        lcdHeight = self.lcd[ctrlid].getheight()
         if lcdHeight > 4:
             leftpad = (lcdWidth - len(valuestr)) // 2
             combinedstr = (" " * leftpad) + valuestr + (" " * (lcdWidth - len(valuestr) - leftpad))
