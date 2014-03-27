@@ -131,7 +131,7 @@ for controlid in [x['id'] for x in config['interface']['controls']]:
 #Main loop
 while(client.loop(0) == 0):
     control_manager.pollControls(config, roundconfig, controlids, client, ipaddress)
-    lcd_manager.displayTimer(timeoutstarted, resetBlocks, roundconfig.get('timeout', 0))
+    myLcdManager.displayTimer(timeoutstarted, resetBlocks, roundconfig.get('timeout', 0))
     if resetBlocks:    
         resetBlocks = False
         
