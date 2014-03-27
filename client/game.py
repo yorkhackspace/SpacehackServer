@@ -94,27 +94,7 @@ def processRoundConfig(roundconfigstring):
     for key in x.keys():
         roundconfig[key] = x[key]
     myLcdManager.display(roundconfig['instructions'], 20, "0")
-    for ctrlid in controlids:
-        roundsetup = roundconfig['controls'][ctrlid]
-        controlsetup = config['local']['controls'][ctrlid]
-        myLcdManager.display(roundsetup['name'], controlsetup['display']['width'], ctrlid)
-        if 'definition' in roundsetup and roundsetup['enabled']:
-            ctrltype = roundsetup['type']
-            ctrldef = roundsetup['definition']
-            #there's more to setup of course
-            #hardwaretype = config['local']['controls'][ctrlid]['hardware']
-            #if hardwaretype == 'phonestylemenu':
-            #    if ctrltype == 'toggle':
-            #        displayButtonsLine("Off", "On", ctrlid)
-            #    elif ctrltype == 'verbs':
-            #        displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
-            #    else:
-            #        displayButtonsLine("<<<<", ">>>>", ctrlid)
-            #elif hardwaretype == 'combo7SegColourRotary':
-            #    if ctrltype == 'button':
-            #        displayDigits("PUSH")
-            if 'value' in ctrldef:
-                control_manager.processControlValueAssignment(roundconfig, ctrldef['value'], ctrlid, True)
+    control_manager.processRoundConfig(roundconfig, controlids)
 
 #Setup MQTT
 client.on_message = on_message
