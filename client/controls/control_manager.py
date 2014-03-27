@@ -308,9 +308,12 @@ class SHControlCombo7SegColourRotary(SHControl):
         SHControl.__init__(self, controlconfig)
         #segment defined at module scope
         GPIO.setup(self.pins['BTN'], GPIO.IN, GPIO.PUD_DOWN)
-        PWM.start(self.pins['RGB_R'], 1.0) #common anode so 1.0 = off, 0.0 = on
-        PWM.start(self.pins['RGB_G'], 1.0)
-        PWM.start(self.pins['RGB_B'], 1.0)
+        GPIO.setup(self.pins['RGB_R'], GPIO.OUT)
+        GPIO.setup(self.pins['RGB_G'], GPIO.OUT)
+        GPIO.setup(self.pins['RGB_B'], GPIO.OUT)
+        GPIO.output(self.pins['RGB_R'], GPIO.HIGH)
+        GPIO.output(self.pins['RGB_G'], GPIO.HIGH)
+        GPIO.output(self.pins['RGB_B'], GPIO.HIGH)
         SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
         #What to do about rotary?
 
@@ -331,12 +334,12 @@ class SHControlCombo7SegColourRotary(SHControl):
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
-            RGB = [0.0, 0.0, 0.0]
+            RGB = [0, 0, 0]
             if self.roundsetup['enabled']:
                 if self.ctrltype == 'toggle':
                     if value:
                         SHControlCombo7SegColourRotary.__displayDigits(self, 'On')
-                        RGB = [1.0, 0.0, 0.0]
+                        RGB = [1, 0, 0]
                     else:
                         SHControlCombo7SegColourRotary.__displayDigits(self, 'Off')
                         #Switch off LED
@@ -361,9 +364,10 @@ class SHControlCombo7SegColourRotary(SHControl):
                     SHControlCombo7SegColourRotary.__displayDigits(self, value.upper())
             else:
                 SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
-            PWM.start(self.pins['RGB_R'], 1.0 - RGB[0])
-            PWM.start(self.pins['RGB_G'], 1.0 - RGB[1])
-            PWM.start(self.pins['RGB_B'], 1.0 - RGB[2])
+            
+            GPIO.output(self.pins['RGB_R'], 1 - RGB[0])
+            GPIO.output(self.pins['RGB_G'], 1 - RGB[1])
+            GPIO.output(self.pins['RGB_B'], 1 - RGB[2])
 
 class SHControlSwitchbank(SHControl):
     
