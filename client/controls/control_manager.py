@@ -611,5 +611,5 @@ def processRoundConfig(config, roundconfig, controlids):
             #    if ctrltype == 'button':
             #        displayDigits("PUSH")
             if 'value' in ctrldef:
-                control_manager.processControlValueAssignment(roundconfig, ctrldef['value'], ctrlid, True)
+                processControlValueAssignment(roundconfig, ctrldef['value'], ctrlid, True)
 
