@@ -60,6 +60,7 @@ class SHControlPhoneStyleMenu(SHControl):
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
+        
         btn1 = GPIO.input(self.pins['BTN_1'])
         btn2 = GPIO.input(self.pins['BTN_2'])
         state = [btn1, btn2]
