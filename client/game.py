@@ -39,10 +39,10 @@ configFileName = 'game-' + ipaddress +'.config'
 config, controlids, controldefs, sortedlist = config_manager.loadConfig(configFileName)
 
 #initialise all of the LCDs and return a list of LCD objects
-lcd = lcd_manager.initLCDs(sortedlist, config)
+myLcdManager = lcd_manager(sortedlist, config)
 
 #initialise all controls
-control_manager.initialiseControls(config, sortedlist, lcd)
+control_manager.initialiseControls(config, sortedlist, myLcdManager)
             
 #MQTT client
 client = mosquitto.Mosquitto("Game-" + ipaddress) #client ID

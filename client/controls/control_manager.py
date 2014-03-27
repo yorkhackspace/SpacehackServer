@@ -7,27 +7,7 @@ import Keypad_BBB
 
 controls = {}
 allcontrolsconfig = {}
-lcd = {}
-
-#Display words on the left and right sides of the bottom row, for Nokia displays
-def displayButtonsLine(leftstr, rightstr, ctrlid):
-    """Display words on the left and right sides of the bottom row, for Nokia displays"""
-    global allcontrolsconfig, lcd
-    ctrldef = allcontrolsconfig[ctrlid]['display']
-    combinedstr = leftstr + " "*(ctrldef['width'] - len(leftstr) - len(rightstr)) + rightstr
-    lcd[ctrlid].setCursor(0, ctrldef['height']-1)
-    lcd[ctrlid].message(combinedstr)
-
-#Display values centred on the fourth row, for Nokia displays
-def displayValueLine(valuestr, ctrlid):
-    """Display values centred on the fourth row, for Nokia displays"""
-    global allcontrolsconfig, lcd
-    ctrldef = allcontrolsconfig[ctrlid]['display']
-    if ctrldef['height'] > 4:
-        leftpad = (ctrldef['width'] - len(valuestr)) // 2
-        combinedstr = (" " * leftpad) + valuestr + (" " * (ctrldef['width'] - len(valuestr) - leftpad))
-        lcd[ctrlid].setCursor(0, ctrldef['height']-3)
-        lcd[ctrlid].message(combinedstr)
+myLcdManager = {}
 
 class SHControl(object):
     """Spacehack control abstract type"""
@@ -46,6 +26,8 @@ class SHControl(object):
         self.ctrltype = self.roundsetup['type']
         self.ctrldef = self.roundsetup['definition']
         return 'value' not in self.ctrldef or self.ctrldef['value'] != value or override
+
+    def processRoundConfig(self, )
 
 class SHControlPhoneStyleMenu(SHControl):
     
@@ -126,21 +108,21 @@ class SHControlPhoneStyleMenu(SHControl):
             if self.ctrltype == 'toggle':
        	        if self.controlsetup['display']['height'] > 3:
                     if value:
-                        displayValueLine("On", ctrlid)
+                        myLcdManager.displayValueLine("On", ctrlid)
                         RGB = [1.0, 0.0, 0.0]
                     else:
-                        displayValueLine("Off", ctrlid)
+                        myLcdManager.displayValueLine("Off", ctrlid)
             elif self.ctrltype == 'selector':
                 if self.controlsetup['display']['height'] > 3:
-                    displayValueLine(str(value), ctrlid)
+                    myLcdManager.displayValueLine(str(value), ctrlid)
             elif self.ctrltype == 'colour':
                 if self.controlsetup['display']['height'] > 3:
-                    displayValueLine(str(value), ctrlid)
+                    myLcdManager.displayValueLine(str(value), ctrlid)
                 #Light the LED the right colours
                 RGB = controlsetup['colours'][str(value)]
             elif self.ctrltype == 'words':
                 if self.controlsetup['display']['height'] > 3:
-                    displayValueLine(value, ctrlid)
+                    myLcdManager.displayValueLine(value, ctrlid)
             PWM.start(self.pins['RGB_R'], RGB[0])
             PWM.start(self.pins['RGB_G'], RGB[1])
             PWM.start(self.pins['RGB_B'], RGB[2])
@@ -194,24 +176,24 @@ class SHControlPot(SHControl):
             if self.ctrltype == 'toggle':
                 if self.controlsetup['display']['height']>3:
                     if value:
-                        displayValueLine("On", ctrlid)
+                        myLcdManager.displayValueLine("On", ctrlid)
                         #Light the LED red
                     else:
-                        displayValueLine("Off", ctrlid)
+                        myLcdManager.displayValueLine("Off", ctrlid)
                         #Switch off LED
             elif self.ctrltype == 'selector':
                 if self.controlsetup['display']['height']>3:
-                    displayValueLine(str(value), ctrlid)
+                    myLcdManager.displayValueLine(str(value), ctrlid)
             elif self.ctrltype == 'colour':
                 if self.controlsetup['display']['height']>3:
-                    displayValueLine(str(value), ctrlid)
+                    myLcdManager.displayValueLine(str(value), ctrlid)
                 #Light the LED the right colours
             elif self.ctrltype == 'words':
                 if self.controlsetup['display']['height']>3:
-                    displayValueLine(value, ctrlid)
+                    myLcdManager.displayValueLine(value, ctrlid)
             elif self.ctrltype == 'verbs':
                 if self.controlsetup['display']['height']>3:
-                    displayValueLine(value, ctrlid)      
+                    myLcdManager.displayValueLine(value, ctrlid)      
 
 class SHControlBargraphPot(SHControlPot):   
 
@@ -536,10 +518,10 @@ class SHControlKeypad(SHControl):
         if SHControl.processValueAssignment(self, value, ctrlid, override = False):
             displayValueLine(value)
 
-def initialiseControls(config, sortedlist, lcds):
+def initialiseControls(config, sortedlist, lcdManager):
 
-    global allcontrolsconfig, lcd
-    lcd = lcds
+    global allcontrolsconfig, myLcdManager
+    myLcdManager = lcdManager
     allcontrolsconfig = config['local']['controls']
     for ctrlid in sortedlist:
         hardwaretype = allcontrolsconfig[ctrlid]['hardware'] 

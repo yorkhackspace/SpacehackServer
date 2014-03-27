@@ -61,10 +61,22 @@ class Adafruit_CharLCD:
         self.pin_e = pin_e
         self.pins_db = pins_db
 
+    width = 1
+    height = 1
+
+    def getheight(self):
+        return height
+    
+    def getwidth(self):
+        return width
+
     def begin(self, cols, lines):
         import Adafruit_BBIO.GPIO as GPIO
         self.GPIO.setup(self.pin_e, GPIO.OUT, 7)
         self.GPIO.setup(self.pin_rs, GPIO.OUT, 7)
+
+        self.width = cols
+        self.height = lines
 
         for pin in self.pins_db:
             self.GPIO.setup(pin, GPIO.OUT, 7)
