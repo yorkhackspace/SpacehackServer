@@ -27,7 +27,6 @@ class LcdManager(object):
                 print("Control " + ctrlid + " is nokia on pin " + dispdef['pin'])
 
     mytimeoutdisplayblocks = 0
-    timesincetimeout = 0
 
     #Display a timer bar on the bottom row of the instructions display
     def displayTimer(self, timeoutstarted, resetBlocks, timeout):
@@ -38,19 +37,19 @@ class LcdManager(object):
         if timeoutstarted == 0.0:
             self.mytimeoutdisplayblocks = 0
         else:
-            self.timesincetimeout = time.time() - timeoutstarted
-        if self.timesincetimeout > timeout:
-            blockstodisplay = 0
-        else:
-            blockstodisplay = int(0.5 + 20 * (1 - (self.timesincetimeout / timeout)))       
-        #Work out diff between currently displayed blocks and intended, to minimise amount to draw
-        if blockstodisplay > self.mytimeoutdisplayblocks:
-            self.lcd["0"].setCursor(0, 3)
-            self.lcd["0"].message((blockstodisplay) * chr(255))
-        elif mytimeoutdisplayblocks > blockstodisplay:
-            self.lcd["0"].setCursor(blockstodisplay, 3)
-            self.lcd["0"].message((self.mytimeoutdisplayblocks - blockstodisplay ) * ' ')
-        self.mytimeoutdisplayblocks = blockstodisplay
+            timesincetimeout = time.time() - timeoutstarted
+            if timesincetimeout > timeout:
+                blockstodisplay = 0
+            else:
+                blockstodisplay = int(0.5 + 20 * (1 - (timesincetimeout / timeout)))       
+            #Work out diff between currently displayed blocks and intended, to minimise amount to draw
+            if blockstodisplay > self.mytimeoutdisplayblocks:
+                self.lcd["0"].setCursor(0, 3)
+                self.lcd["0"].message((blockstodisplay) * chr(255))
+            elif mytimeoutdisplayblocks > blockstodisplay:
+                self.lcd["0"].setCursor(blockstodisplay, 3)
+                self.lcd["0"].message((self.mytimeoutdisplayblocks - blockstodisplay ) * ' ')
+            self.mytimeoutdisplayblocks = blockstodisplay
 
     #Pretty print to the LCDs taking into account width
     def display(self, message, width, ctrlid):
