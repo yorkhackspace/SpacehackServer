@@ -46,7 +46,7 @@ class LcdManager(object):
             if blockstodisplay > self.mytimeoutdisplayblocks:
                 self.lcd["0"].setCursor(0, 3)
                 self.lcd["0"].message((blockstodisplay) * chr(255))
-            elif mytimeoutdisplayblocks > blockstodisplay:
+            elif self.mytimeoutdisplayblocks > blockstodisplay:
                 self.lcd["0"].setCursor(blockstodisplay, 3)
                 self.lcd["0"].message((self.mytimeoutdisplayblocks - blockstodisplay ) * ' ')
             self.mytimeoutdisplayblocks = blockstodisplay
