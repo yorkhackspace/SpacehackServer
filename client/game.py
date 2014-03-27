@@ -39,7 +39,7 @@ configFileName = 'game-' + ipaddress +'.config'
 config, controlids, controldefs, sortedlist = config_manager.loadConfig(configFileName)
 
 #initialise all of the LCDs and return a list of LCD objects
-myLcdManager = LcdManager(sortedlist, config)
+myLcdManager = lcd_manager.LcdManager(sortedlist, config)
 
 #initialise all controls
 control_manager.initialiseControls(config, sortedlist, myLcdManager)
