@@ -84,7 +84,7 @@ class LcdManager(object):
         lcdWidth = self.lcd[crtlid].getwidth()
         lcdHeight = self.lcd[crtlid].getheight()
         if lcdHeight > 4:
-        leftpad = (lcdWidth - len(valuestr)) // 2
-        combinedstr = (" " * leftpad) + valuestr + (" " * (lcdWidth - len(valuestr) - leftpad))
-        self.lcd[ctrlid].setCursor(0, lcdHeight-3)
-        self.lcd[ctrlid].message(combinedstr)
+            leftpad = (lcdWidth - len(valuestr)) // 2
+            combinedstr = (" " * leftpad) + valuestr + (" " * (lcdWidth - len(valuestr) - leftpad))
+            self.lcd[ctrlid].setCursor(0, lcdHeight-3)
+            self.lcd[ctrlid].message(combinedstr)
