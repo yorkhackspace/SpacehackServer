@@ -27,7 +27,8 @@ class SHControl(object):
         self.ctrldef = self.roundsetup['definition']
         return 'value' not in self.ctrldef or self.ctrldef['value'] != value or override
 
-    def processRoundConfig(self, )
+    def processRoundConfig(self):
+        print "Error: SHControl.processRoundConfig() should never be called"
 
 class SHControlPhoneStyleMenu(SHControl):
     
