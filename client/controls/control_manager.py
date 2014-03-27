@@ -590,7 +590,7 @@ def processControlValueAssignment(roundconfig, value, ctrlid, override=False):
     """Process control value assignment"""
     controls[ctrlid].processValueAssignment(roundconfig, value, ctrlid, override)
 
-def processRoundConfig(roundconfig, controlids):
+def processRoundConfig(config, roundconfig, controlids):
     for ctrlid in controlids:
         roundsetup = roundconfig['controls'][ctrlid]
         controlsetup = config['local']['controls'][ctrlid]

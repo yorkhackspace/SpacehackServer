@@ -94,7 +94,7 @@ def processRoundConfig(roundconfigstring):
     for key in x.keys():
         roundconfig[key] = x[key]
     myLcdManager.display(roundconfig['instructions'], 20, "0")
-    control_manager.processRoundConfig(roundconfig, controlids)
+    control_manager.processRoundConfig(config, roundconfig, controlids)
 
 #Setup MQTT
 client.on_message = on_message
