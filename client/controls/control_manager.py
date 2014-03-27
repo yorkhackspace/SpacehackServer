@@ -64,6 +64,7 @@ class SHControlPhoneStyleMenu(SHControl):
         btn2 = GPIO.input(self.pins['BTN_2'])
         state = [btn1, btn2]
         if ctrlstate != state:
+            print "phone button pressed"
             if ctrlstate == None:
                 leftchanged = True
                 rightchanged = True
