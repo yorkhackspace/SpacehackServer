@@ -32,24 +32,24 @@ class LcdManager(object):
     def displayTimer(self, timeoutstarted, resetBlocks, timeout):
         """Display a timer bar on the bottom row of the instructions display"""
         if resetBlocks:
-        self.mytimeoutdisplayblocks = 0
+            self.mytimeoutdisplayblocks = 0
 
-        if timeoutstarted == 0.0:
-        self.mytimeoutdisplayblocks = 0
-        else:
-        timesincetimeout = time.time() - timeoutstarted
-        if timesincetimeout > timeout:
-            blockstodisplay = 0
-        else:
-            blockstodisplay = int(0.5 + 20 * (1 - (timesincetimeout / timeout)))       
-        #Work out diff between currently displayed blocks and intended, to minimise amount to draw
-        if blockstodisplay > self.mytimeoutdisplayblocks:
-            self.lcd["0"].setCursor(0, 3)
-            self.lcd["0"].message((blockstodisplay) * chr(255))
-        elif mytimeoutdisplayblocks > blockstodisplay:
-            self.lcd["0"].setCursor(blockstodisplay, 3)
-            self.lcd["0"].message((self.mytimeoutdisplayblocks - blockstodisplay ) * ' ')
-        self.mytimeoutdisplayblocks = blockstodisplay
+            if timeoutstarted == 0.0:
+            self.mytimeoutdisplayblocks = 0
+            else:
+            timesincetimeout = time.time() - timeoutstarted
+            if timesincetimeout > timeout:
+                blockstodisplay = 0
+            else:
+                blockstodisplay = int(0.5 + 20 * (1 - (timesincetimeout / timeout)))       
+            #Work out diff between currently displayed blocks and intended, to minimise amount to draw
+            if blockstodisplay > self.mytimeoutdisplayblocks:
+                self.lcd["0"].setCursor(0, 3)
+                self.lcd["0"].message((blockstodisplay) * chr(255))
+            elif mytimeoutdisplayblocks > blockstodisplay:
+                self.lcd["0"].setCursor(blockstodisplay, 3)
+                self.lcd["0"].message((self.mytimeoutdisplayblocks - blockstodisplay ) * ' ')
+            self.mytimeoutdisplayblocks = blockstodisplay
 
     #Pretty print to the LCDs taking into account width
     def display(self, message, width, ctrlid):
@@ -59,15 +59,15 @@ class LcdManager(object):
         pos=0
         self.lcd[ctrlid].clear()
         for word in words:
-        if len(line) + len(word) > width:
+            if len(line) + len(word) > width:
+                self.lcd[ctrlid].setCursor(0, pos)
+                self.lcd[ctrlid].message(line.rstrip() + '\n')
+                line = word + " "
+                pos += 1
+            else:
+                line += word + " "
             self.lcd[ctrlid].setCursor(0, pos)
-            self.lcd[ctrlid].message(line.rstrip() + '\n')
-            line = word + " "
-            pos += 1
-        else:
-            line += word + " "
-        self.lcd[ctrlid].setCursor(0, pos)
-        self.lcd[ctrlid].message(line.rstrip())
+            self.lcd[ctrlid].message(line.rstrip())
 
     #Display words on the left and right sides of the bottom row, for Nokia displays
     def displayButtonsLine(self, leftstr, rightstr, ctrlid):
