@@ -22,7 +22,6 @@ def displayButtonsLine(leftstr, rightstr, ctrlid):
 def displayValueLine(valuestr, ctrlid):
     """Display values centred on the fourth row, for Nokia displays"""
     global allcontrolsconfig, lcd
-    print allcontrolsconfig
     ctrldef = allcontrolsconfig[ctrlid]['display']
     if ctrldef['height'] > 4:
         leftpad = (ctrldef['width'] - len(valuestr)) // 2
