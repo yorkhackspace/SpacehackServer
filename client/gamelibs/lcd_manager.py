@@ -5,7 +5,7 @@ from Adafruit_CharLCD import Adafruit_CharLCD
 from NokiaLCD import NokiaLCD
 import time
 
-class LcdManager(object)
+class LcdManager(object):
     lcd={}
 
     def __init__(self, sortedlist, config):
