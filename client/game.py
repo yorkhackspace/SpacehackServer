@@ -62,7 +62,7 @@ def on_message(mosq, obj, msg):
             timeoutstarted = 0.0
             timeoutdisplayblocks = 0
         elif nodes[2] == 'instructions':
-            lcd_manager.display(str(msg.payload), 20, "0")
+            myLcdManager.display(str(msg.payload), 20, "0")
             #start timer?
             if 'timeout' in roundconfig and roundconfig['timeout'] > 0.0:
                 resetBlocks = True
@@ -72,9 +72,9 @@ def on_message(mosq, obj, msg):
             if nodes[3] == 'enabled':
                 roundconfig['controls'][ctrlid]['enabled'] = False
                 #switch it off?
-                lcd_manager.display(" ", config['local']['controls'][ctrlid]['display'], ctrlid)
+                myLcdManager.display(" ", config['local']['controls'][ctrlid]['display'], ctrlid)
             elif nodes[3] == 'name':
-                lcd_manager.display(str(msg.payload), config['local']['controls'][ctrlid]['display'], ctrlid)
+                myLcdManager.display(str(msg.payload), config['local']['controls'][ctrlid]['display'], ctrlid)
     elif nodes[0] == 'server':
         if nodes[1] == 'ready':
             mess = str(msg.payload)
@@ -93,11 +93,11 @@ def processRoundConfig(roundconfigstring):
     x = json.loads(roundconfigstring)
     for key in x.keys():
         roundconfig[key] = x[key]
-    lcd_manager.display(roundconfig['instructions'], 20, "0")
+    myLcdManager.display(roundconfig['instructions'], 20, "0")
     for ctrlid in controlids:
         roundsetup = roundconfig['controls'][ctrlid]
         controlsetup = config['local']['controls'][ctrlid]
-        lcd_manager.display(roundsetup['name'], controlsetup['display']['width'], ctrlid)
+        myLcdManager.display(roundsetup['name'], controlsetup['display']['width'], ctrlid)
         if 'definition' in roundsetup and roundsetup['enabled']:
             ctrltype = roundsetup['type']
             ctrldef = roundsetup['definition']
