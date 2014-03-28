@@ -1,3 +1,4 @@
+import sys
 sys.path.append('./bigsevseg')
 import Adafruit_MCP230xx as ExpIO
 import time
