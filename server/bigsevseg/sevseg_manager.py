@@ -3,7 +3,7 @@ import Adafruit_MCP230xx as ExpIO
 import time
 
 sevenSeg = ExpIO.Adafruit_MCP230XX(0x20, 16)
-for i in range(0 to 15):
+for i in range(0, 15):
     sevenSeg.config(i, ExpIO.Adafruit_MCP230XX.OUTPUT)
 
 while true:
