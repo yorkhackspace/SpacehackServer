@@ -2,12 +2,16 @@ import sys
 sys.path.append('./bigsevseg')
 import Adafruit_MCP230xx as ExpIO
 import time
-
+print "imports done"
 sevenSeg = ExpIO.Adafruit_MCP230XX(0x20, 16)
+print "init done"
 for i in range(0, 15):
     sevenSeg.config(i, ExpIO.Adafruit_MCP230XX.OUTPUT)
 
+print "All pins set to output"
+
 while true:
+    print "blink"
     for i in range(0, 15):
         sevenSeg.output(i, 1)    
     time.sleep(0.5)
