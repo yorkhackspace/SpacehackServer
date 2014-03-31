@@ -1,0 +1,18 @@
+Summary of refactoring
+
+	New files:
+	-controls/
+	|	-control_manager.py
+	|
+	-gamelibs/
+	|	-config_manager.py
+	|	-lcd_manager.py
+
+New file gamelibs/config_manager.py loads the JSON config file for the client and provides various lists and dictionaries as results.
+
+New file gamelibs/lcd_manager.py reads the configuration passed to it and initialises the LCDs returning an instance of the LcdManager class.
+
+New file controls/control_manager.py defines the abstract class SHControl and contains definitions for all diferent control types. Each control has methods poll(), processValueAssignment() and processRoundConfig().
+TODO Each control definition should be in a different file to make it safer for two people to simultaneously [contemporaneously?] work on implementing different controls.
+
+The huge if elif elif... blocks in the original game.py have been remove and all of the code for each control there is now in the control_manager.py file. As a result, game.py is now much shorter. Most of the meaningful code is in control_manager.py.
