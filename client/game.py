@@ -10,7 +10,6 @@ import Adafruit_BBIO.ADC as ADC
 
 from Adafruit_CharLCD import Adafruit_CharLCD
 from NokiaLCD import NokiaLCD
-import gaugette.rotary_encoder as rotary
 import Keypad_BBB
 from collections import OrderedDict
 import commands
