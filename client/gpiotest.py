@@ -2,7 +2,7 @@ import Adafruit_BBIO.GPIO as GPIO
 
 Run = True
 while (Run):
-	pin = input("Enter pin name or 'q' to exit: ")
+	pin = raw_input("Enter pin name or 'q' to exit: ")
 	InPin = True
 	if pin == "q":
 		Run = False
