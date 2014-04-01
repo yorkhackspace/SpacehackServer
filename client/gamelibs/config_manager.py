@@ -9,6 +9,7 @@ sortedlist = []
 
 #load configuration file
 def loadConfig(fileName):
+    print "Loading config from " + fileName
     f=open(fileName)
     config=json.loads(f.read())
     f.close()
