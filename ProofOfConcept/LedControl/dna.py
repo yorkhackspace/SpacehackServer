@@ -5,7 +5,7 @@ from time import sleep
 
 INCREMENT = 0.4
 GAP = 1
-DELAY = 50
+DELAY = 10
 SHOWDNA = True
 
 pinData = "P9_11"
