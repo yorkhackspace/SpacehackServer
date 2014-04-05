@@ -17,9 +17,9 @@ class LedControl:
     OP_SHUTDOWN = 12
     OP_DISPLAYTEST = 15
     
-    self.status = [0 for i in range(64)]
-    self.spidata = [0 for i in range(16)]
     def __init__(self, pinData, pinClock, pinCS, numDevices):
+        self.status = [0 for i in range(64)]
+        self.spidata = [0 for i in range(16)]
         self.SPI_MOSI = pinData
         self.SPI_CLK = pinClock
         self.SPI_CS = pinCS
