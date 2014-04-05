@@ -28,7 +28,7 @@ while True:
     #Shuffle down
     for i in range(7):
         ledBuffer[7-i] = ledBuffer[6-i]
-    pos = int(sin(x) + 1.0) * 4.0
+    pos = int((sin(x) + 1.0) * 4.0)
     ledBuffer[0] = 1 << pos
     
     #dna stuff
