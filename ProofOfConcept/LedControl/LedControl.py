@@ -110,9 +110,10 @@ class LedControl:
         maxbytes = self.maxDevices * 2
         print("addr=" + str(addr) + " maxbytes=" + str(maxbytes))
         for i in range(maxbytes):
-            self.spidata[offset + 1] = opcode
-            self.spidata[offset] = data
-            GPIO.output(self.SPI_CS, GPIO.LOW)
-            for j in range(maxbytes):
-                self.shiftOut(self.spidata[maxbytes-j])
-            GPIO.output(self.SPI_CS, GPIO.HIGH)
+            self.spidata[i] = 0
+        self.spidata[offset + 1] = opcode
+        self.spidata[offset] = data
+        GPIO.output(self.SPI_CS, GPIO.LOW)
+        for j in range(maxbytes):
+            self.shiftOut(self.spidata[maxbytes-j-1])
+        GPIO.output(self.SPI_CS, GPIO.HIGH)
