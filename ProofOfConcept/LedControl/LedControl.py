@@ -111,7 +111,7 @@ class LedControl:
             GPIO.output(self.SPI_CLK, GPIO.HIGH)
         
     def spiTransfer(self, addr, opcode, data):
-        print("spitransfer op=" + str(opcode) + " data=" + str(data)) 
+        #print("spitransfer op=" + str(opcode) + " data=" + str(data)) 
         offset = addr*2
         maxbytes = self.maxDevices * 2
         #print("addr=" + str(addr) + " maxbytes=" + str(maxbytes))
