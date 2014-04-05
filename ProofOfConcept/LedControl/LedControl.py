@@ -98,7 +98,7 @@ class LedControl:
         print("shiftOut " + str(dataByte))
         for j in range(8):
             GPIO.output(self.SPI_CLK, GPIO.LOW)
-            if dataByte >> j & 1 == 0:
+            if dataByte >> (7-j) & 1 == 0:
                 GPIO.output(self.SPI_MOSI, GPIO.LOW)
                 print("0")
             else:
