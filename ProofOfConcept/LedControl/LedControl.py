@@ -33,7 +33,7 @@ class LedControl:
         for i in range(self.maxDevices):
             self.spiTransfer(i, OP_DISPLAYTEST, 0)
             self.setScanLimit(i, 7)
-            self.spiTransfer(i, OP_DECODEMODE, 0)
+            self.spiTransfer(i, self.OP_DECODEMODE, 0)
             self.clearDisplay(i)
             self.shutdown(i, True)
 
@@ -44,21 +44,21 @@ class LedControl:
         if addr < 0 or addr >= self.maxDevices:
             return
         elif b:
-            self.spiTransfer(addr, OP_SHUTDOWN, 0)
+            self.spiTransfer(addr, self.OP_SHUTDOWN, 0)
         else:
-            self.spiTransfer(addr, OP_SHUTDOWN, 1)
+            self.spiTransfer(addr, self.OP_SHUTDOWN, 1)
 
     def setScanLimit(self, addr, limit):
         if addr < 0 or addr >= self.maxDevices:
             return
         elif limit >=0 and limit < 8:
-            self.spiTransfer(addr, OP_SCANLIMIT, limit)
+            self.spiTransfer(addr, self.OP_SCANLIMIT, limit)
 
     def setIntensity(self, addr, intensity):
         if addr < 0 or addr >= self.maxDevices:
             return
         elif intensity >=0 and intensity < 16:
-            self.spiTransfer(OP_INTENSITY, intensity)
+            self.spiTransfer(self.OP_INTENSITY, intensity)
 
     def clearDisplay(self, addr):
         if addr<0 or addr >= self.maxDevices:
