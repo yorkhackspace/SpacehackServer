@@ -58,7 +58,7 @@ class LedControl:
         if addr < 0 or addr >= self.maxDevices:
             return
         elif intensity >=0 and intensity < 16:
-            self.spiTransfer(self.OP_INTENSITY, intensity)
+            self.spiTransfer(addr, self.OP_INTENSITY, intensity)
 
     def clearDisplay(self, addr):
         if addr<0 or addr >= self.maxDevices:
