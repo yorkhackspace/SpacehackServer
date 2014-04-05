@@ -31,11 +31,11 @@ class LedControl:
         GPIO.setup(self.SPI_CS, GPIO.OUT)
         GPIO.output(self.SPI_CS, GPIO.HIGH)
         for i in range(self.maxDevices):
-            spiTransfer(self, i, OP_DISPLAYTEST, 0)
-            setScanLimit(self, i, 7)
-            spiTransfer(self, i, OP_DECODEMODE, 0)
-            clearDisplay(self, i)
-            shutdown(self, i, True)
+            self.spiTransfer(i, OP_DISPLAYTEST, 0)
+            self.setScanLimit(i, 7)
+            self.spiTransfer(i, OP_DECODEMODE, 0)
+            self.clearDisplay(i)
+            self.shutdown(i, True)
 
     def getDeviceCount(self):
         return self.maxDevices
@@ -44,21 +44,21 @@ class LedControl:
         if addr < 0 or addr >= self.maxDevices:
             return
         elif b:
-            spiTransfer(self, addr, OP_SHUTDOWN, 0)
+            self.spiTransfer(addr, OP_SHUTDOWN, 0)
         else:
-            spiTransfer(self, addr, OP_SHUTDOWN, 1)
+            self.spiTransfer(addr, OP_SHUTDOWN, 1)
 
     def setScanLimit(self, addr, limit):
         if addr < 0 or addr >= self.maxDevices:
             return
         elif limit >=0 and limit < 8:
-            spiTransfer(addr, OP_SCANLIMIT, limit)
+            self.spiTransfer(addr, OP_SCANLIMIT, limit)
 
     def setIntensity(self, addr, intensity):
         if addr < 0 or addr >= self.maxDevices:
             return
         elif intensity >=0 and intensity < 16:
-            spiTransfer(self, OP_INTENSITY, intensity)
+            self.spiTransfer(OP_INTENSITY, intensity)
 
     def clearDisplay(self, addr):
         if addr<0 or addr >= self.maxDevices:
@@ -66,7 +66,7 @@ class LedControl:
         offset = addr * 8
         for i in range(8):
             self.status[offset + i] = 0
-            spiTransfer(self, addr, i+1, self.status[offset+i])
+            self.spiTransfer(addr, i+1, self.status[offset+i])
 
     def setLed(self, addr, row, col, state):
         if addr<0 or addr >= self.maxDevices or row < 0 or row>7 or col < 0 or col > 7:
@@ -77,14 +77,14 @@ class LedControl:
             self.status[offset + row] |= val
         else:
             self.status[offset + row] &= 255-val
-        spiTransfer(self, addr, row+1, self.status[offset + row])
+        self.spiTransfer(addr, row+1, self.status[offset + row])
 
     def setRow(self, addr, row, value):
         if addr<0 or addr >= self.maxDevices or row < 0 or row>7 or value < 0 or value > 255:
             return
         offset = addr * 8
         self.status[offset + row] = value
-        spiTransfer(self, addr, row+1, self.status[offset + row])
+        self.spiTransfer(addr, row+1, self.status[offset + row])
 
     def setColumn(self, addr, col, value):
         if addr<0 or addr >= self.maxDevices or col < 0 or col>7 or value < 0 or value > 255:
@@ -92,7 +92,7 @@ class LedControl:
         for i in range(8):
             val = value >> (7-row)
             val = val & 1
-            setLed(self, addr, row, col, val)
+            self.setLed(addr, row, col, val)
 
     def shiftOut(self, dataByte):
         for j in range(8):
