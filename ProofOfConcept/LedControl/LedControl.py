@@ -95,6 +95,7 @@ class LedControl:
             self.setLed(addr, row, col, val)
 
     def shiftOut(self, dataByte):
+        print("shiftOut " + str(dataByte))
         for j in range(8):
             GPIO.output(self.SPI_CLK, GPIO.LOW)
             if dataByte >> j & 1 == 0:
