@@ -1,4 +1,8 @@
-from math import sin, pi
+#LedControl library by York Hackspace April 2014
+#LED control library for Beaglebone Black using Max7219 LED driver chip
+#Adapted from Arduino LedControl.ino library by York Hackspace, to support SpsaceHack game
+#Free open source & public domain, use as you wish, no guarantees.
+
 import Adafruit_BBIO.GPIO as GPIO
 
 class LedControl:
