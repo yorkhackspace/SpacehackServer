@@ -1,5 +1,6 @@
 #Quick test of LedControl library
 import LedControl
+from math import sin, pi
 
 lc = LedControl.LedControl("P9_11", "P9_13", "P9_15", 1)
 lc.shutdown(0, False)
