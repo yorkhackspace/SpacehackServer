@@ -31,8 +31,18 @@ while True:
     pos = int((sin(x) + 1.0) * 4.0)
     ledBuffer[0] = 1 << pos
     
-    #dna stuff
-    
+    if SHOWDNA:
+        pos2 = int((cos(x + 0.6) + 1.0) * 4.0)
+        ledBuffer[0] |= 1 << pos2
+        
+        c += 1
+        if c == GAP: #Draw the connecting bar
+            if pos2 < pos:
+                pos, pos2 = pos2, pos
+            for i in range(pos, pos2):
+                ledBuffer[0] |= 1 << i
+            c = 0
+
     for i in range(8):
         lc.setRow(0, i, ledBuffer[i])
     x += INCREMENT
