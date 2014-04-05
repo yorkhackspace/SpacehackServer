@@ -100,8 +100,10 @@ class LedControl:
             GPIO.output(self.SPI_CLK, GPIO.LOW)
             if dataByte >> j & 1 == 0:
                 GPIO.output(self.SPI_MOSI, GPIO.LOW)
+                print("0")
             else:
                 GPIO.output(self.SPI_MOSI, GPIO.HIGH)
+                print("1")
             GPIO.output(self.SPI_CLK, GPIO.HIGH)
         
     def spiTransfer(self, addr, opcode, data):
