@@ -94,6 +94,15 @@ class LedControl:
             val = val & 1
             setLed(self, addr, row, col, val)
 
+    def shiftOut(self, dataByte):
+        for j in range(8):
+            GPIO.output(self.SPI_CLK, GPIO.LOW)
+            if dataByte >> j & 1 == 0:
+                GPIO.output(self.SPI_MOSI, GPIO.LOW)
+            else:
+                GPIO.output(self.SPI_MOSI, GPIO.HIGH)
+            GPIO.output(self.SPI_CLK, GPIO.HIGH)
+        
     def spiTransfer(self, addr, opcode, data):
         offset = addr*2
         maxbytes = self.maxDevices * 2
@@ -102,5 +111,5 @@ class LedControl:
             self.spiData[offset] = data
             GPIO.output(self.SPI_CS, GPIO.LOW)
             for j in range(maxbytes):
-                GPIO.shiftOut(self.SPI_MOSI, self.SPI_CLK, GPIO.MSBFIRST, self.spiData[maxbytes-j])
+                self.shiftOut(self.spiData[maxbytes-j])
             GPIO.output(self.SPI_CS, GPIO.HIGH)
