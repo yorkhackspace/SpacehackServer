@@ -32,7 +32,7 @@ while True:
     if SHOWDNA:
         pos2 = int((cos(x + 0.6) + 1.0) * 4.0)
         ledBuffer[0] |= 1 << pos2
-        
+        print(str(c))
         if c == GAP: #Draw the connecting bar
             if pos2 < pos:
                 pos, pos2 = pos2, pos
