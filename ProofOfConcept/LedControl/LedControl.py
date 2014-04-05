@@ -26,9 +26,9 @@ class LedControl:
         if numDevices <=0 or numDevices > 8:
             numDevices = 8
         self.maxDevices = numDevices
-        GPIO.setup(self.SPI_MOSI, GPIO.OUTPUT)
-        GPIO.setup(self.SPI_CLK, GPIO.OUTPUT)
-        GPIO.setup(self.SPI_CS, GPIO.OUTPUT)
+        GPIO.setup(self.SPI_MOSI, GPIO.OUT)
+        GPIO.setup(self.SPI_CLK, GPIO.OUT)
+        GPIO.setup(self.SPI_CS, GPIO.OUT)
         GPIO.output(self.SPI_CS, GPIO.HIGH)
         for i in range(self.maxDevices):
             spiTransfer(self, i, OP_DISPLAYTEST, 0)
