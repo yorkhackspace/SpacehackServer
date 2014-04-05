@@ -1,6 +1,6 @@
 #Quick test of LedControl library
 import LedControl
-from math import sin, pi
+from math import sin, pi, cos
 from time import sleep
 
 INCREMENT = 0.4
@@ -17,8 +17,6 @@ lc = LedControl.LedControl(pinData, pinClock, pinCS, 1)
 lc.shutdown(0, False)
 lc.setIntensity(0, 15)
 lc.clearDisplay(0)
-lc.setLed(0, 2, 3, 1)
-lc.setRow(0, 0, 127)
 
 x = 0.0
 c = 0
