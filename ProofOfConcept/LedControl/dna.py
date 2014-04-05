@@ -3,7 +3,7 @@ import LedControl
 from math import sin, pi
 from time import sleep
 
-INCREMENT = 0.3
+INCREMENT = 0.4
 GAP = 1
 DELAY = 50
 SHOWDNA = True
