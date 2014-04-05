@@ -31,7 +31,7 @@ class LedControl:
         GPIO.setup(self.SPI_CS, GPIO.OUT)
         GPIO.output(self.SPI_CS, GPIO.HIGH)
         for i in range(self.maxDevices):
-            self.spiTransfer(i, OP_DISPLAYTEST, 0)
+            self.spiTransfer(i, self.OP_DISPLAYTEST, 0)
             self.setScanLimit(i, 7)
             self.spiTransfer(i, self.OP_DECODEMODE, 0)
             self.clearDisplay(i)
