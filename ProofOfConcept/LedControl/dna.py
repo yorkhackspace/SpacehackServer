@@ -36,4 +36,4 @@ while True:
     for i in range(8):
         lc.setRow(0, i, ledBuffer[i])
     x += INCREMENT
-    sleep(1000.0 / DELAY)
+    sleep(DELAY / 1000.0)
