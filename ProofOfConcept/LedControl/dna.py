@@ -4,7 +4,7 @@ from math import sin, pi, cos
 from time import sleep
 import threading
 
-class DNA(threading.thread):
+class DNA(threading.Thread):
     def __init__(self, pinData = "P9_11", pinClock = "P9_13", pinCS = "P9_15", increment = 0.3, delay = 10, showdna = True, gap = 1):
         self.GAP = gap
         self.INCREMENT = increment
