@@ -25,8 +25,8 @@ config, controlids, controldefs, sortedlist = config_manager.loadConfig(configFi
 #initialise all of the LCDs and return a list of LCD objects
 myLcdManager = lcd_manager.LcdManager(sortedlist, config)
 
-for ctrlid in controlids
-myLcdManager.display(str(config['local']['controls'][ctrlid]['display']['pin']) + " en-ctrl " + str(ctrlid), config['local']['controls'][ctrlid]['display'], ctrlid)
+for ctrlid in controlids:
+    myLcdManager.display(str(config['local']['controls'][ctrlid]['display']['pin']) + " en-ctrl " + str(ctrlid), config['local']['controls'][ctrlid]['display'], ctrlid)
     
 #Main loop
 while(True):
