@@ -36,9 +36,10 @@ class SHControlPhoneStyleMenu(SHControl):
         SHControl.__init__(self, controlconfig)
         GPIO.setup(self.pins['BTN_1'], GPIO.IN, GPIO.PUD_DOWN)
         GPIO.setup(self.pins['BTN_2'], GPIO.IN, GPIO.PUD_DOWN)
-        PWM.start(self.pins['RGB_R'], 0.0)
-        PWM.start(self.pins['RGB_G'], 0.0)
-        PWM.start(self.pins['RGB_B'], 0.0)
+        
+        GPIO.setup(self.pins['RGB_R'], GPIO.OUT)
+        GPIO.setup(self.pins['RGB_G'], GPIO.OUT)
+        GPIO.setup(self.pins['RGB_B'], GPIO.OUT)
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
@@ -105,12 +106,12 @@ class SHControlPhoneStyleMenu(SHControl):
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
-            RGB = [0.0, 0.0, 0.0]
+            RGB = [0, 0, 0]
             if self.ctrltype == 'toggle':
        	        if self.controlsetup['display']['height'] > 3:
                     if value:
                         myLcdManager.displayValueLine("On", ctrlid)
-                        RGB = [1.0, 0.0, 0.0]
+                        RGB = [1, 0, 0]
                     else:
                         myLcdManager.displayValueLine("Off", ctrlid)
             elif self.ctrltype == 'selector':
@@ -124,9 +125,9 @@ class SHControlPhoneStyleMenu(SHControl):
             elif self.ctrltype == 'words':
                 if self.controlsetup['display']['height'] > 3:
                     myLcdManager.displayValueLine(value, ctrlid)
-            PWM.start(self.pins['RGB_R'], RGB[0])
-            PWM.start(self.pins['RGB_G'], RGB[1])
-            PWM.start(self.pins['RGB_B'], RGB[2])
+            GPIO.output(self.pins['RGB_R'], RGB[0])
+            GPIO.output(self.pins['RGB_G'], RGB[1])
+            GPIO.output(self.pins['RGB_B'], RGB[2])
 
 class SHControlPot(SHControl):
     
