@@ -44,7 +44,8 @@ def bit_reverse(value, width=8):
 
 BITREVERSE = map(bit_reverse, xrange(256))
 
-spi = SPI(0,0)
+if not BITBANG:
+    spi = SPI(0,0)
 
 def writebytes(value):
     if BITBANG:
