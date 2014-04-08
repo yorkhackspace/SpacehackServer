@@ -1,0 +1,17 @@
+{
+  "intro": [
+    "Welcome, Star Corps cadets, to the recently refurbished USS Guppy!", 
+    "This venerable old boat, veteran of many space battles, has been patched up", 
+    "and is once again declared officially 'Good Enough for Government work'.",
+    "The ship's computer will issue all the instructions you and your crew will need,", 
+    "Just shout them out and listen out for any that affect your crew command console", 
+    "- simple as pie.  It practically flies itself, really. Good luck and Toodle pip!", 
+    ".................... ........Get......... .......Ready!....... ...................."
+  ],
+  "ending": [
+    "The Guppy has been destroyed with the loss of all cadets.  Including you.",
+    "You correctly set %s of %s control instructions, and missed %s.",
+    "%s of %s of the instructions you read out were implemented successfully.",
+    "In recognition of your sacrifice, you have been posthumously awarded:"
+  ]
+}
