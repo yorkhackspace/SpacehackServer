@@ -11,7 +11,7 @@
   "ending": [
     "The Guppy has been destroyed with the loss of all cadets.  Including you.",
     "You correctly set %s of %s control instructions, and missed %s.",
-    "%s of %s of the instructions you read out were implemented successfully.",
-    "In recognition of your sacrifice, you have been posthumously awarded:"
+    "%s of %s of the instructions you read out were achieved.",
+    "In recognition of your deeds, you have been posthumously awarded:"
   ]
 }
