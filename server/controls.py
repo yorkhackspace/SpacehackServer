@@ -44,6 +44,7 @@ allgeneralwords = readWordList('words.txt')
 emergencies = readJSON('emergencies.txt')
 medals =  readJSON('medals.txt')
 soundfiles = readJSON('sounds.txt')
+blurb = readJSON('blurb.txt')
 
 # Letters that can work on a 7-segment
 sevensegletters = ['A','B','C','D','E','F','G','H','I','J','L','N',
