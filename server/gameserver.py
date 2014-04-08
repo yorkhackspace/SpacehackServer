@@ -30,7 +30,8 @@ server = "127.0.0.1" #Mosquitto MQTT broker running locally
 
 
 #Game variables
-consoles = []
+consoles = [] #all registered consoles
+players = [] #all participating players
 console = {}
 currentsetup = {}
 currenttimeout = 10.0
@@ -43,6 +44,7 @@ def on_connect(mosq, obj, rc):
     """Receive MQTT connection notification"""
     if rc == 0:
         print("Connected to MQTT")
+        gamestate = 'readytostart'
     else:
         print("Failed - return code is " + rc)
 
@@ -60,21 +62,32 @@ def on_message(mosq, obj, msg):
                 consoles.append(consoleip)
             #set console up for game start
             consolesetup = {}
-            consolesetup['instructions'] = 'To start new game, all players push and hold button'
-            consolesetup['controls'] = {}
-            print(config['controls'])
-            for control in config['controls']:
-                ctrlid = control['id']
-                consolesetup['controls'][ctrlid]={}
-                if 'gamestart' in control:
-                    consolesetup['controls'][ctrlid]['type'] = 'button'
-                    consolesetup['controls'][ctrlid]['enabled'] = 1
-                    consolesetup['controls'][ctrlid]['name'] = "Push and hold to start"
-                else:
+            if gamestate in ['readytostart', 'waitingforplayers']:
+                consolesetup['instructions'] = controls.blurb['readytostart']
+                consolesetup['controls'] = {}
+                print(config['controls'])
+                for control in config['controls']:
+                    ctrlid = control['id']
+                    consolesetup['controls'][ctrlid]={}
+                    if 'gamestart' in control:
+                        consolesetup['controls'][ctrlid]['type'] = 'button'
+                        consolesetup['controls'][ctrlid]['enabled'] = 1
+                        consolesetup['controls'][ctrlid]['name'] = "Push and hold to start"
+                    else:
+                        consolesetup['controls'][ctrlid]['type'] = 'inactive'
+                        consolesetup['controls'][ctrlid]['enabled'] = 0
+                        consolesetup['controls'][ctrlid]['name'] = ""
+                    client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
+            else:
+                consolesetup['instructions'] = controls.blurb['gameinprogress']
+                consolesetup['controls'] = {}
+                for control in config['controls']:
+                    ctrlid = control['id']
+                    consolesetup['controls'][ctrlid]={}
                     consolesetup['controls'][ctrlid]['type'] = 'inactive'
                     consolesetup['controls'][ctrlid]['enabled'] = 0
                     consolesetup['controls'][ctrlid]['name'] = ""
-                client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
+                    client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
             client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
             currentsetup[consoleip] = consolesetup
             global lastgenerated
