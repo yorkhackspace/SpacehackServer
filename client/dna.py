@@ -12,6 +12,8 @@ import threading
 
 class DNA(threading.Thread):
     def __init__(self, pinData = "P9_11", pinClock = "P9_13", pinCS = "P9_15", increment = 0.3, delay = 10, showdna = True, gap = 1):
+        threading.Thread.__init__(self)
+        
         self.GAP = gap
         self.INCREMENT = increment
         self.DELAY = delay
@@ -55,7 +57,7 @@ class DNA(threading.Thread):
 
 if __name__ == '__main__':
     dna = DNA()
-    dna.run()
+    dna.start()
     
     while True:
         sleep(100)
