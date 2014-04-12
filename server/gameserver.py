@@ -112,7 +112,6 @@ def receiveValue(consoleip, ctrlid, value):
     global lastgenerated
     global gamestate
     global numinstructions
-    value = str(value)
     if currentsetup[consoleip]['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
         value = int(value)
     if gamestate == 'playround':
