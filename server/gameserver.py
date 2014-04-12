@@ -66,6 +66,7 @@ def on_message(mosq, obj, msg):
             consolesetup = {}
             if gamestate in ['readytostart', 'waitingforplayers']:
                 consolesetup['instructions'] = controls.blurb['readytostart']
+                consolesetup['timeout'] = 0.0
                 consolesetup['controls'] = {}
                 print(config['controls'])
                 for control in config['controls']:
@@ -334,6 +335,7 @@ def initGame():
     for consoleip in list(set(consoles) - set(players)):
         consolesetup = {}
         consolesetup['instructions'] = controls.blurb['gameinprogress']
+        consolesetup['timeout'] = 0.0
         consolesetup['controls'] = {}
         for control in config['controls']:
             ctrlid = control['id']
@@ -403,6 +405,7 @@ def gameOver():
         instryou = instryou.replace("{3}", str(playerstats[consoleip]['instructions']['missed']))
         consolesetup = {}
         consolesetup['instructions'] = str(instryou)
+        consolesetup['timeout'] = 0.0
         consolesetup['controls'] = {}
         for control in config['controls']:
             ctrlid = control['id']
@@ -431,6 +434,7 @@ def gameOver():
         consolesetup = {}
         consolesetup['instructions'] = controls.blurb['readytostart']
         consolesetup['controls'] = {}
+        consolesetup['timeout'] = 0.0
         config = console[consoleip]
         for control in config['controls']:
             ctrlid = control['id']
