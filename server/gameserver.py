@@ -110,7 +110,7 @@ def on_message(mosq, obj, msg):
 def receiveValue(consoleip, ctrlid, value):
     global lastgenerated
     global gamestate
-    value = str(msg.payload)
+    value = str(value)
     if currentsetup[consoleip]['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
         value = int(value)
     if gamestate == 'playround':
