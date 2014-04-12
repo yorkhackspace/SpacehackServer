@@ -345,7 +345,7 @@ def initGame():
     #Explanatory intro blurb
     for txt in controls.blurb['intro']:
         tellAllPlayers(players, txt)
-        time.sleep(5)
+        time.sleep(5.0)
     #Setup initial game params
     global playerstats
     playerstats = {}
@@ -382,7 +382,7 @@ def roundOver():
     gamestate = 'roundover'
     #play sound?
     tellAllPlayers(players, controls.blurb['hyperspace'])
-    time.sleep(5)
+    time.sleep(5.0)
     initRound()
     
 def gameOver():
@@ -390,7 +390,7 @@ def gameOver():
     gamestate = 'gameover'
     #play sound
     tellAllPlayers(players, controls.blurb['ending']['start']
-    time.sleep(5)
+    time.sleep(5.0)
     instr = controls.blurb['ending']['you']
     #stats for your instructions
     for consoleip in players:
@@ -398,20 +398,20 @@ def gameOver():
         instryou = instryou.replace("{2}", playerstats[consoleip]['instructions']['missed'] + playerstats[consoleip]['instructions']['hit'])
         instryou = instryou.replace("{3}", playerstats[consoleip]['instructions']['missed'])
         client.publish("clients/" + consoleip + "/instructions", str(instryou))
-    time.sleep(5)
+    time.sleep(5.0)
     #stats for your targets
     instr = controls.blurb['ending']['them']
     for consoleip in players:
         instrthem = instr.replace("{1}", playerstats[consoleip]['targets']['hit'])
         instrthem = instrthem.replace("{2}", playerstats[consoleip]['targets']['missed'] + playerstats[consoleip]['targets']['hit'])
         client.publish("clients/" + consoleip + "/instructions", str(instrthem))
-    time.sleep(5)
+    time.sleep(5.0)
     tellAllPlayers(players, controls.blurb['ending']['end'])
-    time.sleep(5)
+    time.sleep(5.0)
     #medals!
     for consoleip in players:
         client.publish("clients/" + consoleip + "/instructions", str(controls.getMedal()))
-    time.sleep(15)
+    time.sleep(15.0)
     #And reset again for new players
     gamestate = 'readytostart'
     for consoleip in consoles:
