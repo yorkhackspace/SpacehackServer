@@ -75,7 +75,7 @@ def on_message(mosq, obj, msg):
                     if 'gamestart' in control:
                         consolesetup['controls'][ctrlid]['type'] = 'button'
                         consolesetup['controls'][ctrlid]['enabled'] = 1
-                        consolesetup['controls'][ctrlid]['name'] = "Push and hold to start a new game"
+                        consolesetup['controls'][ctrlid]['name'] = controls.blurb['startbutton']
                         consolesetup['controls'][ctrlid]['gamestart'] = True
                         consolesetup['controls'][ctrlid]['definition'] = {}
                     else:
@@ -334,6 +334,7 @@ def initGame():
     #Start game!
     global gamestate
     gamestate = 'initgame'
+    tellAllPlayers(players, controls.blurb['logo'])
     #Music
     playSound(controls.soundfiles['special']['fanfare'])
     #cut off non-players from participating
@@ -450,7 +451,7 @@ def gameOver():
             if 'gamestart' in control:
                 consolesetup['controls'][ctrlid]['type'] = 'button'
                 consolesetup['controls'][ctrlid]['enabled'] = 1
-                consolesetup['controls'][ctrlid]['name'] = "Push and hold to start a new game"
+                consolesetup['controls'][ctrlid]['name'] = controls.blurb['startbutton']
                 consolesetup['controls'][ctrlid]['gamestart'] = True
                 consolesetup['controls'][ctrlid]['definition'] = {}
             else:
