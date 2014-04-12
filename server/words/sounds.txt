@@ -86,7 +86,7 @@
   "special": {
     "keypad": "bleep.ogg",
     "fanfare": "fanfare.ogg",
-    "explosion": "explosions.ogg",
+    "explosion": "explosion.ogg",
     "taps": "taps.ogg"
   }
 }
