@@ -336,7 +336,8 @@ def initGame():
     #Start game!
     global gamestate
     gamestate = 'initgame'
-    #Music?
+    #Music
+    playSound(controls.soundfiles['special']['fanfare'])
     #cut off non-players from participating
     for consoleip in list(set(consoles) - set(players)):
         consolesetup = {}
