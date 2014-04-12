@@ -76,6 +76,7 @@ def on_message(mosq, obj, msg):
                         consolesetup['controls'][ctrlid]['enabled'] = 1
                         consolesetup['controls'][ctrlid]['name'] = "Push and hold to start"
                         consolesetup['controls'][ctrlid]['gamestart'] = True
+                        consolesetup['controls'][ctrlid]['definition'] = {}
                     else:
                         consolesetup['controls'][ctrlid]['type'] = 'inactive'
                         consolesetup['controls'][ctrlid]['enabled'] = 0
@@ -428,6 +429,7 @@ def gameOver():
                 consolesetup['controls'][ctrlid]['enabled'] = 1
                 consolesetup['controls'][ctrlid]['name'] = "Push and hold to start"
                 consolesetup['controls'][ctrlid]['gamestart'] = True
+                consolesetup['controls'][ctrlid]['definition'] = {}
             else:
                 consolesetup['controls'][ctrlid]['type'] = 'inactive'
                 consolesetup['controls'][ctrlid]['enabled'] = 0
