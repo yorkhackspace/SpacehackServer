@@ -517,7 +517,7 @@ class SHControlKeypad(SHControl):
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             displayValueLine(value)
 
 def initialiseControls(config, sortedlist, lcdManager):
