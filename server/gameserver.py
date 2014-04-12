@@ -451,13 +451,13 @@ client.subscribe('server/register')
 client.publish('server/ready', 'started')
 
 while(client.loop() == 0): 
-    if gamestate = 'waitingforplayers' and len(players) >= 1 and time.time() - lastgenerated > 10.0:
+    if gamestate == 'waitingforplayers' and len(players) >= 1 and time.time() - lastgenerated > 10.0:
         initGame()        
-    elif gamestate = 'setupround' and time.time() - lastgenerated > 10.0:
+    elif gamestate == 'setupround' and time.time() - lastgenerated > 10.0:
         gamestate = 'playround'
         for consoleip in players:
             pickNewTarget(consoleip)
-    elif gamestate = 'playround':
+    elif gamestate == 'playround':
         checkTimeouts()
 
 #If client.loop() returns non-zero, loop drops out to here.
