@@ -14,7 +14,7 @@
     "them": "{1} of {2} of the instructions you read out were achieved.",
     "end": "In recognition of your deeds, you have been posthumously awarded:"
   },
-  "readytostart": "To start new game, all players push and hold button",
+  "readytostart": "To start a new game, all players must push and hold the big button.",
   "gameinprogress": "Game already in progress, please wait for it to finish",
   "hyperspace": "The Guppy made it safely to hyperspace!"
 }
