@@ -397,16 +397,16 @@ def gameOver():
     instr = controls.blurb['ending']['you']
     #stats for your instructions
     for consoleip in players:
-        instryou = instr.replace("{1}", playerstats[consoleip]['instructions']['hit'])
-        instryou = instryou.replace("{2}", playerstats[consoleip]['instructions']['missed'] + playerstats[consoleip]['instructions']['hit'])
-        instryou = instryou.replace("{3}", playerstats[consoleip]['instructions']['missed'])
+        instryou = instr.replace("{1}", str(playerstats[consoleip]['instructions']['hit']))
+        instryou = instryou.replace("{2}", str(playerstats[consoleip]['instructions']['missed'] + playerstats[consoleip]['instructions']['hit']))
+        instryou = instryou.replace("{3}", str(playerstats[consoleip]['instructions']['missed']))
         client.publish("clients/" + consoleip + "/instructions", str(instryou))
     time.sleep(5.0)
     #stats for your targets
     instr = controls.blurb['ending']['them']
     for consoleip in players:
-        instrthem = instr.replace("{1}", playerstats[consoleip]['targets']['hit'])
-        instrthem = instrthem.replace("{2}", playerstats[consoleip]['targets']['missed'] + playerstats[consoleip]['targets']['hit'])
+        instrthem = instr.replace("{1}", str(playerstats[consoleip]['targets']['hit']))
+        instrthem = instrthem.replace("{2}", str(playerstats[consoleip]['targets']['missed'] + playerstats[consoleip]['targets']['hit']))
         client.publish("clients/" + consoleip + "/instructions", str(instrthem))
     time.sleep(5.0)
     tellAllPlayers(players, controls.blurb['ending']['end'])
