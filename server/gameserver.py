@@ -389,7 +389,7 @@ def gameOver():
     global gamestate
     gamestate = 'gameover'
     #play sound
-    tellAllPlayers(players, controls.blurb['ending']['start']
+    tellAllPlayers(players, controls.blurb['ending']['start'])
     time.sleep(5.0)
     instr = controls.blurb['ending']['you']
     #stats for your instructions
