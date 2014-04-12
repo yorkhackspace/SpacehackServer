@@ -45,6 +45,7 @@ def on_connect(mosq, obj, rc):
     """Receive MQTT connection notification"""
     if rc == 0:
         print("Connected to MQTT")
+        global gamestate
         gamestate = 'readytostart'
     else:
         print("Failed - return code is " + rc)
