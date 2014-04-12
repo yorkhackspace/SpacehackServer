@@ -16,5 +16,7 @@
   },
   "readytostart": "To start a new game, all players must push and hold the big button.",
   "gameinprogress": "Game already in progress, please wait for it to finish",
-  "hyperspace": "The Guppy made it safely to hyperspace!"
+  "hyperspace": "The Guppy made it safely to hyperspace!",
+  "startbutton": "Push and hold to start a new game",
+  "logo": "+------------------+ |    SPACE               | |        HACK    | +------------------+"
 }
