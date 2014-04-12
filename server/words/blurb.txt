@@ -2,10 +2,10 @@
   "intro": [
     "Welcome, Star Corps cadets, to the recently refurbished USS Guppy!", 
     "This venerable old boat, veteran of many space battles, has been patched up", 
-    "and is once again declared officially 'Good Enough for Government work'.",
+    "and is once again declared officially 'Good Enough for Government Work'.",
     "The ship's computer will issue all the instructions you and your crew will need,", 
     "Just shout them out and listen out for any that affect your crew command console", 
-    "- simple as pie.  It practically flies itself, really. Good luck and Toodle pip!", 
+    "- simple as pie.  It practically flies itself, really. Good luck and Toodle Pip!", 
     ".................... ........Get......... .......Ready!....... ...................."
   ],
   "ending": {
