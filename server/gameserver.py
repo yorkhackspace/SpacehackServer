@@ -111,6 +111,7 @@ def on_message(mosq, obj, msg):
 def receiveValue(consoleip, ctrlid, value):
     global lastgenerated
     global gamestate
+    global numinstructions
     value = str(value)
     if currentsetup[consoleip]['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
         value = int(value)
@@ -130,7 +131,13 @@ def receiveValue(consoleip, ctrlid, value):
                 #update stats
                 playerstats[targetip]['instructions']['hit'] += 1
                 playerstats[consoleip]['targets']['hit'] += 1
-                pickNewTarget(targetip)
+                numinstructions -= 1
+                if numinstructions <= 0:
+                    #Round over
+                    roundOver()
+                else:
+                    #Pick a new target and carry on
+                    pickNewTarget(targetip)
         if not matched: #Need to also check if a game round has begun yet
             playSound(random.choice(controls.soundfiles['wrong']))
     elif gamestate in ['readytostart', 'waitingforplayers']:
