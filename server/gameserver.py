@@ -455,7 +455,7 @@ lastReady = time.time()
 while(client.loop() == 0): 
     if time.time() - lastReady > 3.0:
         lastReady = time.time()
-        client.publish('server/ready', 'started')
+        client.publish('server/ready', 'ready')
     if gamestate == 'waitingforplayers' and len(players) >= 1 and time.time() - lastgenerated > 10.0:
         initGame()        
     elif gamestate == 'setupround' and time.time() - lastgenerated > 10.0:
