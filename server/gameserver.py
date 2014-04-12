@@ -120,7 +120,7 @@ def receiveValue(consoleip, ctrlid, value):
         matched = False
         if 'definition' in currentsetup[consoleip]['controls'][ctrlid]:
             currentsetup[consoleip]['controls'][ctrlid]['definition']['value'] = value
-        for targetip in consoles:
+        for targetip in players:
             consoledef = console[targetip]
             if ('target' in consoledef and consoledef['target']['console'] == consoleip 
                         and consoledef['target']['control'] == ctrlid
@@ -483,7 +483,7 @@ while(client.loop() == 0):
         client.publish('server/ready', 'ready')
     if gamestate == 'waitingforplayers' and len(players) >= 1 and time.time() - lastgenerated > 10.0:
         initGame()        
-    elif gamestate == 'setupround' and time.time() - lastgenerated > 10.0:
+    elif gamestate == 'setupround' and time.time() - lastgenerated > 5.0:
         gamestate = 'playround'
         for consoleip in players:
             pickNewTarget(consoleip)
