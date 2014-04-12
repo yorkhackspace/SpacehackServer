@@ -481,9 +481,9 @@ while(client.loop() == 0):
     if time.time() - lastReady > 3.0:
         lastReady = time.time()
         client.publish('server/ready', 'ready')
-    if gamestate == 'waitingforplayers' and len(players) >= 1 and time.time() - lastgenerated > 10.0:
+    if gamestate == 'waitingforplayers' and len(players) >= 1 and time.time() - lastgenerated > 5.0:
         initGame()        
-    elif gamestate == 'setupround' and time.time() - lastgenerated > 5.0:
+    elif gamestate == 'setupround' and time.time() - lastgenerated > 10.0:
         gamestate = 'playround'
         for consoleip in players:
             pickNewTarget(consoleip)
