@@ -397,10 +397,20 @@ def gameOver():
     instr = controls.blurb['ending']['you']
     #stats for your instructions
     for consoleip in players:
+        config = console[consoleip]
         instryou = instr.replace("{1}", str(playerstats[consoleip]['instructions']['hit']))
         instryou = instryou.replace("{2}", str(playerstats[consoleip]['instructions']['missed'] + playerstats[consoleip]['instructions']['hit']))
         instryou = instryou.replace("{3}", str(playerstats[consoleip]['instructions']['missed']))
-        client.publish("clients/" + consoleip + "/instructions", str(instryou))
+        consolesetup = {}
+        consolesetup['instructions'] = str(instryou)
+        consolesetup['controls'] = {}
+        for control in config['controls']:
+            ctrlid = control['id']
+            consolesetup['controls'][ctrlid]={}
+            consolesetup['controls'][ctrlid]['type'] = 'inactive'
+            consolesetup['controls'][ctrlid]['enabled'] = 0
+            consolesetup['controls'][ctrlid]['name'] = ""
+        client.publish("clients/" + consoleip + "/configure", json.dumps(consolesetup))
     time.sleep(5.0)
     #stats for your targets
     instr = controls.blurb['ending']['them']
@@ -421,7 +431,7 @@ def gameOver():
         consolesetup = {}
         consolesetup['instructions'] = controls.blurb['readytostart']
         consolesetup['controls'] = {}
-        print(config['controls'])
+        config = console[consoleip]
         for control in config['controls']:
             ctrlid = control['id']
             consolesetup['controls'][ctrlid]={}
