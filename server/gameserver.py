@@ -106,14 +106,12 @@ def on_message(mosq, obj, msg):
             value = str(msg.payload)
             if currentsetup[consoleip]['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
                 value = int(value)
-                receiveValue(consoleip, ctrlid, value)
+            receiveValue(consoleip, ctrlid, value)
                 
 def receiveValue(consoleip, ctrlid, value):
     global lastgenerated
     global gamestate
     global numinstructions
-    if currentsetup[consoleip]['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
-        value = int(value)
     if gamestate == 'playround':
         #Check posted value against current targets
         matched = False
@@ -336,7 +334,8 @@ def initGame():
     #Start game!
     global gamestate
     gamestate = 'initgame'
-    #Music?
+    #Music
+    playSound(controls.soundfiles['special']['fanfare'])
     #cut off non-players from participating
     for consoleip in list(set(consoles) - set(players)):
         consolesetup = {}

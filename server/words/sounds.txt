@@ -84,6 +84,7 @@
     "creeper.ogg"
   ],
   "special": {
-    "keypad": "bleep.ogg"
+    "keypad": "bleep.ogg",
+    "fanfare": "fanfare.ogg"
   }
 }
