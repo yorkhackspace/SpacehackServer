@@ -75,7 +75,7 @@ def on_message(mosq, obj, msg):
                     if 'gamestart' in control:
                         consolesetup['controls'][ctrlid]['type'] = 'button'
                         consolesetup['controls'][ctrlid]['enabled'] = 1
-                        consolesetup['controls'][ctrlid]['name'] = "Push and hold to start"
+                        consolesetup['controls'][ctrlid]['name'] = "Push and hold to start a new game"
                         consolesetup['controls'][ctrlid]['gamestart'] = True
                         consolesetup['controls'][ctrlid]['definition'] = {}
                     else:
@@ -450,7 +450,7 @@ def gameOver():
             if 'gamestart' in control:
                 consolesetup['controls'][ctrlid]['type'] = 'button'
                 consolesetup['controls'][ctrlid]['enabled'] = 1
-                consolesetup['controls'][ctrlid]['name'] = "Push and hold to start"
+                consolesetup['controls'][ctrlid]['name'] = "Push and hold to start a new game"
                 consolesetup['controls'][ctrlid]['gamestart'] = True
                 consolesetup['controls'][ctrlid]['definition'] = {}
             else:
