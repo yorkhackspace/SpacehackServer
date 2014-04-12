@@ -394,17 +394,10 @@ def gameOver():
     global gamestate
     gamestate = 'gameover'
     #play sound
-    tellAllPlayers(players, controls.blurb['ending']['start'])
-    time.sleep(5.0)
-    instr = controls.blurb['ending']['you']
-    #stats for your instructions
     for consoleip in players:
         config = console[consoleip]
-        instryou = instr.replace("{1}", str(playerstats[consoleip]['instructions']['hit']))
-        instryou = instryou.replace("{2}", str(playerstats[consoleip]['instructions']['missed'] + playerstats[consoleip]['instructions']['hit']))
-        instryou = instryou.replace("{3}", str(playerstats[consoleip]['instructions']['missed']))
         consolesetup = {}
-        consolesetup['instructions'] = str(instryou)
+        consolesetup['instructions'] = str(controls.blurb['ending']['start'])
         consolesetup['timeout'] = 0.0
         consolesetup['controls'] = {}
         for control in config['controls']:
@@ -414,6 +407,14 @@ def gameOver():
             consolesetup['controls'][ctrlid]['enabled'] = 0
             consolesetup['controls'][ctrlid]['name'] = ""
         client.publish("clients/" + consoleip + "/configure", json.dumps(consolesetup))
+    time.sleep(5.0)
+    instr = controls.blurb['ending']['you']
+    #stats for your instructions
+    for consoleip in players:
+        instryou = instr.replace("{1}", str(playerstats[consoleip]['instructions']['hit']))
+        instryou = instryou.replace("{2}", str(playerstats[consoleip]['instructions']['missed'] + playerstats[consoleip]['instructions']['hit']))
+        instryou = instryou.replace("{3}", str(playerstats[consoleip]['instructions']['missed']))
+        client.publish("clients/" + consoleip + "/instructions", str(instryou))
     time.sleep(5.0)
     #stats for your targets
     instr = controls.blurb['ending']['them']
