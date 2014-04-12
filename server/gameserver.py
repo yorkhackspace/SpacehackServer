@@ -399,6 +399,7 @@ def gameOver():
     global gamestate
     gamestate = 'gameover'
     #play sound
+    playSound(controls.soundfiles['special']['explosion'])
     for consoleip in players:
         config = console[consoleip]
         consolesetup = {}
@@ -413,6 +414,7 @@ def gameOver():
             consolesetup['controls'][ctrlid]['name'] = ""
         client.publish("clients/" + consoleip + "/configure", json.dumps(consolesetup))
     time.sleep(5.0)
+    playSound(controls.soundfiles['special']['taps'])
     instr = controls.blurb['ending']['you']
     #stats for your instructions
     for consoleip in players:
