@@ -352,6 +352,7 @@ def initGame():
     global playerstats
     playerstats = {}
     for consoleip in players:
+        playerstats[consoleip] = {}
         playerstats[consoleip]['instructions'] = {} #stats on instructions you read out
         playerstats[consoleip]['targets'] = {} #stats on instructions you should have implemented
         playerstats[consoleip]['instructions']['total'] = 0
