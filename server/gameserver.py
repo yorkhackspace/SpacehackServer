@@ -379,7 +379,7 @@ def initRound():
     defineControls()
     playerstats['game']['rounds'] += 1
     playerstats['game']['lives'] = 5
-    numinstructions = 20
+    numinstructions = 10
     lastgenerated = time.time()
     
 def roundOver():
