@@ -113,9 +113,10 @@ def on_message(mosq, obj, msg):
         ctrlid = nodes[2]
         if nodes[3] == 'value':
             value = str(msg.payload)
-            if currentsetup[consoleip]['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
-                value = int(value)
-            receiveValue(consoleip, ctrlid, value)
+            if consoleip in currentsetup:
+                if currentsetup[consoleip]['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
+                    value = int(value)
+                receiveValue(consoleip, ctrlid, value)
                 
 def receiveValue(consoleip, ctrlid, value):
     global lastgenerated
