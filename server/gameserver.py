@@ -18,12 +18,6 @@ def playSound(filename):
         
 if sound:
     import pygame
-    #Pygame for sounds
-    pygame.mixer.quit()
-    pygame.mixer.init(48000, -16, 2, 1024) #was 1024
-    for fn in controls.soundfiles['continuous']:
-        snd = pygame.mixer.Sound("sounds/" + fn)
-        snd.play(-1)
     
 #MQTT client to allow publishing
 client = mosquitto.Mosquitto("PiServer") #ID shown to the broker
@@ -381,7 +375,14 @@ def initGame():
     currenttimeout = 10.0
     tellAllPlayers(players, controls.blurb['logo'])
     #Music
-    playSound(controls.soundfiles['special']['fanfare'])
+    if sound:
+        #Pygame for sounds
+        pygame.mixer.quit()
+        pygame.mixer.init(48000, -16, 2, 1024) #was 1024
+        for fn in controls.soundfiles['continuous']:
+            snd = pygame.mixer.Sound("sounds/" + fn)
+            snd.play(-1)
+        playSound(controls.soundfiles['special']['fanfare'])
     #cut off non-players from participating
     for consoleip in list(set(consoles) - set(players)):
         consolesetup = {}
@@ -452,8 +453,12 @@ def gameOver():
     gamestate = 'gameover'
     tellAllPlayers(players, controls.blurb['ending']['splash'])
     #play sound
-    playSound(controls.soundfiles['special']['explosion'])
-    playSound(controls.soundfiles['special']['taps'])
+    if sound:
+        #Pygame for sounds
+        pygame.mixer.quit()
+        pygame.mixer.init(48000, -16, 2, 1024) #was 1024
+        playSound(controls.soundfiles['special']['explosion'])
+        playSound(controls.soundfiles['special']['taps'])
     for consoleip in players:
         config = console[consoleip]
         consolesetup = {}
