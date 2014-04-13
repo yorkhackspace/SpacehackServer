@@ -335,7 +335,8 @@ def increaseCorruption(consoleip, ctrlid):
         corruptednamelist = list(ctrldef['name'])
     for i in range(5):
         corruptednamelist[random.choice(range(len(corruptednamelist)))] = chr(random.choice(range(255)))
-    ctrldef['corruptedname'] = ''.join(corruptednamelist)
+    corruptedname = ''.join(corruptednamelist)
+    ctrldef['corruptedname'] = corruptedname
     client.publish("clients/" + consoleip + "/" + ctrlid + "/name", corruptedname)
         
 def tellAllPlayers(consolelist, message):
