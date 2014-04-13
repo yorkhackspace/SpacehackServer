@@ -102,8 +102,8 @@ def on_message(mosq, obj, msg):
                         consolesetup['controls'][ctrlid]['enabled'] = 0
                         consolesetup['controls'][ctrlid]['name'] = ""
                         client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
-            client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
             currentsetup[consoleip] = consolesetup
+            client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
             global lastgenerated
             global numinstructions
             lastgenerated = time.time()
