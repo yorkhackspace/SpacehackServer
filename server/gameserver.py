@@ -333,8 +333,12 @@ def increaseCorruption(consoleip, ctrlid):
         corruptednamelist = list(ctrldef['corruptedname'])
     else:
         corruptednamelist = list(ctrldef['name'])
-    for i in range(5):
-        corruptednamelist[random.choice(range(len(corruptednamelist)))] = chr(random.choice(range(255)))
+    for i in range(3):
+        ascii = random.choice(range(12 * 16))
+        ascii += 32
+        if ascii > 128:
+            ascii += 32
+        corruptednamelist[random.choice(range(len(corruptednamelist)))] = chr(ascii)
     corruptedname = ''.join(corruptednamelist)
     ctrldef['corruptedname'] = corruptedname
     client.publish("clients/" + consoleip + "/" + ctrlid + "/name", corruptedname)
