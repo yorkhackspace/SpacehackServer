@@ -103,7 +103,7 @@ def on_message(mosq, obj, msg):
                         consolesetup['controls'][ctrlid]['enabled'] = 0
                         consolesetup['controls'][ctrlid]['name'] = ""
                         client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
-            if len(currentsetup) > 0:
+            if len(consolesetup) > 0:
                 currentsetup[consoleip] = consolesetup
                 client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
     elif nodes[0] == 'clients':
