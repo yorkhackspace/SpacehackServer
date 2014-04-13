@@ -345,6 +345,7 @@ def checkTimeouts():
                 pickNewTarget(consoleip)
                 
 def increaseCorruption(consoleip, ctrlid):
+    """Introduce text corruptions to control names as artificial 'malfunctions'"""
     ctrldef = currentsetup[consoleip]['controls'][ctrlid]
     if 'corruptedname' in ctrldef:
         corruptednamelist = list(ctrldef['corruptedname'])
@@ -352,23 +353,27 @@ def increaseCorruption(consoleip, ctrlid):
         corruptednamelist = list(ctrldef['name'])
     count = 3
     while count > 0:
+        #Try to get a printable character, this is different for HD44780 than Nokia but I just use the HD44780 here
         ascii = random.choice(range(12 * 16))
         ascii += 32
         if ascii > 128:
             ascii += 32
+        #Position to change - avoid spaces so corrupt name prints the same
         pos = random.choice(range(len(corruptednamelist)))
         if corruptednamelist[pos] != ' ':
-            corruptednamelist[random.choice(range(len(corruptednamelist)))] = chr(ascii)
+            corruptednamelist[pos] = chr(ascii)
             count -= 1
     corruptedname = ''.join(corruptednamelist)
     ctrldef['corruptedname'] = corruptedname
     client.publish("clients/" + consoleip + "/" + ctrlid + "/name", corruptedname)
         
 def tellAllPlayers(consolelist, message):
+    """Simple routine to broadcast a message to a list or consoles"""
     for consoleip in consolelist:
         client.publish('clients/' + consoleip + '/instructions', str(message))
         
 def initGame():
+    """Kick off a new game"""
     #Start game!
     global gamestate
     global currenttimeout
@@ -416,6 +421,7 @@ def initGame():
     initRound()
 
 def initRound():
+    """Kick off a new round"""
     global numinstructions
     global lastgenerated
     global gamestate
@@ -429,6 +435,7 @@ def initRound():
     lastgenerated = time.time()
     
 def roundOver():
+    """End the round and jump to Hyperspace"""
     global gamestate
     global currenttimeout
     gamestate = 'roundover'
@@ -440,6 +447,7 @@ def roundOver():
     initRound()
     
 def gameOver():
+    """End the current game and dole out the medals"""
     global gamestate
     gamestate = 'gameover'
     tellAllPlayers(players, controls.blurb['ending']['splash'])
@@ -484,7 +492,7 @@ def gameOver():
     resetToWaiting()
     
 def resetToWaiting():
-    #And reset again for new players
+    """Reset game back to waiting for new players"""
     global gamestate
     gamestate = 'readytostart'
     for consoleip in consoles:
