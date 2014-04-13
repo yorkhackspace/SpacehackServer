@@ -477,6 +477,7 @@ def gameOver():
     
 def resetToWaiting():
     #And reset again for new players
+    global gamestate
     gamestate = 'readytostart'
     for consoleip in consoles:
         consolesetup = {}
