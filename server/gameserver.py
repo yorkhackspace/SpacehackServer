@@ -330,12 +330,12 @@ def checkTimeouts():
 def increaseCorruption(consoleip, ctrlid):
     ctrldef = currentsetup[consoleip]['controls'][ctrlid]
     if 'corruptedname' in ctrldef:
-        corruptedname = ctrldef['corruptedname']
+        corruptednamelist = list(ctrldef['corruptedname'])
     else:
-        corruptedname = ctrldef['name']
+        corruptednamelist = list(ctrldef['name'])
     for i in range(5):
-        corruptedname[random.choice(range(len(corruptedname)))] = chr(random.choice(range(255)))
-    ctrldef['corruptedname'] = corruptedname
+        corruptednamelist[random.choice(range(len(corruptednamelist)))] = chr(random.choice(range(255)))
+    ctrldef['corruptedname'] = ''.join(corruptednamelist)
     client.publish("clients/" + consoleip + "/" + ctrlid + "/name", corruptedname)
         
 def tellAllPlayers(consolelist, message):
