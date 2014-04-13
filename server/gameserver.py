@@ -91,6 +91,7 @@ def on_message(mosq, obj, msg):
                 if len(players) == 0:
                     #back to start
                     resetToWaiting()
+                    return
                 else:
                     #Game still active - sit the rest of it out
                     consolesetup['instructions'] = controls.blurb['gameinprogress']
@@ -102,12 +103,9 @@ def on_message(mosq, obj, msg):
                         consolesetup['controls'][ctrlid]['enabled'] = 0
                         consolesetup['controls'][ctrlid]['name'] = ""
                         client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
-            currentsetup[consoleip] = consolesetup
-            client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
-            global lastgenerated
-            global numinstructions
-            lastgenerated = time.time()
-            numinstructions = 0
+            if len(currentsetup) > 0:
+                currentsetup[consoleip] = consolesetup
+                client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
     elif nodes[0] == 'clients':
         consoleip = nodes[1]
         ctrlid = nodes[2]
