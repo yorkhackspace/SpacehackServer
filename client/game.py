@@ -219,11 +219,16 @@ def on_message(mosq, obj, msg):
         elif nodes[2] in controlids:
             ctrlid = nodes[2]
             if nodes[3] == 'enabled':
-                roundconfig['controls'][ctrlid]['enabled'] = False
-                #switch it off?
-                display(" ", config['local']['controls'][ctrlid]['display'], ctrlid)
+                if str(msg.payload) = "0":
+                    roundconfig['controls'][ctrlid]['enabled'] = False
+                    #switch it off
+                    display(" ", config['local']['controls'][ctrlid]['display']['width'], ctrlid)
+                else:
+                    roundconfig['controls'][ctrlid]['enabled'] = True
+                    #switch it on
+                    display(roundconfig['controls'][ctrlid]['name'], config['local']['controls'][ctrlid]['display']['width'], ctrlid)
             elif nodes[3] == 'name':
-                display(str(msg.payload), config['local']['controls'][ctrlid]['display'], ctrlid)
+                display(str(msg.payload), config['local']['controls'][ctrlid]['display']['width'], ctrlid)
     elif nodes[0] == 'server':
         if nodes[1] == 'ready':
             mess = str(msg.payload)
