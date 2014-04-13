@@ -87,7 +87,6 @@ def on_message(mosq, obj, msg):
                 #There's a game on, but this client's late for it
                 if consoleip in players:
                     players.remove(consoleip)
-                    playerstats.remove(consoleip)
                 #Was this the last remaining player?
                 if len(players) == 0:
                     #back to start
