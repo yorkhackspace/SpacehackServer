@@ -425,6 +425,7 @@ def roundOver():
 def gameOver():
     global gamestate
     gamestate = 'gameover'
+    tellAllPlayers(players, controls.blurb['ending']['splash'])
     #play sound
     playSound(controls.soundfiles['special']['explosion'])
     playSound(controls.soundfiles['special']['taps'])
