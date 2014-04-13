@@ -442,8 +442,9 @@ def roundOver():
     gamestate = 'roundover'
     #play sound?
     tellAllPlayers(players, controls.blurb['hyperspace'])
-    time.sleep(5.0)
-    currenttimeout *= 2.0 / 3.0
+    playSound(controls.sounds['special']['hyperspace'])
+    time.sleep(8.0)
+    currenttimeout *= 0.75
     
     initRound()
     
