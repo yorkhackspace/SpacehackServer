@@ -498,8 +498,8 @@ def resetToWaiting():
                 consolesetup['controls'][ctrlid]['type'] = 'inactive'
                 consolesetup['controls'][ctrlid]['enabled'] = 0
                 consolesetup['controls'][ctrlid]['name'] = ""
-        client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
         currentsetup[consoleip] = consolesetup
+        client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
     global lastgenerated
     global numinstructions
     global players
