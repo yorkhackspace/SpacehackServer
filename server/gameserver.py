@@ -325,7 +325,19 @@ def checkTimeouts():
             else:
                 #Pick a new target and carry on
                 pickNewTarget(consoleip)
-
+                increaseCorruption(consoledef['target']['console'], consoledef['target']['control'])
+                
+def increaseCorruption(consoleip, ctrlid):
+    ctrldef = currentsetup[consoleip]['controls'][ctrlid]
+    if 'corruptedname' in ctrldef:
+        corruptedname = ctrldef['corruptedname']
+    else:
+        corruptedname = ctrldef['name']
+    for i in range(5):
+        corruptedname[random.choice(range(len(corruptedname)))] = chr(random.choice(range(255)))
+    ctrldef['corruptedname'] = corruptedname
+    client.publish("clients/" + consoleip + "/" + ctrlid + "/name", corruptedname)
+        
 def tellAllPlayers(consolelist, message):
     for consoleip in consolelist:
         client.publish('clients/' + consoleip + '/instructions', str(message))
@@ -333,7 +345,9 @@ def tellAllPlayers(consolelist, message):
 def initGame():
     #Start game!
     global gamestate
+    global currenttimeout
     gamestate = 'initgame'
+    currenttimeout = 10.0
     tellAllPlayers(players, controls.blurb['logo'])
     #Music
     playSound(controls.soundfiles['special']['fanfare'])
@@ -390,10 +404,13 @@ def initRound():
     
 def roundOver():
     global gamestate
+    global currenttimeout
     gamestate = 'roundover'
     #play sound?
     tellAllPlayers(players, controls.blurb['hyperspace'])
     time.sleep(5.0)
+    currenttimeout *= 2.0 / 3.0
+    
     initRound()
     
 def gameOver():
