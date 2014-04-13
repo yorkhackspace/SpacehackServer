@@ -11,6 +11,7 @@ import json
 sound = True #Swithch this off if you don't have pyGame
 
 def playSound(filename):
+    """Play a sound, if enabled"""
     if sound:
         snd = pygame.mixer.Sound("sounds/" + filename)
         snd.play()
@@ -65,6 +66,7 @@ def on_message(mosq, obj, msg):
             #set console up for game start
             consolesetup = {}
             if gamestate in ['readytostart', 'waitingforplayers']:
+                #Still waiting to start
                 consolesetup['instructions'] = controls.blurb['readytostart']
                 consolesetup['timeout'] = 0.0
                 consolesetup['controls'] = {}
@@ -121,6 +123,7 @@ def on_message(mosq, obj, msg):
                     receiveValue(consoleip, ctrlid, value)
                 
 def receiveValue(consoleip, ctrlid, value):
+    """Process a received value for a control"""
     global lastgenerated
     global gamestate
     global numinstructions
@@ -148,7 +151,9 @@ def receiveValue(consoleip, ctrlid, value):
                     #Pick a new target and carry on
                     pickNewTarget(targetip)
         if not matched: #Need to also check if a game round has begun yet
-            playSound(random.choice(controls.soundfiles['wrong']))
+            #Suppress caring about button releases - only important in game starts
+            if not (currentsetup[consoleip]['controls'][ctrlid]['type'] == 'button' and str(value) == "0"):
+                playSound(random.choice(controls.soundfiles['wrong']))
     elif gamestate in ['readytostart', 'waitingforplayers']:
         #button push?
         if 'gamestart' in currentsetup[consoleip]['controls'][ctrlid]:
