@@ -339,7 +339,7 @@ def increaseCorruption(consoleip, ctrlid):
         ascii += 32
         if ascii > 128:
             ascii += 32
-        pos = random.choice(range(len(corruptednamelist))
+        pos = random.choice(range(len(corruptednamelist)))
         if corruptednamelist[pos] != ' ':
             corruptednamelist[random.choice(range(len(corruptednamelist)))] = chr(ascii)
             count -= 1
