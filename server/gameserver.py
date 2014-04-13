@@ -114,7 +114,10 @@ def on_message(mosq, obj, msg):
             if consoleip in currentsetup:
                 if 'controls' in currentsetup[consoleip]:
                     if currentsetup[consoleip]['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
-                        value = int(value)
+                        try:
+                            value = int(value)
+                        except ValueError:
+                            return
                     receiveValue(consoleip, ctrlid, value)
                 
 def receiveValue(consoleip, ctrlid, value):
