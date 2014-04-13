@@ -87,6 +87,7 @@
     "keypad": "bleep.ogg",
     "fanfare": "fanfare.ogg",
     "explosion": "explosion.ogg",
-    "taps": "taps.ogg"
+    "taps": "taps.ogg",
+    "hyperspace": "scifi11.ogg"
   }
 }
