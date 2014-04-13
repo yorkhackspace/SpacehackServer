@@ -324,8 +324,8 @@ def checkTimeouts():
                 roundOver()
             else:
                 #Pick a new target and carry on
-                pickNewTarget(consoleip)
                 increaseCorruption(consoledef['target']['console'], consoledef['target']['control'])
+                pickNewTarget(consoleip)
                 
 def increaseCorruption(consoleip, ctrlid):
     ctrldef = currentsetup[consoleip]['controls'][ctrlid]
