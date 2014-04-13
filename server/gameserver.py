@@ -442,7 +442,7 @@ def roundOver():
     gamestate = 'roundover'
     #play sound?
     tellAllPlayers(players, controls.blurb['hyperspace'])
-    playSound(controls.sounds['special']['hyperspace'])
+    playSound(controls.soundfiles['special']['hyperspace'])
     time.sleep(8.0)
     currenttimeout *= 0.75
     
