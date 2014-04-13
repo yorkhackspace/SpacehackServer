@@ -84,15 +84,25 @@ def on_message(mosq, obj, msg):
                         consolesetup['controls'][ctrlid]['name'] = ""
                     client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
             else:
-                consolesetup['instructions'] = controls.blurb['gameinprogress']
-                consolesetup['controls'] = {}
-                for control in config['controls']:
-                    ctrlid = control['id']
-                    consolesetup['controls'][ctrlid]={}
-                    consolesetup['controls'][ctrlid]['type'] = 'inactive'
-                    consolesetup['controls'][ctrlid]['enabled'] = 0
-                    consolesetup['controls'][ctrlid]['name'] = ""
-                    client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
+                #There's a game on, but this client's late for it
+                if consoleip in players:
+                    players.remove(consoleip)
+                    gamestats.remove(consoleip)
+                #Was this the last remaining player?
+                if len(players) == 0:
+                    #back to start
+                    resetToWaiting()
+                else:
+                    #Game still active - sit the rest of it out
+                    consolesetup['instructions'] = controls.blurb['gameinprogress']
+                    consolesetup['controls'] = {}
+                    for control in config['controls']:
+                        ctrlid = control['id']
+                        consolesetup['controls'][ctrlid]={}
+                        consolesetup['controls'][ctrlid]['type'] = 'inactive'
+                        consolesetup['controls'][ctrlid]['enabled'] = 0
+                        consolesetup['controls'][ctrlid]['name'] = ""
+                        client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
             client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
             currentsetup[consoleip] = consolesetup
             global lastgenerated
@@ -464,6 +474,9 @@ def gameOver():
     for consoleip in players:
         client.publish("clients/" + consoleip + "/instructions", str(controls.getMedal()))
     time.sleep(15.0)
+    resetToWaiting()
+    
+def resetToWaiting():
     #And reset again for new players
     gamestate = 'readytostart'
     for consoleip in consoles:
@@ -489,9 +502,11 @@ def gameOver():
         currentsetup[consoleip] = consolesetup
     global lastgenerated
     global numinstructions
+    global players
+    players = []
     lastgenerated = time.time()
     numinstructions = 0
-
+    
 #Main loop
 
 #Connect to MQTT (final code should make this a retry loop)
