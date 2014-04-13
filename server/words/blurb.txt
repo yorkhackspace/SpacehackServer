@@ -9,6 +9,7 @@
     ".................... ........Get......... .......Ready!....... ...................."
   ],
   "ending": {
+    "splash": "+------------------+ | * * BA-DA * * * *| |* * * * BOOM! * * | +------------------+",
     "start": "The Guppy has been destroyed with the loss of all cadets.  Including you.",
     "you": "You correctly set {1} of {2} control instructions, and missed {3}.",
     "them": "{1} of {2} of the instructions you read out were achieved.",
