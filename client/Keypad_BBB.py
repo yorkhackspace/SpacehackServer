@@ -93,7 +93,7 @@ class keypad():
          
 if __name__ == '__main__':
     # Initialize the keypad class
-    kp = keypad("P8_3","P8_4","P8_5","P8_6","P8_7","P8_8","P8_9","P8_10",)
+    kp = keypad("P8_3","P8_4","P8_5","P8_6","P8_7","P8_8","P8_9","P8_10")
      
     # Loop while waiting for a keypress
     digit = None
