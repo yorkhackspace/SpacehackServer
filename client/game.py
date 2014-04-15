@@ -219,7 +219,7 @@ def on_message(mosq, obj, msg):
         elif nodes[2] in controlids:
             ctrlid = nodes[2]
             if nodes[3] == 'enabled':
-                if str(msg.payload) = "0":
+                if str(msg.payload) == "0":
                     roundconfig['controls'][ctrlid]['enabled'] = False
                     #switch it off
                     display(" ", config['local']['controls'][ctrlid]['display']['width'], ctrlid)
