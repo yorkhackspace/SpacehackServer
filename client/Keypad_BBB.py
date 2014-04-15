@@ -44,7 +44,7 @@ class keypad():
          
         # Set all rows as input
         for i in range(len(self.ROW)):
-            GPIO.setup(self.ROW[i], GPIO.IN, GPIO.PUD_UP)
+            GPIO.setup(self.ROW[i], GPIO.IN, GPIO.PUD_DOWN)
          
         # Scan rows for pushed key/button
         # A valid key press should set "rowVal"  between 0 and 3.
@@ -87,9 +87,9 @@ class keypad():
     def exit(self):
         # Reinitialize all rows and columns as input at exit
         for i in range(len(self.ROW)):
-                GPIO.setup(self.ROW[i], GPIO.IN, GPIO.PUD_UP) 
+                GPIO.setup(self.ROW[i], GPIO.IN, GPIO.PUD_DOWN) 
         for j in range(len(self.COLUMN)):
-                GPIO.setup(self.COLUMN[j], GPIO.IN, GPIO.PUD_UP)
+                GPIO.setup(self.COLUMN[j], GPIO.IN, GPIO.PUD_DOWN)
          
 if __name__ == '__main__':
     # Initialize the keypad class
