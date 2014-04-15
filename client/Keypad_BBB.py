@@ -51,7 +51,7 @@ class keypad():
         rowVal = -1
         for i in range(len(self.ROW)):
             tmpRead = GPIO.input(self.ROW[i])
-            if tmpRead == 1#0:
+            if tmpRead == 1: #0:
                 rowVal = i
                  
         # if rowVal is not 0 thru 3 then no button was pressed and we can exit
