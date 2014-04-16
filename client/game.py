@@ -561,6 +561,7 @@ def pollControls():
                         value = str(ctrldef['pool'][int(state)])
                 elif hardwaretype == 'combo7segColourRotary':
                     btn = GPIO.input(pins['BTN'])
+                    state = btn
                     #rotary movement is handled separately not sampled
                     if ctrlstate != state:
                         if ctrltype == 'button':
