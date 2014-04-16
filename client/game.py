@@ -374,7 +374,7 @@ def processControlValueAssignment(value, ctrlid, override=False):
                         GPIO.output(pins['LED'], GPIO.HIGH)
         elif hardwaretype == 'keypad':
             #no need for cases
-            displayValueLine(value)
+            displayValueLine(value, ctrlid)
         ctrldef['value'] = value
             
 #Process an incoming config for a round
