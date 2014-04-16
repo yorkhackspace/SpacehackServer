@@ -389,7 +389,7 @@ def initGame():
         consolesetup['instructions'] = controls.blurb['gameinprogress']
         consolesetup['timeout'] = 0.0
         consolesetup['controls'] = {}
-        for control in config['controls']:
+        for control in console[consoleip]['controls']:
             ctrlid = control['id']
             consolesetup['controls'][ctrlid]={}
             consolesetup['controls'][ctrlid]['type'] = 'inactive'
