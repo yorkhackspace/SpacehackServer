@@ -42,12 +42,12 @@ myLcdManager = lcd_manager.LcdManager(sortedlist, config)
 
 #initialise all controls
 control_manager.initialiseControls(config, sortedlist, myLcdManager)
-            
+
 #MQTT client
 client = mosquitto.Mosquitto("Game-" + ipaddress) #client ID
 print config['local']
 server = config['local']['server']
-        
+
 #MQTT message arrived
 def on_message(mosq, obj, msg):
     """Process incoming MQTT message"""
@@ -89,8 +89,8 @@ def on_message(mosq, obj, msg):
                 if not hasregistered:
                     hasregistered = True
                     client.publish("server/register", json.dumps(config['interface']))
-                    
-      
+
+
 #Process an incoming config for a round
 def processRoundConfig(roundconfigstring):
     """Process an incoming config for a round"""
@@ -111,12 +111,12 @@ client.subscribe("server/ready")
 for controlid in [x['id'] for x in config['interface']['controls']]:
     client.subscribe(subsbase + str(controlid) + '/name')
     client.subscribe(subsbase + str(controlid) + '/enabled')
-    
+
 #Main loop
 while(client.loop(0) == 0):
     control_manager.pollControls(config, roundconfig, controlids, client, ipaddress)
     myLcdManager.displayTimer(timeoutstarted, resetBlocks, roundconfig.get('timeout', 0))
-    if resetBlocks:    
+    if resetBlocks:
         resetBlocks = False
-        
-    
+
+
