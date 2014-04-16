@@ -8,7 +8,7 @@ import time
 import random
 import json
 
-sound = False #Swithch this off if you don't have pyGame
+sound = True #Switch this off if you don't have pyGame
 
 def playSound(filename):
     """Play a sound, if enabled"""
@@ -379,9 +379,6 @@ def initGame():
         #Pygame for sounds
         pygame.mixer.quit()
         pygame.mixer.init(48000, -16, 2, 1024) #was 1024
-        for fn in controls.soundfiles['continuous']:
-            snd = pygame.mixer.Sound("sounds/" + fn)
-            snd.play(-1)
         playSound(controls.soundfiles['special']['fanfare'])
     #cut off non-players from participating
     for consoleip in list(set(consoles) - set(players)):
@@ -418,6 +415,10 @@ def initGame():
     playerstats['game'] = {}
     playerstats['game']['rounds'] = 0
     #stop music?
+    if sound:
+        for fn in controls.soundfiles['continuous']:
+            snd = pygame.mixer.Sound("sounds/" + fn)
+            snd.play(-1)
     #start first round
     initRound()
 
