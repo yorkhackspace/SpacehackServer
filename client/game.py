@@ -177,11 +177,12 @@ def displayDigits(digits):
 #Bar graph
 def barGraph(digit):
     """Display Bar graph"""
-    for i in range(10):
-        if digit > i:
-            GPIO.output(bar[i], GPIO.HIGH)
-        else:
-            GPIO.output(bar[i], GPIO.LOW)
+    if len(bar) > 0:
+        for i in range(10):
+            if digit > i:
+                GPIO.output(bar[i], GPIO.HIGH)
+            else:
+                GPIO.output(bar[i], GPIO.LOW)
 
 #Display a timer bar on the bottom row of the instructions display
 def displayTimer():
