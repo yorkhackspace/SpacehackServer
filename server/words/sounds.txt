@@ -84,6 +84,10 @@
     "creeper.ogg"
   ],
   "special": {
-    "keypad": "bleep.ogg"
+    "keypad": "bleep.ogg",
+    "fanfare": "fanfare.ogg",
+    "explosion": "explosion.ogg",
+    "taps": "taps.ogg",
+    "hyperspace": "scifi11.ogg"
   }
 }

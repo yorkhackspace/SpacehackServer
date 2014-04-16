@@ -11,18 +11,13 @@ import json
 sound = False #Swithch this off if you don't have pyGame
 
 def playSound(filename):
+    """Play a sound, if enabled"""
     if sound:
         snd = pygame.mixer.Sound("sounds/" + filename)
         snd.play()
         
 if sound:
     import pygame
-    #Pygame for sounds
-    pygame.mixer.quit()
-    pygame.mixer.init(48000, -16, 2, 1024) #was 1024
-    for fn in controls.soundfiles['continuous']:
-        snd = pygame.mixer.Sound("sounds/" + fn)
-        snd.play(-1)
     
 #MQTT client to allow publishing
 client = mosquitto.Mosquitto("PiServer") #ID shown to the broker
@@ -30,19 +25,23 @@ server = "127.0.0.1" #Mosquitto MQTT broker running locally
 
 
 #Game variables
-consoles = []
+consoles = [] #all registered consoles
+players = [] #all participating players
+playerstats = {}
 console = {}
 currentsetup = {}
 currenttimeout = 10.0
 lastgenerated = time.time()
 numinstructions = 0
-gamestate = 'initserver' #initserver, readytostart, waitingforplayers, initgame, setupround, playround, gameover, awardmedals
+gamestate = 'initserver' #initserver, readytostart, waitingforplayers, initgame, setupround, playround, roundover, gameover
 
 #Show when we've connected
 def on_connect(mosq, obj, rc):
     """Receive MQTT connection notification"""
     if rc == 0:
         print("Connected to MQTT")
+        global gamestate
+        gamestate = 'readytostart'
     else:
         print("Failed - return code is " + rc)
 
@@ -60,57 +59,116 @@ def on_message(mosq, obj, msg):
                 consoles.append(consoleip)
             #set console up for game start
             consolesetup = {}
-            consolesetup['instructions'] = 'To start new game, all players push and hold button'
-            consolesetup['controls'] = {}
-            print(config['controls'])
-            for control in config['controls']:
-                ctrlid = control['id']
-                consolesetup['controls'][ctrlid]={}
-                if 'gamestart' in control:
-                    consolesetup['controls'][ctrlid]['type'] = 'button'
-                    consolesetup['controls'][ctrlid]['enabled'] = 1
-                    consolesetup['controls'][ctrlid]['name'] = "Push and hold to start"
+            if gamestate in ['readytostart', 'waitingforplayers']:
+                #Still waiting to start
+                consolesetup['instructions'] = controls.blurb['readytostart']
+                consolesetup['timeout'] = 0.0
+                consolesetup['controls'] = {}
+                print(config['controls'])
+                for control in config['controls']:
+                    ctrlid = control['id']
+                    consolesetup['controls'][ctrlid]={}
+                    if 'gamestart' in control:
+                        consolesetup['controls'][ctrlid]['type'] = 'button'
+                        consolesetup['controls'][ctrlid]['enabled'] = 1
+                        consolesetup['controls'][ctrlid]['name'] = controls.blurb['startbutton']
+                        consolesetup['controls'][ctrlid]['gamestart'] = True
+                        consolesetup['controls'][ctrlid]['definition'] = {}
+                    else:
+                        consolesetup['controls'][ctrlid]['type'] = 'inactive'
+                        consolesetup['controls'][ctrlid]['enabled'] = 0
+                        consolesetup['controls'][ctrlid]['name'] = ""
+                    client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
+            else:
+                #There's a game on, but this client's late for it
+                if consoleip in players:
+                    players.remove(consoleip)
+                #Was this the last remaining player?
+                if len(players) == 0:
+                    #back to start
+                    resetToWaiting()
+                    return
                 else:
-                    consolesetup['controls'][ctrlid]['type'] = 'inactive'
-                    consolesetup['controls'][ctrlid]['enabled'] = 0
-                    consolesetup['controls'][ctrlid]['name'] = ""
-                client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
-            client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
-            currentsetup[consoleip] = consolesetup
-            global lastgenerated
-            global numinstructions
-            lastgenerated = time.time()
-            numinstructions = 0
+                    #Game still active - sit the rest of it out
+                    consolesetup['instructions'] = controls.blurb['gameinprogress']
+                    consolesetup['controls'] = {}
+                    for control in config['controls']:
+                        ctrlid = control['id']
+                        consolesetup['controls'][ctrlid]={}
+                        consolesetup['controls'][ctrlid]['type'] = 'inactive'
+                        consolesetup['controls'][ctrlid]['enabled'] = 0
+                        consolesetup['controls'][ctrlid]['name'] = ""
+                        client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
+            if len(consolesetup) > 0:
+                currentsetup[consoleip] = consolesetup
+                client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
     elif nodes[0] == 'clients':
         consoleip = nodes[1]
         ctrlid = nodes[2]
-        value = str(msg.payload)
-        if currentsetup[consoleip]['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
-            value = int(value)
         if nodes[3] == 'value':
-            #Check posted value against current targets
-            matched = False
-            if 'definition' in currentsetup[consoleip]['controls'][ctrlid]:
-                currentsetup[consoleip]['controls'][ctrlid]['definition']['value'] = value
-            for targetip in consoles:
-                consoledef = console[targetip]
-                if ('target' in consoledef and consoledef['target']['console'] == consoleip 
-                            and consoledef['target']['control'] == ctrlid
-                            and str(consoledef['target']['value']) == str(value)):
-                    #Match
-                    matched = True
-                    playSound(random.choice(controls.soundfiles['right']))
+            value = str(msg.payload)
+            if consoleip in currentsetup:
+                if 'controls' in currentsetup[consoleip]:
+                    if currentsetup[consoleip]['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
+                        try:
+                            value = int(value)
+                        except ValueError:
+                            return
+                    receiveValue(consoleip, ctrlid, value)
+                
+def receiveValue(consoleip, ctrlid, value):
+    """Process a received value for a control"""
+    global lastgenerated
+    global gamestate
+    global numinstructions
+    if gamestate == 'playround':
+        #Check posted value against current targets
+        matched = False
+        if 'definition' in currentsetup[consoleip]['controls'][ctrlid]:
+            currentsetup[consoleip]['controls'][ctrlid]['definition']['value'] = value
+        for targetip in players:
+            consoledef = console[targetip]
+            if ('target' in consoledef and consoledef['target']['console'] == consoleip 
+                        and consoledef['target']['control'] == ctrlid
+                        and str(consoledef['target']['value']) == str(value)):
+                #Match
+                matched = True
+                playSound(random.choice(controls.soundfiles['right']))
+                #update stats
+                playerstats[targetip]['instructions']['hit'] += 1
+                playerstats[consoleip]['targets']['hit'] += 1
+                numinstructions -= 1
+                if numinstructions <= 0:
+                    #Round over
+                    roundOver()
+                else:
+                    #Pick a new target and carry on
                     pickNewTarget(targetip)
-            if not matched: #Need to also check if a game round has begun yet
+        if not matched: #Need to also check if a game round has begun yet
+            #Suppress caring about button releases - only important in game starts
+            if not (currentsetup[consoleip]['controls'][ctrlid]['type'] == 'button' and str(value) == "0"):
                 playSound(random.choice(controls.soundfiles['wrong']))
-            
+    elif gamestate in ['readytostart', 'waitingforplayers']:
+        #button push?
+        if 'gamestart' in currentsetup[consoleip]['controls'][ctrlid]:
+            if value:
+                #Add to list of players
+                if not consoleip in players:
+                    players.append(consoleip)
+            else:
+                #remove from list of players
+                if consoleip in players:
+                    players.remove(consoleip)
+            #Either way, reset the clock for game start
+            gamestate = 'waitingforplayers'
+            lastgenerated = time.time()
             
 #Define a new set of controls for each client for this game round and send it to them as JSON.
 def defineControls():
     """Define a new set of controls for each client for this game round and send it to them as JSON."""
     emergency = controls.getEmergency()
     print(emergency)
-    for consoleip in consoles:
+    for consoleip in players:
         print("Defining console " + consoleip)
         consolesetup={}
         consolesetup['instructions']=emergency
@@ -193,7 +251,7 @@ def getChoice(choicerange, oldval):
 def pickNewTarget(consoleip):
     """Pick a new instruction to display on a given console."""
     #pick a random console and random control from that console
-    targetconsole = random.choice(consoles)
+    targetconsole = random.choice(players)
     targetsetup = currentsetup[targetconsole]
     targetctrlid = random.choice(targetsetup['controls'].keys())
     targetcontrol = targetsetup['controls'][targetctrlid]
@@ -251,17 +309,225 @@ def pickNewTarget(consoleip):
     console[consoleip]['instructions']=targetinstruction
     console[consoleip]['target']={"console": targetconsole, "control": targetctrlid, "value": targetval, "timestamp": time.time()}
     print("Instruction: " + consoleip + '/' + targetctrlid + ' - ' + str(targetinstruction))
+    #update game stats
+    playerstats[consoleip]['instructions']['total'] += 1
+    playerstats[targetconsole]['targets']['total'] += 1
+    #publish!
     client.publish('clients/' + consoleip + '/instructions', str(targetinstruction))
 
 def checkTimeouts():
     """Check all targets for expired instructions"""
-    for consoleip in consoles:
+    global numinstructions
+    for consoleip in players:
         consoledef = console[consoleip]
         if 'target' in consoledef and consoledef['target']['timestamp'] + currenttimeout < time.time():
             #Expired instruction
             playSound(random.choice(controls.soundfiles['wrong']))
-            pickNewTarget(consoleip)
+            playerstats[consoleip]['instructions']['missed'] += 1
+            playerstats[consoledef['target']['console']]['targets']['missed'] += 1
+            numinstructions -= 1
+            playerstats['game']['lives'] -= 1
+            if playerstats['game']['lives'] <= 0:
+                #Game over!
+                gameOver()
+            elif numinstructions <= 0:
+                #Round over
+                roundOver()
+            else:
+                #Pick a new target and carry on
+                increaseCorruption(consoledef['target']['console'], consoledef['target']['control'])
+                pickNewTarget(consoleip)
+                
+def increaseCorruption(consoleip, ctrlid):
+    """Introduce text corruptions to control names as artificial 'malfunctions'"""
+    ctrldef = currentsetup[consoleip]['controls'][ctrlid]
+    if 'corruptedname' in ctrldef:
+        corruptednamelist = list(ctrldef['corruptedname'])
+    else:
+        corruptednamelist = list(ctrldef['name'])
+    count = 3
+    while count > 0:
+        #Try to get a printable character, this is different for HD44780 than Nokia but I just use the HD44780 here
+        ascii = random.choice(range(12 * 16))
+        ascii += 32
+        if ascii > 128:
+            ascii += 32
+        #Position to change - avoid spaces so corrupt name prints the same
+        pos = random.choice(range(len(corruptednamelist)))
+        if corruptednamelist[pos] != ' ':
+            corruptednamelist[pos] = chr(ascii)
+            count -= 1
+    corruptedname = ''.join(corruptednamelist)
+    ctrldef['corruptedname'] = corruptedname
+    client.publish("clients/" + consoleip + "/" + ctrlid + "/name", corruptedname)
+        
+def tellAllPlayers(consolelist, message):
+    """Simple routine to broadcast a message to a list or consoles"""
+    for consoleip in consolelist:
+        client.publish('clients/' + consoleip + '/instructions', str(message))
+        
+def initGame():
+    """Kick off a new game"""
+    #Start game!
+    global gamestate
+    global currenttimeout
+    gamestate = 'initgame'
+    currenttimeout = 10.0
+    tellAllPlayers(players, controls.blurb['logo'])
+    #Music
+    if sound:
+        #Pygame for sounds
+        pygame.mixer.quit()
+        pygame.mixer.init(48000, -16, 2, 1024) #was 1024
+        for fn in controls.soundfiles['continuous']:
+            snd = pygame.mixer.Sound("sounds/" + fn)
+            snd.play(-1)
+        playSound(controls.soundfiles['special']['fanfare'])
+    #cut off non-players from participating
+    for consoleip in list(set(consoles) - set(players)):
+        consolesetup = {}
+        consolesetup['instructions'] = controls.blurb['gameinprogress']
+        consolesetup['timeout'] = 0.0
+        consolesetup['controls'] = {}
+        for control in console[consoleip]['controls']:
+            ctrlid = control['id']
+            consolesetup['controls'][ctrlid]={}
+            consolesetup['controls'][ctrlid]['type'] = 'inactive'
+            consolesetup['controls'][ctrlid]['enabled'] = 0
+            consolesetup['controls'][ctrlid]['name'] = ""
+            client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
+        client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
+        currentsetup[consoleip] = consolesetup
+    #Explanatory intro blurb
+    for txt in controls.blurb['intro']:
+        tellAllPlayers(players, txt)
+        time.sleep(5.0)
+    #Setup initial game params
+    global playerstats
+    playerstats = {}
+    for consoleip in players:
+        playerstats[consoleip] = {}
+        playerstats[consoleip]['instructions'] = {} #stats on instructions you read out
+        playerstats[consoleip]['targets'] = {} #stats on instructions you should have implemented
+        playerstats[consoleip]['instructions']['total'] = 0
+        playerstats[consoleip]['instructions']['hit'] = 0
+        playerstats[consoleip]['instructions']['missed'] = 0
+        playerstats[consoleip]['targets']['total'] = 0
+        playerstats[consoleip]['targets']['hit'] = 0
+        playerstats[consoleip]['targets']['missed'] = 0
+    playerstats['game'] = {}
+    playerstats['game']['rounds'] = 0
+    #stop music?
+    #start first round
+    initRound()
 
+def initRound():
+    """Kick off a new round"""
+    global numinstructions
+    global lastgenerated
+    global gamestate
+    gamestate = 'setupround'
+    playSound(random.choice(controls.soundfiles['atmosphere']))
+    #Dump another batch of random control names and action
+    defineControls()
+    playerstats['game']['rounds'] += 1
+    playerstats['game']['lives'] = 5
+    numinstructions = 10
+    lastgenerated = time.time()
+    
+def roundOver():
+    """End the round and jump to Hyperspace"""
+    global gamestate
+    global currenttimeout
+    gamestate = 'roundover'
+    #play sound?
+    tellAllPlayers(players, controls.blurb['hyperspace'])
+    playSound(controls.soundfiles['special']['hyperspace'])
+    time.sleep(8.0)
+    currenttimeout *= 0.75
+    
+    initRound()
+    
+def gameOver():
+    """End the current game and dole out the medals"""
+    global gamestate
+    gamestate = 'gameover'
+    tellAllPlayers(players, controls.blurb['ending']['splash'])
+    #play sound
+    if sound:
+        #Pygame for sounds
+        pygame.mixer.quit()
+        pygame.mixer.init(48000, -16, 2, 1024) #was 1024
+        playSound(controls.soundfiles['special']['explosion'])
+        playSound(controls.soundfiles['special']['taps'])
+    for consoleip in players:
+        config = console[consoleip]
+        consolesetup = {}
+        consolesetup['instructions'] = str(controls.blurb['ending']['start'])
+        consolesetup['timeout'] = 0.0
+        consolesetup['controls'] = {}
+        for control in config['controls']:
+            ctrlid = control['id']
+            consolesetup['controls'][ctrlid]={}
+            consolesetup['controls'][ctrlid]['type'] = 'inactive'
+            consolesetup['controls'][ctrlid]['enabled'] = 0
+            consolesetup['controls'][ctrlid]['name'] = ""
+        client.publish("clients/" + consoleip + "/configure", json.dumps(consolesetup))
+    time.sleep(5.0)
+    instr = controls.blurb['ending']['you']
+    #stats for your instructions
+    for consoleip in players:
+        instryou = instr.replace("{1}", str(playerstats[consoleip]['instructions']['hit']))
+        instryou = instryou.replace("{2}", str(playerstats[consoleip]['instructions']['missed'] + playerstats[consoleip]['instructions']['hit']))
+        instryou = instryou.replace("{3}", str(playerstats[consoleip]['instructions']['missed']))
+        client.publish("clients/" + consoleip + "/instructions", str(instryou))
+    time.sleep(5.0)
+    #stats for your targets
+    instr = controls.blurb['ending']['them']
+    for consoleip in players:
+        instrthem = instr.replace("{1}", str(playerstats[consoleip]['targets']['hit']))
+        instrthem = instrthem.replace("{2}", str(playerstats[consoleip]['targets']['missed'] + playerstats[consoleip]['targets']['hit']))
+        client.publish("clients/" + consoleip + "/instructions", str(instrthem))
+    time.sleep(5.0)
+    tellAllPlayers(players, controls.blurb['ending']['end'])
+    time.sleep(5.0)
+    #medals!
+    for consoleip in players:
+        client.publish("clients/" + consoleip + "/instructions", str(controls.getMedal()))
+    time.sleep(15.0)
+    resetToWaiting()
+    
+def resetToWaiting():
+    """Reset game back to waiting for new players"""
+    global gamestate
+    gamestate = 'readytostart'
+    for consoleip in consoles:
+        consolesetup = {}
+        consolesetup['instructions'] = controls.blurb['readytostart']
+        consolesetup['controls'] = {}
+        consolesetup['timeout'] = 0.0
+        config = console[consoleip]
+        for control in config['controls']:
+            ctrlid = control['id']
+            consolesetup['controls'][ctrlid]={}
+            if 'gamestart' in control:
+                consolesetup['controls'][ctrlid]['type'] = 'button'
+                consolesetup['controls'][ctrlid]['enabled'] = 1
+                consolesetup['controls'][ctrlid]['name'] = controls.blurb['startbutton']
+                consolesetup['controls'][ctrlid]['gamestart'] = True
+                consolesetup['controls'][ctrlid]['definition'] = {}
+            else:
+                consolesetup['controls'][ctrlid]['type'] = 'inactive'
+                consolesetup['controls'][ctrlid]['enabled'] = 0
+                consolesetup['controls'][ctrlid]['name'] = ""
+        currentsetup[consoleip] = consolesetup
+        client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
+    global lastgenerated
+    global numinstructions
+    global players
+    players = []
+    lastgenerated = time.time()
+    numinstructions = 0
     
 #Main loop
 
@@ -275,24 +541,19 @@ client.subscribe('server/register')
 
 client.publish('server/ready', 'started')
 
+lastReady = time.time()
 while(client.loop() == 0): 
-    #Every five seconds...
-    if time.time()-lastgenerated > currenttimeout: 
+    if time.time() - lastReady > 3.0:
+        lastReady = time.time()
         client.publish('server/ready', 'ready')
-        if len(consoles) > 0:
-            if numinstructions == 0:
-                #temp
-                playSound(random.choice(controls.soundfiles['atmosphere']))
-                #Dump another batch of random control names and action
-                defineControls()
-                numinstructions = 5
-            else:
-                #temp
-                playSound(random.choice(controls.soundfiles['right']))
-                for consoleip in consoles:
-                    pickNewTarget(consoleip)
-                numinstructions -= 1
-        lastgenerated = time.time()
+    if gamestate == 'waitingforplayers' and len(players) >= 1 and time.time() - lastgenerated > 5.0:
+        initGame()        
+    elif gamestate == 'setupround' and time.time() - lastgenerated > 10.0:
+        gamestate = 'playround'
+        for consoleip in players:
+            pickNewTarget(consoleip)
+    elif gamestate == 'playround':
+        checkTimeouts()
 
 #If client.loop() returns non-zero, loop drops out to here.
 #Final code should try to reconnect to MQTT and/or networking if so.

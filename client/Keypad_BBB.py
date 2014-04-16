@@ -40,18 +40,18 @@ class keypad():
         # Set all columns as output low
         for j in range(len(self.COLUMN)):
             GPIO.setup(self.COLUMN[j], GPIO.OUT)
-            GPIO.output(self.COLUMN[j], GPIO.LOW)
+            GPIO.output(self.COLUMN[j], GPIO.HIGH)
          
         # Set all rows as input
         for i in range(len(self.ROW)):
-            GPIO.setup(self.ROW[i], GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(self.ROW[i], GPIO.IN, GPIO.PUD_DOWN)
          
         # Scan rows for pushed key/button
         # A valid key press should set "rowVal"  between 0 and 3.
         rowVal = -1
         for i in range(len(self.ROW)):
             tmpRead = GPIO.input(self.ROW[i])
-            if tmpRead == 0:
+            if tmpRead == 1:
                 rowVal = i
                  
         # if rowVal is not 0 thru 3 then no button was pressed and we can exit
@@ -61,10 +61,14 @@ class keypad():
          
         # Convert columns to input
         for j in range(len(self.COLUMN)):
-                GPIO.setup(self.COLUMN[j], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            GPIO.setup(self.COLUMN[j], GPIO.IN, GPIO.PUD_DOWN)
          
+        # Convert rows to output
+        for i in range(len(self.ROW)):
+            GPIO.setup(self.ROW[i], GPIO.OUT)
+            GPIO.output(self.ROW[i], GPIO.LOW)
+            
         # Switch the i-th row found from scan to output
-        GPIO.setup(self.ROW[rowVal], GPIO.OUT)
         GPIO.output(self.ROW[rowVal], GPIO.HIGH)
  
         # Scan columns for still-pushed key/button
@@ -87,13 +91,13 @@ class keypad():
     def exit(self):
         # Reinitialize all rows and columns as input at exit
         for i in range(len(self.ROW)):
-                GPIO.setup(self.ROW[i], GPIO.IN, pull_up_down=GPIO.PUD_UP) 
+                GPIO.setup(self.ROW[i], GPIO.IN, GPIO.PUD_DOWN) 
         for j in range(len(self.COLUMN)):
-                GPIO.setup(self.COLUMN[j], GPIO.IN, pull_up_down=GPIO.PUD_UP)
+                GPIO.setup(self.COLUMN[j], GPIO.IN, GPIO.PUD_DOWN)
          
 if __name__ == '__main__':
     # Initialize the keypad class
-    kp = keypad()
+    kp = keypad("P9_11","P9_12","P9_13","P9_14","P9_15","P9_16","P9_23","P9_24")
      
     # Loop while waiting for a keypress
     digit = None
