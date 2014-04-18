@@ -85,6 +85,11 @@ class SHControlPhoneStyleMenu(SHControl):
                 value = str(ctrldef['values'][idx])
             elif ctrltype == 'words':
                 #get current index from pool of values
+                print "ctrlvalue is : "
+                print ctrlvalue
+                print "pool is : "
+                for item in ctrldef['pool']:
+                    print item
                 idx = ctrldef['pool'].index(ctrlvalue)
                 if rightchanged and rightpressed:
                     if idx < len(ctrldef['pool']) - 1:
