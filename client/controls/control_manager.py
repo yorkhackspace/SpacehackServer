@@ -307,11 +307,11 @@ class SHControlCombo7SegColourRotary(SHControl):
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
         btn = GPIO.input(self.pins['BTN'])
-        state = [btn]
+        state = btn
         #rotary movement is handled separately not sampled
         if ctrlstate != state:
             if ctrltype == 'button':
-                value = state[0]
+                value = state
             elif ctrltype == 'toggle':
                 if state:
                     value = int(not ctrlvalue)
@@ -321,7 +321,7 @@ class SHControlCombo7SegColourRotary(SHControl):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             RGB = [0, 0, 0]
             if self.roundsetup['enabled']:
-                if self.ctrltype == 'toggle':
+                if self.ctrltype in ['toggle', button]:
                     if value:
                         SHControlCombo7SegColourRotary.__displayDigits(self, 'On')
                         RGB = [1, 0, 0]
@@ -599,18 +599,17 @@ def processRoundConfig(config, roundconfig, controlids):
         if 'definition' in roundsetup and roundsetup['enabled']:
             ctrltype = roundsetup['type']
             ctrldef = roundsetup['definition']
-            #there's more to setup of course
-            #hardwaretype = config['local']['controls'][ctrlid]['hardware']
-            #if hardwaretype == 'phonestylemenu':
-            #    if ctrltype == 'toggle':
-            #        displayButtonsLine("Off", "On", ctrlid)
-            #    elif ctrltype == 'verbs':
-            #        displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
-            #    else:
-            #        displayButtonsLine("<<<<", ">>>>", ctrlid)
-            #elif hardwaretype == 'combo7SegColourRotary':
-            #    if ctrltype == 'button':
-            #        displayDigits("PUSH")
+            hardwaretype = config['local']['controls'][ctrlid]['hardware']
+            if hardwaretype == 'phonestylemenu':
+                if ctrltype == 'toggle':
+                    displayButtonsLine("Off", "On", ctrlid)
+                elif ctrltype == 'verbs':
+                    displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
+                else:
+                    displayButtonsLine("<<<<", ">>>>", ctrlid)
+            elif hardwaretype == 'combo7SegColourRotary':
+                if ctrltype == 'button':
+                    displayDigits("PUSH")
             if 'value' in ctrldef:
                 processControlValueAssignment(roundconfig, ctrldef['value'], ctrlid, True)
 
