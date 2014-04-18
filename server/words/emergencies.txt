@@ -121,7 +121,8 @@
     "Space Marines",
     "cyber criminals",
     "rebel scum",
-    "the LHS bikeshed"
+    "the LHS bikeshed",
+    "copyright lawyers"
   ],
   "losing": [
     "losing",
