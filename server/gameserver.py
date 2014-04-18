@@ -178,7 +178,11 @@ def defineControls():
             ctrlid = control['id']
             consolesetup['controls'][ctrlid]={}
             consolesetup['controls'][ctrlid]['enabled']=1
-            consolesetup['controls'][ctrlid]['name']=controls.getControlName(control['width'], 2, 12)
+            #In case LCDs fail - allow a 'fixed name' we can tape over the LCD
+            if 'fixedname' in control:
+                consolesetup['controls'][ctrlid]['name'] = str(control['fixedname'])
+            else: #Normal case - generate a new control name
+                consolesetup['controls'][ctrlid]['name']=controls.getControlName(control['width'], 2, 12)
             ctrldef = random.choice([x for x in control['supported']])
             ctrltype = ctrldef['type']
             if ctrltype in ['words', 'verbs']:
