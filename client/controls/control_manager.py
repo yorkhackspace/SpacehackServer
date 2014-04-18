@@ -141,6 +141,8 @@ class SHControlPot(SHControl):
         for value in sortedlist:
             if rawvalue < calibrationdict[value]:
                 return value
+        print "Pot Calibration error"
+        return 0
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
