@@ -120,7 +120,8 @@
     "Republican Space Rangers",
     "Space Marines",
     "cyber criminals",
-    "rebel scum"
+    "rebel scum",
+    "the LHS bikeshed"
   ],
   "losing": [
     "losing",
