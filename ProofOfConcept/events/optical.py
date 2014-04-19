@@ -38,6 +38,7 @@ class OpticalEncoder(threading.Thread):
                 # De-bounce
                 for count in range(0,8):
                     level_b += GPIO.input(self.pin_b)
+                    print(str(level_b))
                 if level_b > 5:
                     dir = "cw"
                 else:
