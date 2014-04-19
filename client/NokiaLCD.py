@@ -15,7 +15,7 @@ class NokiaLCD:
         self.SCE, self.SCLK, self.DIN = pin_SCE, pin_SCLK, pin_DIN
         PCD.SCE=self.SCE
         GPIO.setup(pin_SCE, GPIO.OUT)
-        GPIO.output(pin_SCE, GPIO.HIGH)
+        GPIO.output(pin_SCE, GPIO.LOW)
         global nokiasinitialised
         if not nokiasinitialised:
             PCD.init()

@@ -49,7 +49,7 @@ if not BITBANG:
 
 def writebytes(value):
     if BITBANG:
-      GPIO.output(SCE, GPIO.LOW)
+      GPIO.output(SCE, GPIO.HIGH)
       for byte in value:
         bits = bin(byte)[2:]
         bits = '0' * (8 - len(bits)) + bits
@@ -60,7 +60,7 @@ def writebytes(value):
                 GPIO.output(DIN, GPIO.HIGH)
             GPIO.output(SCLK, GPIO.LOW)
             GPIO.output(SCLK, GPIO.HIGH)
-      GPIO.output(SCE, GPIO.HIGH)
+      GPIO.output(SCE, GPIO.LOW)
     else:
         spi.writebytes(value)
         
