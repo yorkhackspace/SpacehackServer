@@ -139,11 +139,11 @@ class SHControlPhoneStyleMenu(SHControl):
             
     def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
         if ctrltype == 'toggle':
-            displayButtonsLine("Off", "On", ctrlid)
+            myLcdManager.displayButtonsLine("Off", "On", ctrlid)
         elif ctrltype == 'verbs':
-            displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
+            myLcdManager.displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
         else:
-            displayButtonsLine("<<<<", ">>>>", ctrlid)
+            myLcdManager.displayButtonsLine("<<<<", ">>>>", ctrlid)
 
 class SHControlPot(SHControl):
     
