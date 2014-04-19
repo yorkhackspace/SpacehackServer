@@ -331,20 +331,23 @@ class SHControlCombo7SegColourRotary(SHControl):
                 value = state
             elif ctrltype == 'toggle':
                 if state:
-                    value = int(not ctrlvalue)
+                    value = 1 - ctrlvalue
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             RGB = [0, 0, 0]
             if self.roundsetup['enabled']:
-                if self.ctrltype in ['toggle', 'button']:
+                if self.ctrltype == 'toggle':
                     if value:
                         SHControlCombo7SegColourRotary.__displayDigits(self, 'On')
                         RGB = [1, 0, 0]
                     else:
                         SHControlCombo7SegColourRotary.__displayDigits(self, 'Off')
                         #Switch off LED
+                elif self.ctrltype == 'button':
+                    if value:
+                        RGB = [1, 0, 0]
                 elif self.ctrltype == 'selector':
                     SHControlCombo7SegColourRotary.__displayDigits(self, str(value))
                     #Switch off LED
