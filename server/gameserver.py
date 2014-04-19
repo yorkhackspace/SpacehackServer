@@ -10,6 +10,8 @@ import json
 
 sound = False #Switch this off if you don't have pyGame
 
+debugMode = True
+
 def playSound(filename):
     """Play a sound, if enabled"""
     if sound:
@@ -400,9 +402,10 @@ def initGame():
         client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
         currentsetup[consoleip] = consolesetup
     #Explanatory intro blurb
-    for txt in controls.blurb['intro']:
-        tellAllPlayers(players, txt)
-        time.sleep(5.0)
+    if not debugMode:
+        for txt in controls.blurb['intro']:
+            tellAllPlayers(players, txt)
+            time.sleep(5.0)
     #Setup initial game params
     global playerstats
     playerstats = {}
