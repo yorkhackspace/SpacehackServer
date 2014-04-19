@@ -365,7 +365,7 @@ class SHControlCombo7SegColourRotary(SHControl):
                         SHControlCombo7SegColourRotary.__displayDigits(self, "YELO")
                     elif value == 'cyan':
                         SHControlCombo7SegColourRotary.__displayDigits(self, "CYAN")
-                    RGB = controlsetup['colours'][str(value)]
+                    RGB = self.controlsetup['colours'][str(value)]
                 elif self.ctrltype == 'words':
                     #Switch off LED
                     SHControlCombo7SegColourRotary.__displayDigits(self, value.upper())
