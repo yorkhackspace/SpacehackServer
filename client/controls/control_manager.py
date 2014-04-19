@@ -354,6 +354,7 @@ class SHControlCombo7SegColourRotary(SHControl):
             state = btn
         else:
             state = qdir
+            print state
         #rotary movement is handled separately not sampled
         if ctrlstate != state:
             if ctrltype == 'button':
