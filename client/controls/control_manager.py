@@ -41,6 +41,14 @@ class SHControlPhoneStyleMenu(SHControl):
         GPIO.setup(self.pins['RGB_G'], GPIO.OUT)
         GPIO.setup(self.pins['RGB_B'], GPIO.OUT)
 
+    def __prepType__(self, ctrldef, ctrltype, ctrlid):
+        if ctrltype == 'toggle':
+            myLcdManager.displayButtonsLine("Off", "On", ctrlid)
+        elif ctrltype == 'verbs':
+            myLcdManager.displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
+        else:
+            myLcdManager.displayButtonsLine("<<<<", ">>>>", ctrlid)
+        
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
         
@@ -309,7 +317,9 @@ class SHControlCombo7SegColourRotary(SHControl):
         SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
         #What to do about rotary?
 
-    
+    def __prepType__(self, ctrldef, ctrltype, ctrlid):
+        if ctrltype == 'button':
+            myLcdManager.displayDigits("PUSH")
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
@@ -607,16 +617,8 @@ def processRoundConfig(config, roundconfig, controlids):
             ctrltype = roundsetup['type']
             ctrldef = roundsetup['definition']
             hardwaretype = config['local']['controls'][ctrlid]['hardware']
-            if hardwaretype == 'phonestylemenu':
-                if ctrltype == 'toggle':
-                    displayButtonsLine("Off", "On", ctrlid)
-                elif ctrltype == 'verbs':
-                    displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
-                else:
-                    displayButtonsLine("<<<<", ">>>>", ctrlid)
-            elif hardwaretype == 'combo7SegColourRotary':
-                if ctrltype == 'button':
-                    displayDigits("PUSH")
+            if hardwaretype in ['phonestylemenu', 'combo7SegColourRotary']:
+                controls[ctrlid].__prepType__(ctrldef, ctrltype, ctrlid)
             if 'value' in ctrldef:
                 processControlValueAssignment(roundconfig, ctrldef['value'], ctrlid, True)
 
