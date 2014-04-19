@@ -5,6 +5,7 @@ from Adafruit_7Segment import SevenSegment
 from collections import OrderedDict
 import Keypad_BBB
 from Queue import Queue
+from Queue import Empty
 from Rotary import RotaryEncoder
 
 controls = {}
@@ -347,7 +348,7 @@ class SHControlCombo7SegColourRotary(SHControl):
         btn = GPIO.input(self.pins['BTN'])
         try:
             qdir = self.queue.get(False)
-        except Queue.Empty:
+        except Empty:
             qdir = 'still'
         if ctrltype in ['button', 'toggle']:
             state = btn
