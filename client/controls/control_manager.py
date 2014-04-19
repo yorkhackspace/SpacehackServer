@@ -4,6 +4,8 @@ import Adafruit_BBIO.ADC as ADC
 from Adafruit_7Segment import SevenSegment
 from collections import OrderedDict
 import Keypad_BBB
+from Queue import Queue
+from Rotary import RotaryEncoder
 
 controls = {}
 allcontrolsconfig = {}
@@ -326,8 +328,12 @@ class SHControlCombo7SegColourRotary(SHControl):
         GPIO.output(self.pins['RGB_G'], GPIO.LOW)
         GPIO.output(self.pins['RGB_B'], GPIO.LOW)
         SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
-        #What to do about rotary?
-
+        #Rotary
+        self.queue = Queue()
+        self.rotary = RotaryEncoder(self.queue, ctrlid, [self.pins['ROT_A'], self.pins['ROT_B'])
+        self.rotary.setDaemon(True)
+        self.rotary.start()
+        
     def __prepType__(self, ctrldef, ctrltype, ctrlid):
         if ctrltype == 'button':
             SHControlCombo7SegColourRotary.__displayDigits(self, "PUSH")
@@ -335,7 +341,11 @@ class SHControlCombo7SegColourRotary(SHControl):
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
         btn = GPIO.input(self.pins['BTN'])
-        state = btn
+        qdir = self.queue.get()
+        if ctrltype in ['button', 'toggle']:
+            state = btn
+        else:
+            state = qdir
         #rotary movement is handled separately not sampled
         if ctrlstate != state:
             if ctrltype == 'button':
@@ -343,6 +353,43 @@ class SHControlCombo7SegColourRotary(SHControl):
             elif ctrltype == 'toggle':
                 if state:
                     value = 1 - ctrlvalue
+            elif ctrltype == 'selector':
+                if state == 'ccw':
+                    if ctrlvalue > ctrldef['min']:
+                        value = ctrlvalue - 1
+                elif state == 'cw':
+                    if ctrlvalue < ctrldef['max']:
+                        value = ctrlvalue + 1
+            elif ctrltype == 'colour':
+                try:
+                    idx = ctrldef['values'].index(ctrlvalue)
+                except ValueError:
+                    idx=0
+                if state=='cw':
+                    if idx < len(ctrldef['values']) - 1:
+                        idx += 1
+                    else:
+                        idx = 0
+                elif state == 'ccw':
+                    if idx > 0:
+                        idx -= 1
+                    else:
+                        idx = len(ctrldef['values']) - 1
+                value = str(ctrldef['values'][idx])
+            elife ctrltype == 'words':
+                idx = ctrldef['pool'].index(ctrlvalue)
+                if state == 'cw':
+                    if idx < len(ctrldef['pool']) - 1:
+                        idx += 1
+                    else:
+                        idx = 0
+                elif state == 'ccw':
+                    if idx > 0:
+                        idx -= 1
+                    else:
+                        idx = len(ctrldef['pool']) - 1
+                value = str(ctrldef['pool'][idx])
+                
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
