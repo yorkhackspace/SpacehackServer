@@ -322,9 +322,9 @@ class SHControlCombo7SegColourRotary(SHControl):
         GPIO.setup(self.pins['RGB_R'], GPIO.OUT)
         GPIO.setup(self.pins['RGB_G'], GPIO.OUT)
         GPIO.setup(self.pins['RGB_B'], GPIO.OUT)
-        GPIO.output(self.pins['RGB_R'], GPIO.HIGH)
-        GPIO.output(self.pins['RGB_G'], GPIO.HIGH)
-        GPIO.output(self.pins['RGB_B'], GPIO.HIGH)
+        GPIO.output(self.pins['RGB_R'], GPIO.LOW)
+        GPIO.output(self.pins['RGB_G'], GPIO.LOW)
+        GPIO.output(self.pins['RGB_B'], GPIO.LOW)
         SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
         #What to do about rotary?
 
