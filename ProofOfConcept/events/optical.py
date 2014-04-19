@@ -23,21 +23,22 @@ class OpticalEncoder(threading.Thread):
         self.pin_a = pins[0]
         self.pin_b = pins[1]
         self.encoder_name = encoder_name
+        self.gpio = gpio
         for pin in pins:
             print "Setting up pin: %s" % pin
-            gpio.setup(pin, gpio.IN, gpio.PUD_OFF)
-            gpio.add_event_detect(pin, gpio.RISING)
+            self.gpio.setup(pin, self.gpio.IN, self.gpio.PUD_OFF)
+            self.gpio.add_event_detect(pin, self.gpio.RISING)
 
     def run(self):
         while True:
-            if gpio.event_detected(self.pin_a):
+            if self.gpio.event_detected(self.pin_a):
                 # Ignore false triggers
-                if gpio.input(self.pin_a) != 1:
+                if self.gpio.input(self.pin_a) != 1:
                     continue
                 level_b = 0
                 # De-bounce
                 for count in range(0,8):
-                    level_b += gpio.input(self.pin_b)
+                    level_b += self.gpio.input(self.pin_b)
                     print(str(level_b))
                 if level_b > 5:
                     dir = "cw"
