@@ -134,7 +134,7 @@ class SHControlPhoneStyleMenu(SHControl):
                 if self.controlsetup['display']['height'] > 3:
                     myLcdManager.displayValueLine(str(value), ctrlid)
                 #Light the LED the right colours
-                RGB = controlsetup['colours'][str(value)]
+                RGB = cself.ontrolsetup['colours'][str(value)]
             elif self.ctrltype == 'words':
                 if self.controlsetup['display']['height'] > 3:
                     myLcdManager.displayValueLine(value, ctrlid)
