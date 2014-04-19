@@ -337,7 +337,7 @@ class SHControlCombo7SegColourRotary(SHControl):
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         print("combo process value - value = '" + str(value) + "'")
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
-            print("ebabled = '" + str(self.roundsetup['enabled']) + "' type = '" + str(self.ctrltype + "'")
+            print("ebabled = '" + str(self.roundsetup['enabled']) + "' type = '" + str(self.ctrltype) + "'")
             RGB = [0, 0, 0]
             if self.roundsetup['enabled']:
                 if self.ctrltype == 'toggle':
