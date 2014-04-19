@@ -22,7 +22,7 @@ and an array of the two input pins
         self.encoder_name = encoder_name
         self.gpio = gpio
         for pin in pins:
-            print "Setting up pin: %s" % pin
+            #print "Setting up pin: %s" % pin
             self.gpio.setup(pin, self.gpio.IN, self.gpio.PUD_OFF)
             self.gpio.add_event_detect(pin, self.gpio.RISING)
 
@@ -36,7 +36,7 @@ and an array of the two input pins
                 # De-bounce
                 for count in range(0,8):
                     level_b += self.gpio.input(self.pin_b)
-                    print(str(level_b))
+                    #print(str(level_b))
                 if level_b > 5:
                     dir = "cw"
                 else:

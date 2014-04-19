@@ -328,7 +328,7 @@ class SHControlCombo7SegColourRotary(SHControl):
         GPIO.output(self.pins['RGB_G'], GPIO.LOW)
         GPIO.output(self.pins['RGB_B'], GPIO.LOW)
         SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
-        #Rotary
+        #Rotary encoder initialisation needs putting off until it starts polling. How odd.
         self.isInit = False
         
     def __prepType__(self, ctrldef, ctrltype, ctrlid):
@@ -336,6 +336,7 @@ class SHControlCombo7SegColourRotary(SHControl):
             SHControlCombo7SegColourRotary.__displayDigits(self, "PUSH")
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
+        #Do the rotary encoder init on the first poll
         if not self.isInit:
             self.queue = Queue()
             self.rotary = RotaryEncoder(self.queue, "Rotary", [self.pins['ROT_A'], self.pins['ROT_B']], GPIO)
@@ -357,6 +358,7 @@ class SHControlCombo7SegColourRotary(SHControl):
                 if state:
                     value = 1 - ctrlvalue
             elif ctrltype == 'selector':
+                print state
                 if state == 'ccw':
                     if ctrlvalue > ctrldef['min']:
                         value = ctrlvalue - 1
