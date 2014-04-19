@@ -135,7 +135,9 @@ def receiveValue(consoleip, ctrlid, value):
                         and str(consoledef['target']['value']) == str(value)):
                 #Match
                 matched = True
+                clearCorruption(consoleip, ctrlid)
                 playSound(random.choice(controls.soundfiles['right']))
+
                 #update stats
                 playerstats[targetip]['instructions']['hit'] += 1
                 playerstats[consoleip]['targets']['hit'] += 1
@@ -367,6 +369,13 @@ def increaseCorruption(consoleip, ctrlid):
     ctrldef['corruptedname'] = corruptedname
     client.publish("clients/" + consoleip + "/" + ctrlid + "/name", corruptedname)
         
+def clearCorruption(consoleip, ctrlid):
+    """Reset the corrupted control name when the player gets it right"""
+    ctrldef = currentsetup[consoleip]['controls'][ctrlid]
+    if 'corruptedname' in ctrldef:
+        del ctrldef['corruptedname']
+        client.publish("clients/" + consoleip + "/" + ctrlid + "/name", str(ctrldef['name']))
+
 def tellAllPlayers(consolelist, message):
     """Simple routine to broadcast a message to a list or consoles"""
     for consoleip in consolelist:
@@ -448,6 +457,11 @@ def roundOver():
     global gamestate
     global currenttimeout
     gamestate = 'roundover'
+    #Zap all existing targets
+    for consoleip in players:
+        consoledef = console[consoleip]
+        if 'target' in consoledef:
+            del consoledef['target']
     #play sound?
     tellAllPlayers(players, controls.blurb['hyperspace'])
     playSound(controls.soundfiles['special']['hyperspace'])
