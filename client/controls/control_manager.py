@@ -329,16 +329,19 @@ class SHControlCombo7SegColourRotary(SHControl):
         GPIO.output(self.pins['RGB_B'], GPIO.LOW)
         SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
         #Rotary
-        self.queue = Queue()
-        self.rotary = RotaryEncoder(self.queue, "Rotary", [self.pins['ROT_A'], self.pins['ROT_B']], GPIO)
-        self.rotary.setDaemon(True)
-        self.rotary.start()
+        self.isInit = false
         
     def __prepType__(self, ctrldef, ctrltype, ctrlid):
         if ctrltype == 'button':
             SHControlCombo7SegColourRotary.__displayDigits(self, "PUSH")
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
+        if not self.isInit:
+            self.queue = Queue()
+            self.rotary = RotaryEncoder(self.queue, "Rotary", [self.pins['ROT_A'], self.pins['ROT_B']], GPIO)
+            self.rotary.setDaemon(True)
+            self.rotary.start()
+            self.isInit = True
         value = ctrlvalue
         btn = GPIO.input(self.pins['BTN'])
         qdir = self.queue.get()
