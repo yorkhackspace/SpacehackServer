@@ -374,7 +374,7 @@ class SHControlCombo7SegColourRotary(SHControl):
             
     def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
         if ctrltype == 'button':
-            displayDigits("PUSH")    
+            SHControlCombo7SegColourRotary.__displayDigits(self, "PUSH")
 
 class SHControlSwitchbank(SHControl):
     
