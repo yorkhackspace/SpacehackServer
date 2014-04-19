@@ -47,7 +47,7 @@ class OpticalEncoder(threading.Thread):
 
 if __name__ == "__main__":
     q = Queue.Queue()
-    enc = OpticalEncoder(q, "Flux Matrix", ["P8_22", "P8_24"])
+    enc = OpticalEncoder(q, "Flux Matrix", ["P8_22", "P9_31"])
     enc.setDaemon(True)
     enc.start()
 
