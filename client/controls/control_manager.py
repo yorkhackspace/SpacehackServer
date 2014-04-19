@@ -136,6 +136,14 @@ class SHControlPhoneStyleMenu(SHControl):
             GPIO.output(self.pins['RGB_R'], RGB[0])
             GPIO.output(self.pins['RGB_G'], RGB[1])
             GPIO.output(self.pins['RGB_B'], RGB[2])
+            
+    def processRoundConfig(self):
+        if ctrltype == 'toggle':
+            displayButtonsLine("Off", "On", ctrlid)
+        elif ctrltype == 'verbs':
+            displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
+        else:
+            displayButtonsLine("<<<<", ">>>>", ctrlid)
 
 class SHControlPot(SHControl):
     
@@ -363,6 +371,10 @@ class SHControlCombo7SegColourRotary(SHControl):
             GPIO.output(self.pins['RGB_R'], 1 - RGB[0])
             GPIO.output(self.pins['RGB_G'], 1 - RGB[1])
             GPIO.output(self.pins['RGB_B'], 1 - RGB[2])
+            
+    def processRoundConfig(self):
+        if ctrltype == 'button':
+            displayDigits("PUSH")    
 
 class SHControlSwitchbank(SHControl):
     
@@ -609,17 +621,7 @@ def processRoundConfig(config, roundconfig, controlids):
         if 'definition' in roundsetup and roundsetup['enabled']:
             ctrltype = roundsetup['type']
             ctrldef = roundsetup['definition']
-            hardwaretype = config['local']['controls'][ctrlid]['hardware']
-            if hardwaretype == 'phonestylemenu':
-                if ctrltype == 'toggle':
-                    displayButtonsLine("Off", "On", ctrlid)
-                elif ctrltype == 'verbs':
-                    displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
-                else:
-                    displayButtonsLine("<<<<", ">>>>", ctrlid)
-            elif hardwaretype == 'combo7SegColourRotary':
-                if ctrltype == 'button':
-                    displayDigits("PUSH")
+            controls[ctrlid].processRoundConfig()
             if 'value' in ctrldef:
                 processControlValueAssignment(roundconfig, ctrldef['value'], ctrlid, True)
 
