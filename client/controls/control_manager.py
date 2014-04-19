@@ -77,7 +77,7 @@ class SHControlPhoneStyleMenu(SHControl):
                 elif leftchanged and leftpressed:
                     if ctrlvalue > ctrldef['min']:
                         value = ctrlvalue - 1
-            elif ctrltype == 'colours':
+            elif ctrltype == 'colour':
                 #get current index from pool of values
                 idx = ctrldef['values'].index(ctrlvalue)
                 if rightchanged and rightpressed:
