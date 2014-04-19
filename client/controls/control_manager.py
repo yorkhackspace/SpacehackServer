@@ -25,7 +25,7 @@ class SHControl(object):
         self.roundsetup = roundconfig['controls'][ctrlid]
         self.ctrltype = self.roundsetup['type']
         self.ctrldef = self.roundsetup['definition']
-        return 'value' not in self.ctrldef or self.ctrldef['value'] != value or override
+        return ('value' not in self.ctrldef) or (self.ctrldef['value'] != value) or override
 
     def processRoundConfig(self):
         print "Error: SHControl.processRoundConfig() should never be called"
