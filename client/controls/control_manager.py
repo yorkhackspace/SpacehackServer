@@ -27,7 +27,7 @@ class SHControl(object):
         self.ctrldef = self.roundsetup['definition']
         return 'value' not in self.ctrldef or self.ctrldef['value'] != value or override
 
-    def processRoundConfig(self, ctrldef, ctrlid):
+    def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
         print "Error: SHControl.processRoundConfig() should never be called"
 
 class SHControlPhoneStyleMenu(SHControl):
@@ -137,10 +137,10 @@ class SHControlPhoneStyleMenu(SHControl):
             GPIO.output(self.pins['RGB_G'], RGB[1])
             GPIO.output(self.pins['RGB_B'], RGB[2])
             
-    def processRoundConfig(self, ctrldef, ctrlid):
-        if self.ctrltype == 'toggle':
+    def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
+        if ctrltype == 'toggle':
             displayButtonsLine("Off", "On", ctrlid)
-        elif self.ctrltype == 'verbs':
+        elif ctrltype == 'verbs':
             displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
         else:
             displayButtonsLine("<<<<", ">>>>", ctrlid)
@@ -372,8 +372,8 @@ class SHControlCombo7SegColourRotary(SHControl):
             GPIO.output(self.pins['RGB_G'], 1 - RGB[1])
             GPIO.output(self.pins['RGB_B'], 1 - RGB[2])
             
-    def processRoundConfig(self, ctrldef, ctrlid):
-        if self.ctrltype == 'button':
+    def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
+        if ctrltype == 'button':
             displayDigits("PUSH")    
 
 class SHControlSwitchbank(SHControl):
@@ -621,7 +621,7 @@ def processRoundConfig(config, roundconfig, controlids):
         if 'definition' in roundsetup and roundsetup['enabled']:
             ctrltype = roundsetup['type']
             ctrldef = roundsetup['definition']
-            controls[ctrlid].processRoundConfig(ctrldef, ctrlid)
+            controls[ctrlid].processRoundConfig(ctrldef, ctrlid, ctrltype)
             if 'value' in ctrldef:
                 processControlValueAssignment(roundconfig, ctrldef['value'], ctrlid, True)
 
