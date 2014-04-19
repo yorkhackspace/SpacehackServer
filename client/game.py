@@ -102,6 +102,7 @@ def on_message(mosq, obj, msg):
 #Process an incoming config for a round
 def processRoundConfig(roundconfigstring):
     """Process an incoming config for a round"""
+    control_manager.initialiseControls(config, sortedlist, myLcdManager)
     x = json.loads(roundconfigstring)
     for key in x.keys():
         roundconfig[key] = x[key]
