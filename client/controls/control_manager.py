@@ -330,7 +330,7 @@ class SHControlCombo7SegColourRotary(SHControl):
         SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
         #Rotary
         self.queue = Queue()
-        self.rotary = RotaryEncoder(self.queue, ctrlid, [self.pins['ROT_A'], self.pins['ROT_B']])
+        self.rotary = RotaryEncoder(self.queue, "Rotary", [self.pins['ROT_A'], self.pins['ROT_B']])
         self.rotary.setDaemon(True)
         self.rotary.start()
         
