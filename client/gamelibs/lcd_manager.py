@@ -20,7 +20,11 @@ class LcdManager(object):
                 self.lcd[ctrlid]=newlcd
                 print("Control " + ctrlid + " is hd44780 on pin " + newlcd.pin_e)
             else:
-                newlcd = NokiaLCD(pin_SCE=dispdef['pin'])
+                if "contrast" in dispdef:
+                    myContrast = int(dispdef['contrast'])
+                else:
+                    myContrast = 0xbb
+                newlcd = NokiaLCD(pin_SCE=dispdef['pin'], InContrast=myContrast)
                 newlcd.setwidth(dispdef['width'])
                 newlcd.setheight(dispdef['height'])
                 self.lcd[ctrlid]=newlcd
