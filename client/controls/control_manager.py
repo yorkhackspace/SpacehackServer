@@ -25,7 +25,7 @@ class SHControl(object):
         self.roundsetup = roundconfig['controls'][ctrlid]
         self.ctrltype = self.roundsetup['type']
         self.ctrldef = self.roundsetup['definition']
-        return 'value' not in self.ctrldef or self.ctrldef['value'] != value or override
+        return ('value' not in self.ctrldef) or (self.ctrldef['value'] != value) or override
 
     def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
         print "Error: SHControl.processRoundConfig() should never be called"
@@ -41,6 +41,14 @@ class SHControlPhoneStyleMenu(SHControl):
         GPIO.setup(self.pins['RGB_G'], GPIO.OUT)
         GPIO.setup(self.pins['RGB_B'], GPIO.OUT)
 
+    def __prepType__(self, ctrldef, ctrltype, ctrlid):
+        if ctrltype == 'toggle':
+            myLcdManager.displayButtonsLine("Off", "On", ctrlid)
+        elif ctrltype == 'verbs':
+            myLcdManager.displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
+        else:
+            myLcdManager.displayButtonsLine("<<<<", ">>>>", ctrlid)
+        
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
         
@@ -69,7 +77,7 @@ class SHControlPhoneStyleMenu(SHControl):
                 elif leftchanged and leftpressed:
                     if ctrlvalue > ctrldef['min']:
                         value = ctrlvalue - 1
-            elif ctrltype == 'colours':
+            elif ctrltype == 'colour':
                 #get current index from pool of values
                 try:
                     idx = ctrldef['values'].index(ctrlvalue)
@@ -113,7 +121,7 @@ class SHControlPhoneStyleMenu(SHControl):
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override):
             RGB = [0, 0, 0]
             if self.ctrltype == 'toggle':
        	        if self.controlsetup['display']['height'] > 3:
@@ -129,7 +137,7 @@ class SHControlPhoneStyleMenu(SHControl):
                 if self.controlsetup['display']['height'] > 3:
                     myLcdManager.displayValueLine(str(value), ctrlid)
                 #Light the LED the right colours
-                RGB = controlsetup['colours'][str(value)]
+                RGB = self.controlsetup['colours'][str(value)]
             elif self.ctrltype == 'words':
                 if self.controlsetup['display']['height'] > 3:
                     myLcdManager.displayValueLine(value, ctrlid)
@@ -137,13 +145,13 @@ class SHControlPhoneStyleMenu(SHControl):
             GPIO.output(self.pins['RGB_G'], RGB[1])
             GPIO.output(self.pins['RGB_B'], RGB[2])
             
-    def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
-        if ctrltype == 'toggle':
-            myLcdManager.displayButtonsLine("Off", "On", ctrlid)
-        elif ctrltype == 'verbs':
-            myLcdManager.displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
-        else:
-            myLcdManager.displayButtonsLine("<<<<", ">>>>", ctrlid)
+    #def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
+    #    if ctrltype == 'toggle':
+    #        myLcdManager.displayButtonsLine("Off", "On", ctrlid)
+    #    elif ctrltype == 'verbs':
+    #        myLcdManager.displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
+    #    else:
+    #        myLcdManager.displayButtonsLine("<<<<", ">>>>", ctrlid)
 
 class SHControlPot(SHControl):
     
@@ -320,7 +328,9 @@ class SHControlCombo7SegColourRotary(SHControl):
         SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
         #What to do about rotary?
 
-    
+    def __prepType__(self, ctrldef, ctrltype, ctrlid):
+        if ctrltype == 'button':
+            SHControlCombo7SegColourRotary.__displayDigits(self, "PUSH")
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
@@ -332,20 +342,25 @@ class SHControlCombo7SegColourRotary(SHControl):
                 value = state
             elif ctrltype == 'toggle':
                 if state:
-                    value = int(not ctrlvalue)
+                    value = 1 - ctrlvalue
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
+        print("combo process value - value = '" + str(value) + "'")
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override):
+            print("ebabled = '" + str(self.roundsetup['enabled']) + "' type = '" + str(self.ctrltype) + "'")
             RGB = [0, 0, 0]
             if self.roundsetup['enabled']:
-                if self.ctrltype in ['toggle', button]:
+                if self.ctrltype == 'toggle':
                     if value:
                         SHControlCombo7SegColourRotary.__displayDigits(self, 'On')
                         RGB = [1, 0, 0]
                     else:
                         SHControlCombo7SegColourRotary.__displayDigits(self, 'Off')
                         #Switch off LED
+                elif self.ctrltype == 'button':
+                    if value:
+                        RGB = [1, 0, 0]
                 elif self.ctrltype == 'selector':
                     SHControlCombo7SegColourRotary.__displayDigits(self, str(value))
                     #Switch off LED
@@ -371,10 +386,13 @@ class SHControlCombo7SegColourRotary(SHControl):
             GPIO.output(self.pins['RGB_R'], 1 - RGB[0])
             GPIO.output(self.pins['RGB_G'], 1 - RGB[1])
             GPIO.output(self.pins['RGB_B'], 1 - RGB[2])
+        else:
+            print("Combo reports not valid for processing control value")            
             
-    def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
-        if ctrltype == 'button':
-            SHControlCombo7SegColourRotary.__displayDigits(self, "PUSH")
+    #def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
+    #    if ctrltype == 'button':
+    #        SHControlCombo7SegColourRotary.__displayDigits(self, "PUSH")
+
 
 class SHControlSwitchbank(SHControl):
     
@@ -407,7 +425,7 @@ class SHControlSwitchbank(SHControl):
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override):
             #TODO
             print "todo\n"
 
@@ -434,7 +452,7 @@ class SHControlIlluminatedButton(SHControl):
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override):
             if self.ctrltype == 'toggle':
                 if value:
                     GPIO.output(self.pins['LED'], GPIO.HIGH)
@@ -460,7 +478,7 @@ class SHControlIlluminatedToggle(SHControl):
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override):
             if self.ctrltype == 'toggle':
                 if controlsetup['display']['height']>3:
                     if value:
@@ -495,7 +513,7 @@ class SHControlFourButtons(SHControl):
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override):
             #TODO
             print "todo\n"
 
@@ -539,7 +557,7 @@ class SHControlKeypad(SHControl):
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
-        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
+        if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override):
             myLcdManager.displayValueLine(value, ctrlid)
 
 def initialiseControls(config, sortedlist, lcdManager):
@@ -621,7 +639,10 @@ def processRoundConfig(config, roundconfig, controlids):
         if 'definition' in roundsetup and roundsetup['enabled']:
             ctrltype = roundsetup['type']
             ctrldef = roundsetup['definition']
-            controls[ctrlid].processRoundConfig(ctrldef, ctrlid, ctrltype)
+            #controls[ctrlid].processRoundConfig(ctrldef, ctrlid, ctrltype)
+            hardwaretype = config['local']['controls'][ctrlid]['hardware']
+            if hardwaretype in ['phonestylemenu', 'combo7SegColourRotary']:
+                controls[ctrlid].__prepType__(ctrldef, ctrltype, ctrlid)
             if 'value' in ctrldef:
                 processControlValueAssignment(roundconfig, ctrldef['value'], ctrlid, True)
 
