@@ -376,7 +376,7 @@ class SHControlCombo7SegColourRotary(SHControl):
                     else:
                         idx = len(ctrldef['values']) - 1
                 value = str(ctrldef['values'][idx])
-            elife ctrltype == 'words':
+            elif ctrltype == 'words':
                 idx = ctrldef['pool'].index(ctrlvalue)
                 if state == 'cw':
                     if idx < len(ctrldef['pool']) - 1:
