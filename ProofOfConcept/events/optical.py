@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import Adafruit_BBIO.GPIO as GPIO
+
 import Queue
 import threading
 from time import sleep
@@ -14,7 +14,7 @@ class OpticalEncoder(threading.Thread):
     events to the queue with either "cw" or "ccw"
     """
 
-    def __init__(self, queue, encoder_name, pins):
+    def __init__(self, queue, encoder_name, pins, gpio):
         """ Expects a queue to send events to
             and an array of the two input pins
         """
@@ -25,19 +25,19 @@ class OpticalEncoder(threading.Thread):
         self.encoder_name = encoder_name
         for pin in pins:
             print "Setting up pin: %s" % pin
-            GPIO.setup(pin, GPIO.IN, GPIO.PUD_OFF)
-            GPIO.add_event_detect(pin, GPIO.RISING)
+            gpio.setup(pin, gpio.IN, gpio.PUD_OFF)
+            gpio.add_event_detect(pin, gpio.RISING)
 
     def run(self):
         while True:
-            if GPIO.event_detected(self.pin_a):
+            if gpio.event_detected(self.pin_a):
                 # Ignore false triggers
-                if GPIO.input(self.pin_a) != 1:
+                if gpio.input(self.pin_a) != 1:
                     continue
                 level_b = 0
                 # De-bounce
                 for count in range(0,8):
-                    level_b += GPIO.input(self.pin_b)
+                    level_b += gpio.input(self.pin_b)
                     print(str(level_b))
                 if level_b > 5:
                     dir = "cw"
@@ -46,8 +46,9 @@ class OpticalEncoder(threading.Thread):
                 self.queue.put((self.encoder_name, dir))
 
 if __name__ == "__main__":
+    import Adafruit_BBIO.GPIO as GPIO
     q = Queue.Queue()
-    enc = OpticalEncoder(q, "Flux Matrix", ["P8_22", "P9_31"])
+    enc = OpticalEncoder(q, "Flux Matrix", ["P8_22", "P9_31"], GPIO)
     enc.setDaemon(True)
     enc.start()
 
