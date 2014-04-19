@@ -376,16 +376,16 @@ class SHControlCombo7SegColourRotary(SHControl):
                         SHControlCombo7SegColourRotary.__displayDigits(self, "YELO")
                     elif value == 'cyan':
                         SHControlCombo7SegColourRotary.__displayDigits(self, "CYAN")
-                    RGB = controlsetup['colours'][str(value)]
+                    RGB = self.controlsetup['colours'][str(value)]
                 elif self.ctrltype == 'words':
                     #Switch off LED
                     SHControlCombo7SegColourRotary.__displayDigits(self, value.upper())
             else:
                 SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
             
-            GPIO.output(self.pins['RGB_R'], 1 - RGB[0])
-            GPIO.output(self.pins['RGB_G'], 1 - RGB[1])
-            GPIO.output(self.pins['RGB_B'], 1 - RGB[2])
+            GPIO.output(self.pins['RGB_R'], RGB[0])
+            GPIO.output(self.pins['RGB_G'], RGB[1])
+            GPIO.output(self.pins['RGB_B'], RGB[2])
         else:
             print("Combo reports not valid for processing control value")            
             
