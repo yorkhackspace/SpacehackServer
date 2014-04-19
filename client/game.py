@@ -15,6 +15,7 @@ from collections import OrderedDict
 import commands
 import json
 import time
+import os
 
 #import game libraries
 sys.path.append('./gamelibs')
@@ -57,15 +58,20 @@ def on_message(mosq, obj, msg):
     global timeoutdisplayblocks
     if nodes[0]=='clients':
         if nodes[2]=='configure':
-            processRoundConfig(str(msg.payload))
-            timeoutstarted = 0.0
-            timeoutdisplayblocks = 0
+            if str(msg.payload) == 'reboot':
+                os.system('reboot')
+            else:
+                processRoundConfig(str(msg.payload))
+                timeoutstarted = 0.0
+                timeoutdisplayblocks = 0
         elif nodes[2] == 'instructions':
             myLcdManager.display(str(msg.payload), 20, "0")
             #start timer?
             if 'timeout' in roundconfig and roundconfig['timeout'] > 0.0:
                 resetBlocks = True
                 timeoutstarted = time.time()
+        elif nodes[2] == 'timeout':
+            roundconfig['timeout'] = float(str(msg.payload))
         elif nodes[2] in controlids:
             ctrlid = nodes[2]
             if nodes[3] == 'enabled':
@@ -89,6 +95,8 @@ def on_message(mosq, obj, msg):
                 if not hasregistered:
                     hasregistered = True
                     client.publish("server/register", json.dumps(config['interface']))
+            elif mess == 'poweroff':
+                os.system('poweroff')
 
 
 #Process an incoming config for a round
@@ -106,6 +114,7 @@ client.connect(server)
 subsbase = "clients/" + ipaddress + "/"
 client.subscribe(subsbase + "configure")
 client.subscribe(subsbase + "instructions")
+client.subscribe(subsbase + "timeout")
 client.subscribe("server/ready")
 
 for controlid in [x['id'] for x in config['interface']['controls']]:

@@ -78,6 +78,12 @@
     "scifi18.ogg",
     "scifi19.ogg"
   ],
+  "warning": [
+    "warning.ogg",
+    "redalert.ogg",
+    "heart.ogg",
+    "horn.ogg"
+  ],
   "continuous": [
     "spaceshiphum.ogg",
     "timemachine.ogg",
