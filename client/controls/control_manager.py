@@ -329,7 +329,7 @@ class SHControlCombo7SegColourRotary(SHControl):
         GPIO.output(self.pins['RGB_B'], GPIO.LOW)
         SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
         #Rotary
-        self.isInit = false
+        self.isInit = False
         
     def __prepType__(self, ctrldef, ctrltype, ctrlid):
         if ctrltype == 'button':
