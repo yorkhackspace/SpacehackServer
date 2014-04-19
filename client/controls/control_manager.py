@@ -319,7 +319,7 @@ class SHControlCombo7SegColourRotary(SHControl):
 
     def __prepType__(self, ctrldef, ctrltype, ctrlid):
         if ctrltype == 'button':
-            myLcdManager.displayDigits("PUSH")
+            SHControlCombo7SegColourRotary.__displayDigits("PUSH")
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
@@ -370,6 +370,8 @@ class SHControlCombo7SegColourRotary(SHControl):
             GPIO.output(self.pins['RGB_R'], 1 - RGB[0])
             GPIO.output(self.pins['RGB_G'], 1 - RGB[1])
             GPIO.output(self.pins['RGB_B'], 1 - RGB[2])
+        else:
+            print("Combo reports not valid for processing control value")
 
 class SHControlSwitchbank(SHControl):
     
