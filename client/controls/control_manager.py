@@ -345,7 +345,10 @@ class SHControlCombo7SegColourRotary(SHControl):
             self.isInit = True
         value = ctrlvalue
         btn = GPIO.input(self.pins['BTN'])
-        qdir = self.queue.get()
+        try:
+            qdir = self.queue.get(False)
+        except Queue.Empty:
+            qdir = 'still'
         if ctrltype in ['button', 'toggle']:
             state = btn
         else:
@@ -359,6 +362,7 @@ class SHControlCombo7SegColourRotary(SHControl):
                     value = 1 - ctrlvalue
             elif ctrltype == 'selector':
                 print state
+                value = ctrlvalue
                 if state == 'ccw':
                     if ctrlvalue > ctrldef['min']:
                         value = ctrlvalue - 1
