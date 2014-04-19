@@ -338,7 +338,7 @@ class SHControlCombo7SegColourRotary(SHControl):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override = False):
             RGB = [0, 0, 0]
             if self.roundsetup['enabled']:
-                if self.ctrltype in ['toggle', button]:
+                if self.ctrltype in ['toggle', 'button']:
                     if value:
                         SHControlCombo7SegColourRotary.__displayDigits(self, 'On')
                         RGB = [1, 0, 0]
