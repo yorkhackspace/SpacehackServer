@@ -319,7 +319,7 @@ class SHControlCombo7SegColourRotary(SHControl):
 
     def __prepType__(self, ctrldef, ctrltype, ctrlid):
         if ctrltype == 'button':
-            SHControlCombo7SegColourRotary.__displayDigits("PUSH")
+            SHControlCombo7SegColourRotary.__displayDigits(self, "PUSH")
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
