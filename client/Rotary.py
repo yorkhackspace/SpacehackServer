@@ -41,4 +41,4 @@ and an array of the two input pins
                     dir = "cw"
                 else:
                     dir = "ccw"
-                self.queue.put((self.encoder_name, dir))
+                self.queue.put(dir)
