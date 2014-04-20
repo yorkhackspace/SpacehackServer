@@ -318,6 +318,8 @@ class SHControlCombo7SegColourRotary(SHControl):
                 idx = i+1
             self.segment.writeDigitRaw(idx,self.lookup7segchar[digit])
 
+    isInit = False
+
     def __init__(self, controlconfig):
         SHControl.__init__(self, controlconfig)
         #segment defined at module scope
@@ -329,8 +331,6 @@ class SHControlCombo7SegColourRotary(SHControl):
         GPIO.output(self.pins['RGB_G'], GPIO.LOW)
         GPIO.output(self.pins['RGB_B'], GPIO.LOW)
         SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
-        #Rotary encoder initialisation needs putting off until it starts polling. How odd.
-        self.isInit = False
         
     def __prepType__(self, ctrldef, ctrltype, ctrlid):
         if ctrltype == 'button':
