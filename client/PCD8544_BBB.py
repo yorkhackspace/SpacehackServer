@@ -71,7 +71,7 @@ def resetNokia():
         
 def init(dev=(0,0),speed=4000000, brightness=256):
     if BITBANG:
-        for pin in [SCE, SCLK, DIN]:
+        for pin in [SCLK, DIN]:
             GPIO.setup(pin, GPIO.OUT)
     else:
         spi.open(dev[0],dev[1])
@@ -83,7 +83,7 @@ def init(dev=(0,0),speed=4000000, brightness=256):
 
 def screenInit(contrast = CONTRAST):
     GPIO.output(SCE, GPIO.LOW)
-
+    time.sleep(0.050)
     # Toggle RST low to reset.
     GPIO.output(RST, GPIO.LOW)
     time.sleep(0.100)
