@@ -10,6 +10,8 @@ class LcdManager(object):
     lcd={}
 
     def __init__(self, sortedlist, config):
+        SCEPins = []
+        Contrasts = []
         for ctrlid in sortedlist:
             dispdef = config['local']['controls'][ctrlid]['display']
             if dispdef['type'] == 'hd44780':
@@ -30,7 +32,17 @@ class LcdManager(object):
                 newlcd.setheight(dispdef['height'])
                 self.lcd[ctrlid]=newlcd
                 print("Control " + ctrlid + " is nokia on pin " + dispdef['pin'])
+                SCEPins.append(dispdef['pin'])
+                Contrast.append(myContrast)
+        for pin in SCEPins:
+            GPIO.output(pin, GPIO.LOW)
         PCD.screenInit()
+        for pin in SCEPins:
+            GPIO.output(pin, GPIO.HIGH)
+        for ctrlid in sortedlist:
+            dispdef = config['local']['controls'][ctrlid]['display']
+            if dispdef['type'] == 'nokia':
+                self.lcd[ctrlid].setContrast()
 
     mytimeoutdisplayblocks = 0
 

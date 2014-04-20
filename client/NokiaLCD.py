@@ -13,16 +13,14 @@ class NokiaLCD:
                  pin_SCE="P9_11", pin_SCLK="P9_14", pin_DIN="P9_12", InContrast=0xbb):
         self.DC, self.RST, self.LED = pin_DC, pin_RST, pin_LED
         self.SCE, self.SCLK, self.DIN = pin_SCE, pin_SCLK, pin_DIN
+        self.contrast = InContrast
         GPIO.setup(pin_SCE, GPIO.OUT)
         GPIO.output(pin_SCE, GPIO.HIGH)
         global nokiasinitialised
         if not nokiasinitialised:
             PCD.init()
             nokiasinitialised = True
-        GPIO.output(pin_SCE, GPIO.LOW)
-        PCD.set_contrast(InContrast)
-        GPIO.output(pin_SCE, GPIO.HIGH)        
-
+            
     width = 1
     height = 1
 
@@ -52,3 +50,8 @@ class NokiaLCD:
         GPIO.output(self.SCE, GPIO.LOW)
         PCD.gotorc(row, col)
         GPIO.output(self.SCE, GPIO.HIGH)
+        
+    def setContrast(self):
+        GPIO.output(pin_SCE, GPIO.LOW)
+        PCD.set_contrast(contrast)
+        GPIO.output(pin_SCE, GPIO.HIGH)
