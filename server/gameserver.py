@@ -319,7 +319,7 @@ def pickNewTarget(consoleip):
     #Now we have targetval and targetinstruction for this consoleip, store and publish it
     console[consoleip]['instructions']=targetinstruction
     console[consoleip]['target']={"console": targetconsole, "control": targetctrlid, "value": targetval, "timestamp": time.time(), "timeout": targettimeout}
-    print("Instruction: " + consoleip + '/' + targetctrlid + ' - ' + str(targetinstruction))
+    print("Instruction: " + consoleip + '/' + targetctrlid + ' - ' + ctrltype + ' (was ' + curval + ') ' + str(targetinstruction))
     #update game stats
     playerstats[consoleip]['instructions']['total'] += 1
     playerstats[targetconsole]['targets']['total'] += 1
