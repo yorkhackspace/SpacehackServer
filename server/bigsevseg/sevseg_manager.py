@@ -20,10 +20,10 @@ print "init done"
 seg = dict(A = 13, B = 9, C = 12, D = 14, E = 7, F = 11, G = 10)
 
 digit_1 = [     'B', 'C'                    ]
-digit_2 = ['A', 'B',      'D', 'E'          ]
+digit_2 = ['A', 'B',      'D', 'E',      'G']
 digit_3 = ['A', 'B', 'C', 'D',           'G']
 digit_4 = [     'B', 'C',           'F', 'G']
-digit_5 = ['A',      'C', 'D',      'F'     ]
+digit_5 = ['A',      'C', 'D',      'F', 'G']
 digit_6 = ['A',      'C', 'D', 'E', 'F', 'G']
 digit_7 = ['A', 'B', 'C'                    ]
 digit_8 = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
@@ -63,4 +63,4 @@ while True:
         clearSevenSeg()
         digitSevenSeg(i)
         print i
-        raw_input()
+        time.sleep(0.5)
