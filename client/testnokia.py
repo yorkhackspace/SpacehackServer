@@ -7,8 +7,8 @@ import time
 import Adafruit_BBIO.GPIO as GPIO
 
 
-CE_0="P9_23"
-CE_1="P9_25"
+CE_0="P9_11"
+CE_1="P9_13"
 GPIO.setup(CE_0, GPIO.OUT)
 GPIO.setup(CE_1, GPIO.OUT)
 
@@ -17,6 +17,7 @@ GPIO.output(CE_1, GPIO.HIGH)
 
 
 pc.init()
+pc.screenInit()
 
 GPIO.output(CE_1, GPIO.LOW)
 
