@@ -8,7 +8,7 @@ while (Run):
 		Run = False
 	else:
 		while InPin:
-			Command = raw_input("Select command; i-Input, o-Output, r-Read, 1-Set high, 0-Set low, b-Back: ")
+			Command = raw_input("Select command; i-Input, o-Output, r-Read, 1-Set high, 0-Set low, b-Back, p-Poll: ")
 			if Command == "i":
 				GPIO.setup(pin, GPIO.IN, GPIO.PUD_DOWN)
 			elif Command == "o":
@@ -21,3 +21,6 @@ while (Run):
 				GPIO.output(pin, GPIO.LOW)
 			elif Command == "b":
 				InPin = False
+			elif Command == "p":
+			    while True:
+			        print GPIO.input(pin)
