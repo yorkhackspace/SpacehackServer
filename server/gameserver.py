@@ -464,6 +464,7 @@ def roundOver():
     print "roundOver() called"
     global gamestate
     global currenttimeout
+    global lastgenerated
     gamestate = 'roundover'
     print "    gamestate changed"
     #Zap all existing targets
