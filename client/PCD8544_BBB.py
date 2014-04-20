@@ -81,7 +81,7 @@ def init(dev=(0,0),speed=4000000, brightness=256):
     for pin in [DC, RST]:
         GPIO.setup(pin, GPIO.OUT)
 
-def screenInit(contrast = CONTRAST):
+def screenInit():
     #GPIO.output(SCE, GPIO.LOW)
     time.sleep(0.050)
     # Toggle RST low to reset.
@@ -90,7 +90,7 @@ def screenInit(contrast = CONTRAST):
     GPIO.output(RST, GPIO.HIGH)
     
     # Extended mode, bias, vop, basic mode, non-inverted display.
-    set_contrast(contrast)
+    #set_contrast(contrast)
 
     #GPIO.output(SCE, GPIO.HIGH)
 

@@ -3,6 +3,7 @@
 import Adafruit_BBIO.GPIO as GPIO
 from Adafruit_CharLCD import Adafruit_CharLCD
 from NokiaLCD import NokiaLCD
+import PCD8544_BBB as PCD
 import time
 
 class LcdManager(object):
@@ -29,6 +30,7 @@ class LcdManager(object):
                 newlcd.setheight(dispdef['height'])
                 self.lcd[ctrlid]=newlcd
                 print("Control " + ctrlid + " is nokia on pin " + dispdef['pin'])
+        PCD.screenInit()
 
     mytimeoutdisplayblocks = 0
 

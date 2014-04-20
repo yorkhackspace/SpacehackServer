@@ -13,14 +13,15 @@ class NokiaLCD:
                  pin_SCE="P9_11", pin_SCLK="P9_14", pin_DIN="P9_12", InContrast=0xbb):
         self.DC, self.RST, self.LED = pin_DC, pin_RST, pin_LED
         self.SCE, self.SCLK, self.DIN = pin_SCE, pin_SCLK, pin_DIN
-        PCD.SCE=self.SCE
         GPIO.setup(pin_SCE, GPIO.OUT)
         GPIO.output(pin_SCE, GPIO.HIGH)
         global nokiasinitialised
         if not nokiasinitialised:
             PCD.init()
             nokiasinitialised = True
-        PCD.screenInit(contrast=InContrast)
+        GPIO.output(pin_SCE, GPIO.LOW)
+        set_contrast(InContrast)
+        GPIO.output(pin_SCE, GPIO.HIGH)        
 
     width = 1
     height = 1
@@ -38,13 +39,16 @@ class NokiaLCD:
         self.width = width
 
     def message(self, displaytext):
-        PCD.SCE=self.SCE
+        GPIO.output(self.SCE, LOW)
         PCD.text(displaytext)
+        GPIO.output(self.SCE, HIGH)
 
     def clear(self):
-        PCD.SCE=self.SCE
+        GPIO.output(self.SCE, LOW)
         PCD.cls()
+        GPIO.output(self.SCE, HIGH)
 
     def setCursor(self, col, row):
-        PCD.SCE=self.SCE
+        GPIO.output(self.SCE, LOW)
         PCD.gotorc(row, col)
+        GPIO.output(self.SCE, HIGH)
