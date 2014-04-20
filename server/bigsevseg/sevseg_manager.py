@@ -50,5 +50,5 @@ while True:
     print "blink"
     for i in digits:
         clearSevenSeg()
-        digitSevenSeg()
+        digitSevenSeg(i)
         time.sleep(0.5)
