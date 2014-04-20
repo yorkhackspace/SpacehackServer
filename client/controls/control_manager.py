@@ -451,7 +451,9 @@ class SHControlCombo7SegColourRotary(SHControl):
             print("Combo reports not valid for processing control value")            
             
     def deInit(self):
-        self.rotary.stop()
+        if hasattr(self, 'rotary'):
+            self.rotary.stop()
+            
     #def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
     #    if ctrltype == 'button':
     #        SHControlCombo7SegColourRotary.__displayDigits(self, "PUSH")
