@@ -38,7 +38,7 @@ for i in seg:
 
 print "All pins set to output"
 
-def clearSevenSeg:
+def clearSevenSeg():
     for i in seg:
         sevenSeg.output(seg[i], 0)
 
