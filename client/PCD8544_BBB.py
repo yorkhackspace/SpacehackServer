@@ -22,7 +22,6 @@ BITBANG = True
 #gpio's :
 DC   = "P9_26"
 RST  = "P9_25"
-LED  = "P9_27"
 
 # SPI connection
 SCE  = "P9_11"
@@ -63,6 +62,12 @@ def writebytes(value):
       GPIO.output(SCE, GPIO.HIGH)
     else:
         spi.writebytes(value)
+    
+def resetNokia():    
+    # Toggle RST low to reset.
+    GPIO.output(RST, GPIO.LOW)
+    time.sleep(0.100)
+    GPIO.output(RST, GPIO.HIGH)
         
 def init(dev=(0,0),speed=4000000, brightness=256, contrast=CONTRAST):
     if BITBANG:
@@ -79,18 +84,13 @@ def init(dev=(0,0),speed=4000000, brightness=256, contrast=CONTRAST):
     GPIO.output(SCE, GPIO.LOW)
 
     # Toggle RST low to reset.
-    GPIO.output(RST, GPIO.LOW)
-    time.sleep(0.100)
-    GPIO.output(RST, GPIO.HIGH)
+    #GPIO.output(RST, GPIO.LOW)
+    #time.sleep(0.100)
+    #GPIO.output(RST, GPIO.HIGH)
+    
     # Extended mode, bias, vop, basic mode, non-inverted display.
     set_contrast(contrast)
 
-    # if LED == 1 set pin mode to PWM else set it to OUT
-    if LED == 1:
-        PWM.start(LED, 0)
-    else:
-        GPIO.setup(LED, GPIO.OUT)
-        GPIO.output(LED, GPIO.LOW)
     GPIO.output(SCE, GPIO.HIGH)
 
 
