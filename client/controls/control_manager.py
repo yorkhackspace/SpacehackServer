@@ -365,7 +365,7 @@ class SHControlCombo7SegColourRotary(SHControl):
                 except Empty:
                     qdir = 'still'
                 
-                elif ctrltype == 'selector':
+                if ctrltype == 'selector':
                     value = ctrlvalue
                     if qdir == 'ccw':
                         if ctrlvalue > ctrldef['min']:
