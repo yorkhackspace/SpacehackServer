@@ -22,6 +22,7 @@ GPIO.output(CE_2, GPIO.LOW)
 
 pc.screenInit(160)
 
+GPIO.output(CE_0, GPIO.HIGH)
 GPIO.output(CE_1, GPIO.HIGH)
 GPIO.output(CE_2, GPIO.HIGH)
 

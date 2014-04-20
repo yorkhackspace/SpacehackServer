@@ -48,7 +48,7 @@ if not BITBANG:
 
 def writebytes(value):
     if BITBANG:
-      GPIO.output(SCE, GPIO.LOW)
+      #GPIO.output(SCE, GPIO.LOW)
       for byte in value:
         bits = bin(byte)[2:]
         bits = '0' * (8 - len(bits)) + bits
@@ -59,7 +59,7 @@ def writebytes(value):
                 GPIO.output(DIN, GPIO.HIGH)
             GPIO.output(SCLK, GPIO.LOW)
             GPIO.output(SCLK, GPIO.HIGH)
-      GPIO.output(SCE, GPIO.HIGH)
+      #GPIO.output(SCE, GPIO.HIGH)
     else:
         spi.writebytes(value)
     
@@ -82,7 +82,7 @@ def init(dev=(0,0),speed=4000000, brightness=256):
         GPIO.setup(pin, GPIO.OUT)
 
 def screenInit(contrast = CONTRAST):
-    GPIO.output(SCE, GPIO.LOW)
+    #GPIO.output(SCE, GPIO.LOW)
     time.sleep(0.050)
     # Toggle RST low to reset.
     GPIO.output(RST, GPIO.LOW)
@@ -92,7 +92,7 @@ def screenInit(contrast = CONTRAST):
     # Extended mode, bias, vop, basic mode, non-inverted display.
     set_contrast(contrast)
 
-    GPIO.output(SCE, GPIO.HIGH)
+    #GPIO.output(SCE, GPIO.HIGH)
 
 def lcd_cmd(value):
     GPIO.output(DC, GPIO.LOW)
