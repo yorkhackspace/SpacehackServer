@@ -20,7 +20,7 @@ class NokiaLCD:
         if not nokiasinitialised:
             PCD.init(contrast=InContrast)
             nokiasinitialised = True
-        resetNokia()
+        PCD.resetNokia()
 
     width = 1
     height = 1
