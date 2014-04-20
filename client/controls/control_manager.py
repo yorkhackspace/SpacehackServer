@@ -33,6 +33,9 @@ class SHControl(object):
     def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
         print "Error: SHControl.processRoundConfig() should never be called"
 
+    def deInit(self):
+        print "Superclass deinit"
+
 class SHControlPhoneStyleMenu(SHControl):
     
     def __init__(self, controlconfig):
@@ -447,6 +450,8 @@ class SHControlCombo7SegColourRotary(SHControl):
         else:
             print("Combo reports not valid for processing control value")            
             
+    def deInit():
+        self.rotary.stop()
     #def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
     #    if ctrltype == 'button':
     #        SHControlCombo7SegColourRotary.__displayDigits(self, "PUSH")
@@ -624,9 +629,12 @@ def initialiseControls(config, sortedlist, lcdManager):
     myLcdManager = lcdManager
     allcontrolsconfig = config['local']['controls']
     for ctrlid in sortedlist:
-        hardwaretype = allcontrolsconfig[ctrlid]['hardware'] 
+        hardwaretype = allcontrolsconfig[ctrlid]['hardware']
         if hardwaretype != 'instructions':
             controlconfig = config['local']['controls'][ctrlid]
+            if not (controls[ctrlid] is None):
+                #destroy the old instance
+                controls[ctrlid].deInit()
             if hardwaretype == 'phonestylemenu': # 2 buttons, RGB LED
                 controls[ctrlid] = (SHControlPhoneStyleMenu(controlconfig))                
             elif hardwaretype == 'bargraphpotentiometer': #10k pot, 10 LEDs

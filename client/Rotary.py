@@ -11,6 +11,8 @@ class RotaryEncoder(threading.Thread):
 events to the queue with either "cw" or "ccw"
 """
 
+    DoRun = True
+
     def __init__(self, queue, encoder_name, pins, gpio):
         """ Expects a queue to send events to
 and an array of the two input pins
@@ -25,9 +27,11 @@ and an array of the two input pins
             #print "Setting up pin: %s" % pin
             self.gpio.setup(pin, self.gpio.IN, self.gpio.PUD_OFF)
             self.gpio.add_event_detect(pin, self.gpio.RISING)
+    def stop():
+        DoRun = False
 
     def run(self):
-        while True:
+        while DoRun:
             if self.gpio.event_detected(self.pin_a):
                 # Ignore false triggers
                 if self.gpio.input(self.pin_a) != 1:
@@ -42,3 +46,4 @@ and an array of the two input pins
                 else:
                     dir = "ccw"
                 self.queue.put(dir)
+            
