@@ -53,5 +53,5 @@ class NokiaLCD:
         
     def setContrast(self):
         GPIO.output(self.SCE, GPIO.LOW)
-        PCD.set_contrast(contrast)
+        PCD.set_contrast(self.contrast)
         GPIO.output(self.SCE, GPIO.HIGH)
