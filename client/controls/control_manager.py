@@ -359,7 +359,7 @@ class SHControlCombo7SegColourRotary(SHControl):
                         value = 1 - ctrlvalue
         else:
             state = 'still'
-            while len(rotaryQueue)>0:
+            while not rotaryQueue.empty():
                 try:
                     qdir = rotaryQueue.get(False)
                 except Empty:
