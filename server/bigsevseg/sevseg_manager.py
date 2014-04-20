@@ -19,16 +19,16 @@ print "init done"
 
 seg = dict(A = 14, B = 10, C = 13, D = 12, E = 7, F = 11, G = 9)
 
-digit_1 = [   B, C            ]
-digit_2 = [A, B,    D, E      ]
-digit_3 = [A, B, C, D,       G]
-digit_4 = [   B, C,       F, G]
-digit_5 = [A,    C, D,    F   ]
-digit_6 = [A,    C, D, E, F, G]
-digit_7 = [A, B, C            ]
-digit_8 = [A, B, C, D, E, F, G]
-digit_9 = [A, B, C, D,    F, G]
-digit_0 = [A, B, C, D, E, F   ]
+digit_1 = [     'B', 'C'                    ]
+digit_2 = ['A', 'B',      'D', 'E'          ]
+digit_3 = ['A', 'B', 'C', 'D',           'G']
+digit_4 = [     'B', 'C',           'F', 'G']
+digit_5 = ['A',      'C', 'D',      'F'     ]
+digit_6 = ['A',      'C', 'D', 'E', 'F', 'G']
+digit_7 = ['A', 'B', 'C'                    ]
+digit_8 = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+digit_9 = ['A', 'B', 'C', 'D',      'F', 'G']
+digit_0 = ['A', 'B', 'C', 'D', 'E', 'F'     ]
 
 digits = [digit_1, digit_2, digit_3, digit_4, digit_5, digit_6, digit_7, digit_8, digit_9, digit_0]
 
