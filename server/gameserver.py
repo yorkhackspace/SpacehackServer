@@ -580,7 +580,7 @@ client.subscribe('server/register')
 client.publish('server/ready', 'started')
 
 lastReady = time.time()
-while(client.loop() == 0): 
+while(client.loop(0) == 0): 
     if time.time() - lastReady > 3.0:
         lastReady = time.time()
         client.publish('server/ready', 'ready')
