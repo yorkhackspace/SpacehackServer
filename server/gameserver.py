@@ -480,6 +480,8 @@ def roundOver():
     lastgenerated = time.time()
     currenttimeout *= 0.75
     gamestate = 'hyperspace'
+    print "Time: "
+    print time.time()
     print "    all done!"
     
 def gameOver():
@@ -592,6 +594,8 @@ while(client.loop(0) == 0):
         checkTimeouts()
        
     elif gamestate == 'hyperspace' and time.time() - lastgenerated > 8.0:
+        print "hypertime:"
+        print time.time()
         initRound()
 
 #If client.loop() returns non-zero, loop drops out to here.
