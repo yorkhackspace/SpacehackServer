@@ -39,16 +39,16 @@ class NokiaLCD:
         self.width = width
 
     def message(self, displaytext):
-        GPIO.output(self.SCE, LOW)
+        GPIO.output(self.SCE, GPIO.LOW)
         PCD.text(displaytext)
-        GPIO.output(self.SCE, HIGH)
+        GPIO.output(self.SCE, GPIO.HIGH)
 
     def clear(self):
-        GPIO.output(self.SCE, LOW)
+        GPIO.output(self.SCE, GPIO.LOW)
         PCD.cls()
-        GPIO.output(self.SCE, HIGH)
+        GPIO.output(self.SCE, GPIO.HIGH)
 
     def setCursor(self, col, row):
-        GPIO.output(self.SCE, LOW)
+        GPIO.output(self.SCE, GPIO.LOW)
         PCD.gotorc(row, col)
-        GPIO.output(self.SCE, HIGH)
+        GPIO.output(self.SCE, GPIO.HIGH)
