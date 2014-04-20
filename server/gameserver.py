@@ -51,7 +51,7 @@ def on_connect(mosq, obj, rc):
 def on_message(mosq, obj, msg):
     """Receive and process incoming MQTT published message"""
     nodes = msg.topic.split('/')
-    print(msg.topic + " - " + str(msg.payload))
+    print(gamestate + ' - + msg.topic + " - " + str(msg.payload))
     if nodes[0]=='server':
         if nodes[1]=='register':
             config = json.loads(str(msg.payload))
