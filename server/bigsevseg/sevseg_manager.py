@@ -17,7 +17,7 @@ print "init done"
 
 #seg = dict(A = 7, B = 9, C = 10, D = 11, E = 12, F = 13, G = 14)
 
-seg = dict(A = 14, B = 10, C = 13, D = 12, E = 7, F = 11, G = 9)
+seg = dict(A = 13, B = 9, C = 12, D = 14, E = 7, F = 11, G = 10)
 
 digit_1 = [     'B', 'C'                    ]
 digit_2 = ['A', 'B',      'D', 'E'          ]
@@ -41,7 +41,7 @@ test_7 = ['G']
 digits = [digit_1, digit_2, digit_3, digit_4, digit_5, digit_6, digit_7, digit_8, digit_9, digit_0]
 tests = [test_1, test_2, test_3, test_4, test_5, test_6, test_7]
 
-patterns = tests
+patterns = digits
 
 for i in seg:
     print seg[i]
