@@ -30,7 +30,18 @@ digit_8 = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 digit_9 = ['A', 'B', 'C', 'D',      'F', 'G']
 digit_0 = ['A', 'B', 'C', 'D', 'E', 'F'     ]
 
+test_1 = ['A']
+test_2 = ['B']
+test_3 = ['C']
+test_4 = ['D']
+test_5 = ['E']
+test_6 = ['F']
+test_7 = ['G']
+
 digits = [digit_1, digit_2, digit_3, digit_4, digit_5, digit_6, digit_7, digit_8, digit_9, digit_0]
+tests = [test_1, test_2, test_3, test_4, test_5, test_6, test_7]
+
+patterns = tests
 
 for i in seg:
     print seg[i]
@@ -48,7 +59,7 @@ def digitSevenSeg(digit):
 
 while True:
     print "blink"
-    for i in digits:
+    for i in patterns:
         clearSevenSeg()
         digitSevenSeg(i)
         time.sleep(0.5)
