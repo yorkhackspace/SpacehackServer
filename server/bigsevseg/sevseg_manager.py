@@ -62,4 +62,5 @@ while True:
     for i in patterns:
         clearSevenSeg()
         digitSevenSeg(i)
-        time.sleep(0.5)
+        print i
+        raw_input()
