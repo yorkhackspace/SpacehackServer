@@ -15,7 +15,7 @@ print "init done"
 #
 #Centre: G
 
-seg = dict(A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 8)s
+seg = dict(A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 8)
 
 for i in seg:
     sevenSeg.config(i, ExpIO.Adafruit_MCP230XX.OUTPUT)
