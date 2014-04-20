@@ -16,25 +16,28 @@ GPIO.setup(CE_2, GPIO.OUT)
 
 pc.init()
 
-GPIO.output(CE_0, GPIO.LOW)
-GPIO.output(CE_1, GPIO.LOW)
-GPIO.output(CE_2, GPIO.LOW)
+#GPIO.output(CE_0, GPIO.LOW)
+#GPIO.output(CE_1, GPIO.LOW)
+#GPIO.output(CE_2, GPIO.LOW)
 
+#pc.screenInit()
+
+#GPIO.output(CE_0, GPIO.HIGH)
+#GPIO.output(CE_1, GPIO.HIGH)
+#GPIO.output(CE_2, GPIO.HIGH)
+
+GPIO.output(CE_0, GPIO.LOW)
 pc.screenInit()
-
-GPIO.output(CE_0, GPIO.HIGH)
-GPIO.output(CE_1, GPIO.HIGH)
-GPIO.output(CE_2, GPIO.HIGH)
-
-GPIO.output(CE_0, GPIO.LOW)
 pc.set_contrast(160)
 GPIO.output(CE_0, GPIO.HIGH)
 
 GPIO.output(CE_1, GPIO.LOW)
+pc.screenInit()
 pc.set_contrast(170)
 GPIO.output(CE_1, GPIO.HIGH)
 
 GPIO.output(CE_2, GPIO.LOW)
+pc.screenInit()
 pc.set_contrast(180)
 GPIO.output(CE_2, GPIO.HIGH)
 raw_input("sdf")
