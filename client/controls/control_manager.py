@@ -632,7 +632,7 @@ def initialiseControls(config, sortedlist, lcdManager):
         hardwaretype = allcontrolsconfig[ctrlid]['hardware']
         if hardwaretype != 'instructions':
             controlconfig = config['local']['controls'][ctrlid]
-            if not (controls[ctrlid] is None):
+            if (ctrlid in controls):
                 #destroy the old instance
                 controls[ctrlid].deInit()
             if hardwaretype == 'phonestylemenu': # 2 buttons, RGB LED
