@@ -348,60 +348,60 @@ class SHControlCombo7SegColourRotary(SHControl):
             rotaryInit = True
         value = ctrlvalue
         btn = GPIO.input(self.pins['BTN'])
-        try:
-            qdir = rotaryQueue.get(False)
-        except Empty:
-            qdir = 'still'
+        
         if ctrltype in ['button', 'toggle']:
             state = btn
+            if ctrlstate != state:
+                if ctrltype == 'button':
+                    value = state
+                elif ctrltype == 'toggle':
+                    if state:
+                        value = 1 - ctrlvalue
         else:
-            state = qdir
-            #print state
-        #rotary movement is handled separately not sampled
-        if ctrlstate != state:
-            if ctrltype == 'button':
-                value = state
-            elif ctrltype == 'toggle':
-                if state:
-                    value = 1 - ctrlvalue
-            elif ctrltype == 'selector':
-                print state
-                value = ctrlvalue
-                if state == 'ccw':
-                    if ctrlvalue > ctrldef['min']:
-                        value = ctrlvalue - 1
-                elif state == 'cw':
-                    if ctrlvalue < ctrldef['max']:
-                        value = ctrlvalue + 1
-            elif ctrltype == 'colour':
+            state = 'still'
+            while len(rotaryQueue)>0:
                 try:
-                    idx = ctrldef['values'].index(ctrlvalue)
-                except ValueError:
-                    idx=0
-                if state=='cw':
-                    if idx < len(ctrldef['values']) - 1:
-                        idx += 1
-                    else:
-                        idx = 0
-                elif state == 'ccw':
-                    if idx > 0:
-                        idx -= 1
-                    else:
-                        idx = len(ctrldef['values']) - 1
-                value = str(ctrldef['values'][idx])
-            elif ctrltype == 'words':
-                idx = ctrldef['pool'].index(ctrlvalue)
-                if state == 'cw':
-                    if idx < len(ctrldef['pool']) - 1:
-                        idx += 1
-                    else:
-                        idx = 0
-                elif state == 'ccw':
-                    if idx > 0:
-                        idx -= 1
-                    else:
-                        idx = len(ctrldef['pool']) - 1
-                value = str(ctrldef['pool'][idx])
+                    qdir = rotaryQueue.get(False)
+                except Empty:
+                    qdir = 'still'
+                
+                elif ctrltype == 'selector':
+                    value = ctrlvalue
+                    if qdir == 'ccw':
+                        if ctrlvalue > ctrldef['min']:
+                            value = ctrlvalue - 1
+                    elif qdir == 'cw':
+                        if ctrlvalue < ctrldef['max']:
+                            value = ctrlvalue + 1
+                elif ctrltype == 'colour':
+                    try:
+                        idx = ctrldef['values'].index(ctrlvalue)
+                    except ValueError:
+                        idx=0
+                    if qdir=='cw':
+                        if idx < len(ctrldef['values']) - 1:
+                            idx += 1
+                        else:
+                            idx = 0
+                    elif qdir == 'ccw':
+                        if idx > 0:
+                            idx -= 1
+                        else:
+                            idx = len(ctrldef['values']) - 1
+                    value = str(ctrldef['values'][idx])
+                elif ctrltype == 'words':
+                    idx = ctrldef['pool'].index(ctrlvalue)
+                    if qdir == 'cw':
+                        if idx < len(ctrldef['pool']) - 1:
+                            idx += 1
+                        else:
+                            idx = 0
+                    elif qdir == 'ccw':
+                        if idx > 0:
+                            idx -= 1
+                        else:
+                            idx = len(ctrldef['pool']) - 1
+                    value = str(ctrldef['pool'][idx])
                 
         return value, state
 
