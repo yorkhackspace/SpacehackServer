@@ -152,6 +152,9 @@ def receiveValue(consoleip, ctrlid, value):
             #Suppress caring about button releases - only important in game starts
             if not (currentsetup[consoleip]['controls'][ctrlid]['type'] == 'button' and str(value) == "0"):
                 playSound(random.choice(controls.soundfiles['wrong']))
+    elif gamestate == 'setupround':
+        if 'definition' in currentsetup[consoleip]['controls'][ctrlid]:
+            currentsetup[consoleip]['controls'][ctrlid]['definition']['value'] = value
     elif gamestate in ['readytostart', 'waitingforplayers']:
         #button push?
         if 'gamestart' in currentsetup[consoleip]['controls'][ctrlid]:
