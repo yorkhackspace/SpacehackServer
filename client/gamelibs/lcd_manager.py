@@ -11,7 +11,6 @@ class LcdManager(object):
 
     def __init__(self, sortedlist, config):
         SCEPins = []
-        Contrasts = []
         for ctrlid in sortedlist:
             dispdef = config['local']['controls'][ctrlid]['display']
             if dispdef['type'] == 'hd44780':
@@ -33,7 +32,6 @@ class LcdManager(object):
                 self.lcd[ctrlid]=newlcd
                 print("Control " + ctrlid + " is nokia on pin " + dispdef['pin'])
                 SCEPins.append(dispdef['pin'])
-                Contrast.append(myContrast)
         for pin in SCEPins:
             GPIO.output(pin, GPIO.LOW)
         PCD.screenInit()
