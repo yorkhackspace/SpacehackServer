@@ -15,7 +15,7 @@ print "init done"
 #
 #Centre: G
 
-seg = dict(A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 8)
+seg = dict(A = 7, B = 9, C = 10, D = 11, E = 12, F = 13, G = 14)
 
 for i in seg:
     print seg[i]
