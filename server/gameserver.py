@@ -265,6 +265,9 @@ def pickNewTarget(consoleip):
     targetcontrol = targetsetup['controls'][targetctrlid]
     targetname = targetcontrol['name']
     targetdef = targetcontrol['definition']
+    targettimeout = currenttimeout
+    if 'scalefactor' in targetdef:
+        targettimeout *= targetdef['scalefactor']
     targetinstruction = ''
     #pick a new target based on the control type and current value
     ctrltype = targetcontrol['type']
@@ -315,12 +318,13 @@ def pickNewTarget(consoleip):
         print("Unhandled type: " + ctrltype)
     #Now we have targetval and targetinstruction for this consoleip, store and publish it
     console[consoleip]['instructions']=targetinstruction
-    console[consoleip]['target']={"console": targetconsole, "control": targetctrlid, "value": targetval, "timestamp": time.time()}
+    console[consoleip]['target']={"console": targetconsole, "control": targetctrlid, "value": targetval, "timestamp": time.time(), "timeout": targettimeout}
     print("Instruction: " + consoleip + '/' + targetctrlid + ' - ' + str(targetinstruction))
     #update game stats
     playerstats[consoleip]['instructions']['total'] += 1
     playerstats[targetconsole]['targets']['total'] += 1
     #publish!
+    client.publish('clients/' + consoleip + '/timeout', str(targettimeout))
     client.publish('clients/' + consoleip + '/instructions', str(targetinstruction))
 
 def checkTimeouts():
@@ -328,7 +332,7 @@ def checkTimeouts():
     global numinstructions
     for consoleip in players:
         consoledef = console[consoleip]
-        if 'target' in consoledef and consoledef['target']['timestamp'] + currenttimeout < time.time():
+        if 'target' in consoledef and consoledef['target']['timestamp'] + consoledef['target']['timeout'] < time.time():
             #Expired instruction
             playSound(random.choice(controls.soundfiles['wrong']))
             playerstats[consoleip]['instructions']['missed'] += 1
@@ -387,7 +391,10 @@ def initGame():
     global gamestate
     global currenttimeout
     gamestate = 'initgame'
-    currenttimeout = 10.0
+    currenttimeout = 15.0
+    for consoleip in players:
+        #Slight fudge in assuming control 5 is the big button
+        client.publish('clients/' + consoleip + '/5/name', "Get ready!")
     tellAllPlayers(players, controls.blurb['logo'])
     #Music
     if sound:
@@ -462,6 +469,7 @@ def roundOver():
         consoledef = console[consoleip]
         if 'target' in consoledef:
             del consoledef['target']
+        client.publish('clients/' + consoleip + '/timeout', "0.0")
     #play sound?
     tellAllPlayers(players, controls.blurb['hyperspace'])
     playSound(controls.soundfiles['special']['hyperspace'])
@@ -474,6 +482,8 @@ def gameOver():
     """End the current game and dole out the medals"""
     global gamestate
     gamestate = 'gameover'
+    for consoleip in players:
+        client.publish('clients/' + consoleip + '/timeout', "0.0")
     tellAllPlayers(players, controls.blurb['ending']['splash'])
     #play sound
     if sound:
