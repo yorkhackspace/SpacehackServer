@@ -461,29 +461,22 @@ def initRound():
     
 def roundOver():
     """End the round and jump to Hyperspace"""
-    print "roundOver() called"
     global gamestate
     global currenttimeout
     global lastgenerated
     gamestate = 'roundover'
-    print "    gamestate changed"
     #Zap all existing targets
     for consoleip in players:
         consoledef = console[consoleip]
         if 'target' in consoledef:
             del consoledef['target']
         client.publish('clients/' + consoleip + '/timeout', "0.0")
-    print "    about to tell player hyperspace"
     #play sound?
     tellAllPlayers(players, controls.blurb['hyperspace'])
-    print "    Done hyperspace, playing sound..."
     playSound(controls.soundfiles['special']['hyperspace'])
     lastgenerated = time.time()
     currenttimeout *= 0.75
     gamestate = 'hyperspace'
-    print "Time: "
-    print time.time()
-    print "    all done!"
     
 def gameOver():
     """End the current game and dole out the medals"""
@@ -594,9 +587,7 @@ while(client.loop(0) == 0):
     elif gamestate == 'playround':
         checkTimeouts()
        
-    elif gamestate == 'hyperspace' and time.time() - lastgenerated > 8.0:
-        print "hypertime:"
-        print time.time()
+    elif gamestate == 'hyperspace' and time.time() - lastgenerated > 4.0:
         initRound()
 
 #If client.loop() returns non-zero, loop drops out to here.
