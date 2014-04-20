@@ -12,6 +12,7 @@ controls = {}
 allcontrolsconfig = {}
 myLcdManager = {}
 rotaryInit = False
+rotaryQueue = Queue()
 
 class SHControl(object):
     """Spacehack control abstract type"""
@@ -339,17 +340,16 @@ class SHControlCombo7SegColourRotary(SHControl):
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         #Do the rotary encoder init on the first poll
-        global rotaryInit
+        global rotaryInit, rotaryQueue
         if not rotaryInit:
-            self.queue = Queue()
-            self.rotary = RotaryEncoder(self.queue, "Rotary", [self.pins['ROT_A'], self.pins['ROT_B']], GPIO)
+            self.rotary = RotaryEncoder(rotaryQueue, "Rotary", [self.pins['ROT_A'], self.pins['ROT_B']], GPIO)
             self.rotary.setDaemon(True)
             self.rotary.start()
             rotaryInit = True
         value = ctrlvalue
         btn = GPIO.input(self.pins['BTN'])
         try:
-            qdir = self.queue.get(False)
+            qdir = rotaryQueue.get(False)
         except Empty:
             qdir = 'still'
         if ctrltype in ['button', 'toggle']:
