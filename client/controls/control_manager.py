@@ -699,7 +699,7 @@ def processRoundConfig(config, roundconfig, controlids):
         if 'definition' in roundsetup and roundsetup['enabled']:
             ctrltype = roundsetup['type']
             ctrldef = roundsetup['definition']
-            if 'value' in ctrldef: del ctrldef['value']
+            #if 'value' in ctrldef: del ctrldef['value']
             if 'state' in ctrldef: del ctrldef['state']
             #controls[ctrlid].processRoundConfig(ctrldef, ctrlid, ctrltype)
             hardwaretype = config['local']['controls'][ctrlid]['hardware']
