@@ -592,7 +592,7 @@ while(client.loop(0) == 0):
         checkTimeouts()
        
     elif gamestate == 'hyperspace' and time.time() - lastgenerated > 8.0:
-        initround()
+        initRound()
 
 #If client.loop() returns non-zero, loop drops out to here.
 #Final code should try to reconnect to MQTT and/or networking if so.
