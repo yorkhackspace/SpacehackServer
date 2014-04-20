@@ -12,14 +12,14 @@ CE_1="P9_13"
 GPIO.setup(CE_0, GPIO.OUT)
 GPIO.setup(CE_1, GPIO.OUT)
 
-GPIO.output(CE_0, GPIO.HIGH)
-GPIO.output(CE_1, GPIO.HIGH)
-
-
 pc.init()
+
+GPIO.output(CE_0, GPIO.LOW)
+GPIO.output(CE_1, GPIO.LOW)
+
 pc.screenInit()
 
-GPIO.output(CE_1, GPIO.LOW)
+GPIO.output(CE_1, GPIO.HIGH)
 
 raw_input("sdf")
 f=0
