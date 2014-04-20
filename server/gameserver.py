@@ -477,11 +477,9 @@ def roundOver():
     tellAllPlayers(players, controls.blurb['hyperspace'])
     print "    Done hyperspace, playing sound..."
     playSound(controls.soundfiles['special']['hyperspace'])
-    print "    about to sleeping "
-    time.sleep(8.0)
+    lastgenerated = time.time()
     currenttimeout *= 0.75
-    print "    about to init round"
-    initRound()
+    gamestate = 'hyperspace'
     print "    all done!"
     
 def gameOver():
@@ -592,6 +590,9 @@ while(client.loop(0) == 0):
             pickNewTarget(consoleip)
     elif gamestate == 'playround':
         checkTimeouts()
+       
+    elif gamestate == 'hyperspace' and time.time() - lastgenerated > 8.0:
+        initround()
 
 #If client.loop() returns non-zero, loop drops out to here.
 #Final code should try to reconnect to MQTT and/or networking if so.
