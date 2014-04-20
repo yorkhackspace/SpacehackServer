@@ -16,10 +16,11 @@ class NokiaLCD:
         PCD.SCE=self.SCE
         GPIO.setup(pin_SCE, GPIO.OUT)
         GPIO.output(pin_SCE, GPIO.HIGH)
-        #global nokiasinitialised
-        #if not nokiasinitialised:
-        PCD.init(contrast=InContrast)
-        nokiasinitialised = True
+        global nokiasinitialised
+        if not nokiasinitialised:
+            PCD.init()
+            nokiasinitialised = True
+        PCD.screenInit(contrast=InContrast)
 
     width = 1
     height = 1
