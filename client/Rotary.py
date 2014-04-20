@@ -27,11 +27,12 @@ and an array of the two input pins
             #print "Setting up pin: %s" % pin
             self.gpio.setup(pin, self.gpio.IN, self.gpio.PUD_OFF)
             self.gpio.add_event_detect(pin, self.gpio.RISING)
-    def stop():
-        DoRun = False
+            
+    def stop(self):
+        self.DoRun = False
 
     def run(self):
-        while DoRun:
+        while self.DoRun:
             if self.gpio.event_detected(self.pin_a):
                 # Ignore false triggers
                 if self.gpio.input(self.pin_a) != 1:
