@@ -11,6 +11,7 @@ from Rotary import RotaryEncoder
 controls = {}
 allcontrolsconfig = {}
 myLcdManager = {}
+rotaryInit = False
 
 class SHControl(object):
     """Spacehack control abstract type"""
@@ -32,9 +33,6 @@ class SHControl(object):
 
     def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
         print "Error: SHControl.processRoundConfig() should never be called"
-
-    def deInit(self):
-        print "Superclass deinit"
 
 class SHControlPhoneStyleMenu(SHControl):
     
@@ -321,7 +319,7 @@ class SHControlCombo7SegColourRotary(SHControl):
                 idx = i+1
             self.segment.writeDigitRaw(idx,self.lookup7segchar[digit])
 
-    isInit = False
+    
 
     def __init__(self, controlconfig):
         SHControl.__init__(self, controlconfig)
@@ -341,12 +339,13 @@ class SHControlCombo7SegColourRotary(SHControl):
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         #Do the rotary encoder init on the first poll
-        if not self.isInit:
+        global rotaryInit
+        if not rotaryInit:
             self.queue = Queue()
             self.rotary = RotaryEncoder(self.queue, "Rotary", [self.pins['ROT_A'], self.pins['ROT_B']], GPIO)
             self.rotary.setDaemon(True)
             self.rotary.start()
-            self.isInit = True
+            rotaryInit = True
         value = ctrlvalue
         btn = GPIO.input(self.pins['BTN'])
         try:
@@ -449,10 +448,6 @@ class SHControlCombo7SegColourRotary(SHControl):
             GPIO.output(self.pins['RGB_B'], RGB[2])
         else:
             print("Combo reports not valid for processing control value")            
-            
-    def deInit(self):
-        if hasattr(self, 'rotary'):
-            self.rotary.stop()
             
     #def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
     #    if ctrltype == 'button':
@@ -634,9 +629,6 @@ def initialiseControls(config, sortedlist, lcdManager):
         hardwaretype = allcontrolsconfig[ctrlid]['hardware']
         if hardwaretype != 'instructions':
             controlconfig = config['local']['controls'][ctrlid]
-            if (ctrlid in controls):
-                #destroy the old instance
-                controls[ctrlid].deInit()
             if hardwaretype == 'phonestylemenu': # 2 buttons, RGB LED
                 controls[ctrlid] = (SHControlPhoneStyleMenu(controlconfig))                
             elif hardwaretype == 'bargraphpotentiometer': #10k pot, 10 LEDs
