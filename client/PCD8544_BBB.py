@@ -84,9 +84,9 @@ def init(dev=(0,0),speed=4000000, brightness=256, contrast=CONTRAST):
     GPIO.output(SCE, GPIO.LOW)
 
     # Toggle RST low to reset.
-    #GPIO.output(RST, GPIO.LOW)
-    #time.sleep(0.100)
-    #GPIO.output(RST, GPIO.HIGH)
+    GPIO.output(RST, GPIO.LOW)
+    time.sleep(0.100)
+    GPIO.output(RST, GPIO.HIGH)
     
     # Extended mode, bias, vop, basic mode, non-inverted display.
     set_contrast(contrast)
