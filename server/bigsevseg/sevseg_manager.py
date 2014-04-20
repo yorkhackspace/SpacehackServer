@@ -26,10 +26,10 @@ print "All pins set to output"
 while True:
     print "blink"
     for i in seg:
-        sevenSeg.output(i, 1)    
+        sevenSeg.output(seg[i], 1)    
         time.sleep(0.1)
     time.sleep(0.5)
     for i in seg:
-        sevenSeg.output(i, 0)
+        sevenSeg.output(seg[i], 0)
         time.sleep(0.1)
     time.sleep(0.5)
