@@ -49,7 +49,7 @@ class OpticalEncoder(threading.Thread):
 if __name__ == "__main__":
     import Adafruit_BBIO.GPIO as GPIO
     q = Queue.Queue()
-    enc = OpticalEncoder(q, "Flux Matrix", ["P8_22", "P9_31"], GPIO)
+    enc = OpticalEncoder(q, "Flux Matrix", ["P8_32", "P8_34"], GPIO)
     enc.setDaemon(True)
     enc.start()
 
