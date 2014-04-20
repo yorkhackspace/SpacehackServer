@@ -5,7 +5,7 @@ import time
 print "imports done"
 sevenSeg = ExpIO.Adafruit_MCP230XX(0x20, 16)
 print "init done"
-for i in range(8, 15):
+for i in range(0, 15):
     sevenSeg.config(i, ExpIO.Adafruit_MCP230XX.OUTPUT)
 
 print "All pins set to output"
