@@ -20,7 +20,9 @@ class NokiaLCD:
         if not nokiasinitialised:
             PCD.init(contrast=InContrast)
             nokiasinitialised = True
+        GPIO.output(pin_SCE, GPIO.LOW)
         PCD.resetNokia()
+        GPIO.output(pin_SCE, GPIO.HIGH)
 
     width = 1
     height = 1
