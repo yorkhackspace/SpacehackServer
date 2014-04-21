@@ -11,7 +11,7 @@ import json
 
 lifeDisplay = True
 sound = True #Switch this off if you don't have pyGame
-debugMode = False
+debugMode = True
 
 #sleep times
 blurbSleep = 4.5
