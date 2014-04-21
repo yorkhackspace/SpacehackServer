@@ -342,7 +342,9 @@ def showLives():
         lives = playerstats['game']['lives']
         if 0 <= lives <= 9:
             sev.displayDigit(lives)
-            if lives == 1:
+            if lives == 0:
+                led.solid(led.CODE_Col_White)
+            elif lives == 1:
                 led.flash(led.CODE_Col_Red, led.CODE_Col_Red1, 120)
             elif lives == 2:
                 led.solid(led.CODE_Col_Red2)
