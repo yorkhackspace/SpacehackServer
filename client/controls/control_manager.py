@@ -179,6 +179,7 @@ class SHControlPot(SHControl):
         value = ctrlvalue
         state = ctrlstate
         pot = ADC.read(self.pins['POT'])
+        #Only check the new value if it is far enough away from the last value
         if abs(pot - self.lastValue) > 0.01:
             self.lastValue = pot
             if ctrltype == 'toggle':
@@ -262,25 +263,29 @@ class SHControlBargraphPot(SHControlPot):
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
+        state = ctrlstate
         pot = ADC.read(self.pins['POT'])
-        #Interpretation varies by control type
-        if ctrltype == 'toggle':
-            if ctrlvalue == None: #We'll take the mid line to decide
-                if pot < 0.5:
+        #Only check the new value if it is far enough away from the last value
+        if abs(pot - self.lastValue) > 0.01:
+            self.lastValue = pot
+            #Interpretation varies by control type
+            if ctrltype == 'toggle':
+                if ctrlvalue == None: #We'll take the mid line to decide
+                    if pot < 0.5:
+                        state = 0
+                    else:
+                        state = 1
+                elif pot < 0.4: #Dead zone in the middle
                     state = 0
-                else:
+                elif pot > 0.6:
                     state = 1
-            elif pot < 0.4: #Dead zone in the middle
-                state = 0
-            elif pot > 0.6:
-                state = 1
-            else:
-                state = ctrlstate #if not decisively left or right, stay the same
-            if state != ctrlstate:
-                value = state
-        elif ctrltype == 'selector':
-            state = SHControlBargraphPot.__translateCalibratedValue(self, pot, controlsetup['calibration'][ctrltype])
-            value = int(state)
+                else:
+                    state = ctrlstate #if not decisively left or right, stay the same
+                if state != ctrlstate:
+                    value = state
+            elif ctrltype == 'selector':
+                state = SHControlBargraphPot.__translateCalibratedValue(self, pot, controlsetup['calibration'][ctrltype])
+                value = int(state)
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
@@ -606,6 +611,8 @@ class SHControlKeypad(SHControl):
                     if len(ctrldef['buffer']) == 4:
                         value = ctrldef['buffer']
                         ctrldef['buffer'] = ''
+                    else:
+                        myLcdManager.displayValueLine(ctrldef['buffer'], ctrlid)
             elif ctrltype == 'selector':
                 if state in "0123456789":
                     value = state
