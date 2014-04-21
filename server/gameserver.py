@@ -416,6 +416,7 @@ def initGame():
     global gamestate
     global currenttimeout
     gamestate = 'initgame'
+    clearLives()
     currenttimeout = 15.0
     for consoleip in players:
         #Slight fudge in assuming control 5 is the big button
