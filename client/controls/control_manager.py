@@ -162,7 +162,7 @@ class SHControlPhoneStyleMenu(SHControl):
 class SHControlPot(SHControl):
     
     def __init__(self, controlconfig, ctrlid):
-        SHControl.__init__(self, controlconfig)
+        SHControl.__init__(self, controlconfig, ctrlid)
         ADC.setup(self.pins['POT'])
 
     def __translateCalibratedValue(self, rawvalue, calibrationdict):
@@ -238,8 +238,8 @@ class SHControlPot(SHControl):
 class SHControlBargraphPot(SHControlPot):   
 
     def __init__(self, controlconfig, ctrlid):
-        SHControl.__init__(self, controlconfig)
-        SHControlPot.__init__(self, controlconfig)
+        SHControl.__init__(self, controlconfig, ctrlid)
+        SHControlPot.__init__(self, controlconfig, ctrlid)
         self.bar = []
         for barnum in range(10):
             pin = self.pins['BAR_' + str(barnum+1)]
@@ -334,7 +334,7 @@ class SHControlCombo7SegColourRotary(SHControl):
     
 
     def __init__(self, controlconfig, ctrlid):
-        SHControl.__init__(self, controlconfig)
+        SHControl.__init__(self, controlconfig, ctrlid)
         #segment defined at module scope
         GPIO.setup(self.pins['BTN'], GPIO.IN, GPIO.PUD_DOWN)
         GPIO.setup(self.pins['RGB_R'], GPIO.OUT)
@@ -474,7 +474,7 @@ class SHControlCombo7SegColourRotary(SHControl):
 class SHControlSwitchbank(SHControl):
     
     def __init__(self, controlconfig, ctrlid):
-        SHControl.__init__(self, controlconfig)
+        SHControl.__init__(self, controlconfig, ctrlid)
         for i in range(1,5):
             GPIO.setup(self.pins['SW_' + str(i)], GPIO.IN, GPIO.PUD_DOWN)
             GPIO.setup(self.pins['LED_' + str(i)], GPIO.OUT)
@@ -509,7 +509,7 @@ class SHControlSwitchbank(SHControl):
 class SHControlIlluminatedButton(SHControl):
     
     def __init__(self, controlconfig, ctrlid):
-        SHControl.__init__(self, controlconfig)
+        SHControl.__init__(self, controlconfig, ctrlid)
         GPIO.setup(self.pins['BTN'], GPIO.IN, GPIO.PUD_DOWN)
         GPIO.setup(self.pins['LED'], GPIO.OUT)
         GPIO.output(self.pins['LED'], GPIO.LOW)
@@ -539,7 +539,7 @@ class SHControlIlluminatedButton(SHControl):
 class SHControlIlluminatedToggle(SHControl):
     
     def __init__(self, controlconfig, ctrlid):
-        SHControl.__init__(self, controlconfig)
+        SHControl.__init__(self, controlconfig, ctrlid)
         GPIO.setup(self.pins['SW'], GPIO.IN, GPIO.PUD_DOWN)    
         GPIO.setup(self.pins['LED'], GPIO.OUT)
         GPIO.output(self.pins['LED'], GPIO.HIGH) #common anode, so HIGH for off, LOW for on
@@ -568,7 +568,7 @@ class SHControlIlluminatedToggle(SHControl):
 class SHControlFourButtons(SHControl):
     
     def __init__(self, controlconfig, ctrlid):
-        SHControl.__init__(self, controlconfig)
+        SHControl.__init__(self, controlconfig, ctrlid)
         for i in range(1,5):
             GPIO.setup(self.pins['BTN_' + str(i)], GPIO.IN, GPIO.PUD_DOWN)
 
@@ -597,7 +597,7 @@ class SHControlFourButtons(SHControl):
 class SHControlKeypad(SHControl):
     
     def __init__(self, controlconfig, ctrlid):
-        SHControl.__init__(self, controlconfig)
+        SHControl.__init__(self, controlconfig, ctrlid)
         self.keypad = Keypad_BBB.keypad(self.pins['ROW_1'], self.pins['ROW_2'], self.pins['ROW_3'], self.pins['ROW_4'], self.pins['COL_1'], self.pins['COL_2'], self.pins['COL_3'], self.pins['COL_4'])
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
