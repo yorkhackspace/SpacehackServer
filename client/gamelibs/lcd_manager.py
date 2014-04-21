@@ -68,7 +68,7 @@ class LcdManager(object):
             self.mytimeoutdisplayblocks = blockstodisplay
             
             
-    def clear(ctrlid):
+    def clear(self, ctrlid):
         self.lcd[ctrlid].clear()
 
     #Pretty print to the LCDs taking into account width
