@@ -13,6 +13,9 @@ lifeDisplay = True
 sound = True #Switch this off if you don't have pyGame
 debugMode = False
 
+#sleep times
+blurbSleep = 4.5
+
 if lifeDisplay:
     import seven_segment_display as sev
     import led_sign as led
@@ -462,7 +465,7 @@ def initGame():
     if not debugMode:
         for txt in controls.blurb['intro']:
             tellAllPlayers(players, txt)
-            time.sleep(5.0)
+            time.sleep(blurbSleep)
     #Setup initial game params
     global playerstats
     playerstats = {}
