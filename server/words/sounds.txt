@@ -79,7 +79,7 @@
     "scifi19.ogg"
   ],
   "warning": [
-    "heart.ogg",
+    "heart.ogg"
   ],
   "continuous": [
     "spaceshiphum.ogg",
