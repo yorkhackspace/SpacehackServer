@@ -1,3 +1,4 @@
+
 #SpaceHack!  Game server main module
 #York Hackspace January 2014
 #This runs on a Raspberry Pi
@@ -7,6 +8,7 @@ import mosquitto
 import time
 import random
 import json
+import seven_segment_display as sev
 
 sound = True #Switch this off if you don't have pyGame
 
@@ -331,6 +333,14 @@ def pickNewTarget(consoleip):
     client.publish('clients/' + consoleip + '/timeout', str(targettimeout))
     client.publish('clients/' + consoleip + '/instructions', str(targetinstruction))
 
+def showLives():
+    lives = playerstats['game']['lives']
+    if 0 <= lives <= 9:
+        sev.displayDigit()
+        
+def clearLives():
+    sev.clear()
+
 def checkTimeouts():
     """Check all targets for expired instructions"""
     global numinstructions, warningsound
@@ -343,6 +353,7 @@ def checkTimeouts():
             playerstats[consoledef['target']['console']]['targets']['missed'] += 1
             numinstructions -= 1
             playerstats['game']['lives'] -= 1
+            
             if playerstats['game']['lives'] <= 0:
                 #Game over!
                 gameOver()
@@ -356,7 +367,7 @@ def checkTimeouts():
                 #Start a warning sound if we're on our last life
                 if playerstats['game']['lives'] == 1 and sound:
                     warningsound = pygame.mixer.Sound("sounds/" + random.choice(controls.soundfiles['warning']))
-                    warningsound.play()
+                    warningsound.play(-1)
                     
 def increaseCorruption(consoleip, ctrlid):
     """Introduce text corruptions to control names as artificial 'malfunctions'"""
