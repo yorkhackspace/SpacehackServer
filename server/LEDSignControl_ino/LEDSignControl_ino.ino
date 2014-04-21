@@ -103,7 +103,7 @@ void setup()
 }
 
 void receiveEvent(int c){
-  Serial.println("Got something!");
+  Serial.println("SMBus Input");
 }
 
 /*
@@ -164,7 +164,6 @@ char getNext(int source){
     break;
     case 2: //i2c
       char in = Wire.read();
-      Serial.print(in);
       return in;
     break;
   }  
@@ -172,11 +171,8 @@ char getNext(int source){
 
 void parseInput(char in, int source){
   delay(20);
-  
-    Serial.println("Got input");
     switch (in){
       case 'M':
-        Serial.println("Got mode");
         //mode
         if (hasNext(source)){
           char in2 = getNext(source);
@@ -188,21 +184,18 @@ void parseInput(char in, int source){
         }
         break;
       case '1': 
-        Serial.println("Got code 1");
         //Select Code 1
         if (hasNext(source)){
           code1 = getCode(getNext(source));
         }
         break;
       case '2':
-        Serial.println("Got code 2");
         //Select code 2
         if (hasNext(source)){
           code2 = getCode(getNext(source));
         }
         break;
       case 'F':
-        Serial.println("Got freq");      
         //Frequency - Next byte is a number between 0 and 255. This represents a period from 20 to 1040 mS.
         if (hasNext(source)){
           flashDelay = map(getNext(source), 0, 255, 20, 20+255*4);
