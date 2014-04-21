@@ -92,7 +92,7 @@ void setup()
 {
   Serial.begin(9600);
   Wire.begin(4);                // join i2c bus with address #4
-  //Wire.onReceive(receiveEvent); // register event
+  Wire.onReceive(receiveEvent); // register event
   //irrecv.enableIRIn(); // Start the receiver
   //pinMode(9, OUTPUT);
   //digitalWrite(9, LOW);
@@ -100,6 +100,10 @@ void setup()
   //pinMode(10, OUTPUT);
   //digitalWrite(10, HIGH);
   
+}
+
+void receiveEvent(int c){
+  Serial.println("Got something!");
 }
 
 /*
@@ -239,6 +243,7 @@ void loop() {
     parseInput(getNext(1), 1);
   }
   if (hasNext(2)){
+    Serial.println ("Got i2c stuff");
     parseInput(getNext(2), 2);
   }
 }
