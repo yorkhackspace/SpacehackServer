@@ -39,7 +39,7 @@ class SHControl(object):
 class SHControlPhoneStyleMenu(SHControl):
     
     def __init__(self, controlconfig, ctrlid):
-        SHControl.__init__(self, controlconfig)
+        SHControl.__init__(self, controlconfig, ctrlid)
         GPIO.setup(self.pins['BTN_1'], GPIO.IN, GPIO.PUD_DOWN)
         GPIO.setup(self.pins['BTN_2'], GPIO.IN, GPIO.PUD_DOWN)
         
