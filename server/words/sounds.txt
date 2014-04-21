@@ -19,7 +19,9 @@
     "memoryloss.ogg",
     "reactivate.ogg",
     "scifi22.ogg",
-    "scifi21.ogg"
+    "scifi21.ogg",
+    "scifi11.ogg",
+    "torp.ogg"
   ],
   "right": [
     "beep1.ogg",
@@ -81,8 +83,10 @@
   "warning": [
     "warning.ogg",
     "redalert.ogg",
-    "heart.ogg",
-    "horn.ogg"
+    "horn.ogg",
+    "riker.ogg",
+    "7of9.ogg",
+    "alert.ogg"
   ],
   "continuous": [
     "spaceshiphum.ogg",
@@ -94,6 +98,6 @@
     "fanfare": "fanfare.ogg",
     "explosion": "explosion.ogg",
     "taps": "taps.ogg",
-    "hyperspace": "scifi11.ogg"
+    "hyperspace": "warp.ogg"
   }
 }
