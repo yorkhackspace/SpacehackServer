@@ -18,7 +18,8 @@ class SHControl(object):
     """Spacehack control abstract type"""
 
     #constructor
-    def __init__(self, controlconfig):
+    def __init__(self, controlconfig, ctrlid):
+        self.ctrlid = ctrlid
         self.controlsetup = controlconfig
         self.pins=controlconfig['pins']
         self.hardwaretype = controlconfig['hardware']
@@ -37,7 +38,7 @@ class SHControl(object):
 
 class SHControlPhoneStyleMenu(SHControl):
     
-    def __init__(self, controlconfig):
+    def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig)
         GPIO.setup(self.pins['BTN_1'], GPIO.IN, GPIO.PUD_DOWN)
         GPIO.setup(self.pins['BTN_2'], GPIO.IN, GPIO.PUD_DOWN)
@@ -160,7 +161,7 @@ class SHControlPhoneStyleMenu(SHControl):
 
 class SHControlPot(SHControl):
     
-    def __init__(self, controlconfig):
+    def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig)
         ADC.setup(self.pins['POT'])
 
@@ -236,7 +237,7 @@ class SHControlPot(SHControl):
 
 class SHControlBargraphPot(SHControlPot):   
 
-    def __init__(self, controlconfig):
+    def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig)
         SHControlPot.__init__(self, controlconfig)
         self.bar = []
@@ -332,7 +333,7 @@ class SHControlCombo7SegColourRotary(SHControl):
 
     
 
-    def __init__(self, controlconfig):
+    def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig)
         #segment defined at module scope
         GPIO.setup(self.pins['BTN'], GPIO.IN, GPIO.PUD_DOWN)
@@ -472,7 +473,7 @@ class SHControlCombo7SegColourRotary(SHControl):
 
 class SHControlSwitchbank(SHControl):
     
-    def __init__(self, controlconfig):
+    def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig)
         for i in range(1,5):
             GPIO.setup(self.pins['SW_' + str(i)], GPIO.IN, GPIO.PUD_DOWN)
@@ -507,7 +508,7 @@ class SHControlSwitchbank(SHControl):
 
 class SHControlIlluminatedButton(SHControl):
     
-    def __init__(self, controlconfig):
+    def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig)
         GPIO.setup(self.pins['BTN'], GPIO.IN, GPIO.PUD_DOWN)
         GPIO.setup(self.pins['LED'], GPIO.OUT)
@@ -537,7 +538,7 @@ class SHControlIlluminatedButton(SHControl):
 
 class SHControlIlluminatedToggle(SHControl):
     
-    def __init__(self, controlconfig):
+    def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig)
         GPIO.setup(self.pins['SW'], GPIO.IN, GPIO.PUD_DOWN)    
         GPIO.setup(self.pins['LED'], GPIO.OUT)
@@ -566,7 +567,7 @@ class SHControlIlluminatedToggle(SHControl):
 
 class SHControlFourButtons(SHControl):
     
-    def __init__(self, controlconfig):
+    def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig)
         for i in range(1,5):
             GPIO.setup(self.pins['BTN_' + str(i)], GPIO.IN, GPIO.PUD_DOWN)
@@ -595,7 +596,7 @@ class SHControlFourButtons(SHControl):
 
 class SHControlKeypad(SHControl):
     
-    def __init__(self, controlconfig):
+    def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig)
         self.keypad = Keypad_BBB.keypad(self.pins['ROW_1'], self.pins['ROW_2'], self.pins['ROW_3'], self.pins['ROW_4'], self.pins['COL_1'], self.pins['COL_2'], self.pins['COL_3'], self.pins['COL_4'])
 
@@ -612,7 +613,7 @@ class SHControlKeypad(SHControl):
                         value = ctrldef['buffer']
                         ctrldef['buffer'] = ''
                     else:
-                        myLcdManager.displayValueLine(ctrldef['buffer'], ctrlid)
+                        myLcdManager.displayValueLine(ctrldef['buffer'], self.ctrlid)
             elif ctrltype == 'selector':
                 if state in "0123456789":
                     value = state
@@ -648,23 +649,23 @@ def initialiseControls(config, sortedlist, lcdManager):
         if hardwaretype != 'instructions':
             controlconfig = config['local']['controls'][ctrlid]
             if hardwaretype == 'phonestylemenu': # 2 buttons, RGB LED
-                controls[ctrlid] = (SHControlPhoneStyleMenu(controlconfig))                
+                controls[ctrlid] = (SHControlPhoneStyleMenu(controlconfig), ctrlid)                
             elif hardwaretype == 'bargraphpotentiometer': #10k pot, 10 LEDs
-                controls[ctrlid] =(SHControlBargraphPot(controlconfig))
+                controls[ctrlid] =(SHControlBargraphPot(controlconfig), ctrlid)
             elif hardwaretype == 'combo7SegColourRotary': #I2C 7Seg, button, rotary, RGB
-                controls[ctrlid] =(SHControlCombo7SegColourRotary(controlconfig))                
+                controls[ctrlid] =(SHControlCombo7SegColourRotary(controlconfig), ctrlid)                
             elif hardwaretype == 'switchbank': #Four switches, four LEDs
-                controls[ctrlid] =(SHControlSwitchbank(controlconfig))                
+                controls[ctrlid] =(SHControlSwitchbank(controlconfig), ctrlid)                
             elif hardwaretype == 'illuminatedbutton': #one button, one LED
-                controls[ctrlid] =(SHControlIlluminatedButton(controlconfig))                
+                controls[ctrlid] =(SHControlIlluminatedButton(controlconfig), ctrlid)                
             elif hardwaretype == 'potentiometer': #slide or rotary 10k pot
-                controls[ctrlid] =(SHControlPot(controlconfig))                
+                controls[ctrlid] =(SHControlPot(controlconfig), ctrlid)
             elif hardwaretype == 'illuminatedtoggle': #one switch, one LED            
-                controls[ctrlid] =(SHControlIlluminatedToggle(controlconfig))                
+                controls[ctrlid] =(SHControlIlluminatedToggle(controlconfig), ctrlid)                
             elif hardwaretype == 'fourbuttons': #four buttons
-                controls[ctrlid] =(SHControlFourButtons(controlconfig))                
+                controls[ctrlid] =(SHControlFourButtons(controlconfig), ctrlid)   
             elif hardwaretype == 'keypad': #four rows, four cols
-                controls[ctrlid] =(SHControlKeypad(controlconfig))                
+                controls[ctrlid] =(SHControlKeypad(controlconfig), ctrlid)    
             else:
                 print "Unknown control type in config file"
                 controls.append(SHControl(controlconfig))
