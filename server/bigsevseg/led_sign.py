@@ -27,7 +27,7 @@ i2c.write8(REG_Code1, CODE_Col_Green)
 
 #sign is now solid green
 
-time.seep(10)
+time.sleep(10)
 #Set the mode register to flash
 i2c.write8(REG_Mode, MODE_Flash)
 time.sleep(0.1)
