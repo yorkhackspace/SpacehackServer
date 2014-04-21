@@ -63,7 +63,7 @@ class Adafruit_I2C :
     "Writes an 8-bit value to the specified address"
     try:
       self.bus.write_byte_data(self.address)
-      for value in values
+      for value in values:
           self.bus.write_byte_data(value)
     except IOError, err:
       return self.errMsg()
