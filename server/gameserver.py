@@ -341,7 +341,7 @@ def showLives():
     if lifeDisplay:
         lives = playerstats['game']['lives']
         if 0 <= lives <= 9:
-            sev.displayDigit()
+            sev.displayDigit(lives)
             
 def clearLives():
     if lifeDisplay:
