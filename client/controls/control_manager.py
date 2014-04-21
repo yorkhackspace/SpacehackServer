@@ -173,35 +173,40 @@ class SHControlPot(SHControl):
         print "Pot Calibration error"
         return 0
 
+    lastValue = -1.0
+
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
+        state = ctrlstate
         pot = ADC.read(self.pins['POT'])
-        if ctrltype == 'toggle':
-            if ctrlvalue == None: #We'll take the mid line to decide
-                if pot < 0.5:
+        if abs(pot - self.lastValue) > 0.01:
+            self.lastValue = pot
+            if ctrltype == 'toggle':
+                if ctrlvalue == None: #We'll take the mid line to decide
+                    if pot < 0.5:
+                        state = 0
+                    else:
+                        state = 1
+                elif pot < 0.4: #Dead zone in the middle
                     state = 0
-                else:
+                elif pot > 0.6:
                     state = 1
-            elif pot < 0.4: #Dead zone in the middle
-                state = 0
-            elif pot > 0.6:
-                state = 1
-            else:
-                state = ctrlstate #if not decisively left or right, stay the same
-            if state != ctrlstate:
-                value = state
-        elif ctrltype == 'selector':
-            state = SHControlPot.__translateCalibratedValue(self, pot, controlsetup['calibration'][ctrltype])
-            value = int(state)
-        elif ctrltype == 'colour':
-            state = SHControlPot.__translateCalibratedValue(self, pot, controlsetup['calibration'][ctrltype])
-            value = str(state)
-        elif ctrltype == 'words':
-            state = SHControlPot.__translateCalibratedValue(self, pot, controlsetup['calibration'][ctrltype])
-            value = str(ctrldef['pool'][int(state)])
-        elif ctrltype == 'verbs':
-            state = SHControlPot.__translateCalibratedValue(self, pot, controlsetup['calibration']['words'])
-            value = str(ctrldef['pool'][int(state)])
+                else:
+                    state = ctrlstate #if not decisively left or right, stay the same
+                if state != ctrlstate:
+                    value = state
+            elif ctrltype == 'selector':
+                state = SHControlPot.__translateCalibratedValue(self, pot, controlsetup['calibration'][ctrltype])
+                value = int(state)
+            elif ctrltype == 'colour':
+                state = SHControlPot.__translateCalibratedValue(self, pot, controlsetup['calibration'][ctrltype])
+                value = str(state)
+            elif ctrltype == 'words':
+                state = SHControlPot.__translateCalibratedValue(self, pot, controlsetup['calibration'][ctrltype])
+                value = str(ctrldef['pool'][int(state)])
+            elif ctrltype == 'verbs':
+                state = SHControlPot.__translateCalibratedValue(self, pot, controlsetup['calibration']['words'])
+                value = str(ctrldef['pool'][int(state)])
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
