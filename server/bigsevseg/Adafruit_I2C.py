@@ -58,15 +58,6 @@ class Adafruit_I2C :
         print "I2C: Wrote 0x%02X to register 0x%02X" % (value, reg)
     except IOError, err:
       return self.errMsg()
-      
-  def write8NOREG(self, values):
-    "Writes an 8-bit value to the specified address"
-    try:
-      self.bus.write_byte_data(self.address)
-      for value in values:
-          self.bus.write_byte_data(value)
-    except IOError, err:
-      return self.errMsg()
 
   def write16(self, reg, value):
     "Writes a 16-bit value to the specified register/address pair"
