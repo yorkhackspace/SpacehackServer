@@ -14,6 +14,9 @@ CODE_Col_Red2 = ord('o')
 CODE_Col_Red3 = ord('p')
 CODE_Col_Yellow = ord('y')
 
+CODE_Display_On = ord('!')
+CODE_Display_Fade = ord('\\')
+
 MODE_Solid = ord('s')
 MODE_Flash = ord('f')
 MODE_Off = ord('o')

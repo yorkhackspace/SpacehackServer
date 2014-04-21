@@ -10,13 +10,13 @@ import random
 import json
 
 lifeDisplay = True
+sound = True #Switch this off if you don't have pyGame
+debugMode = False
 
 if lifeDisplay:
     import seven_segment_display as sev
+    import led_sign as led
 
-sound = True #Switch this off if you don't have pyGame
-
-debugMode = False
 
 def playSound(filename):
     """Play a sound, if enabled"""
@@ -342,10 +342,23 @@ def showLives():
         lives = playerstats['game']['lives']
         if 0 <= lives <= 9:
             sev.displayDigit(lives)
+            if lives == 1:
+                led.flash(led.CODE_Col_Red, led.CODE_Col_Red1, 120)
+            elif lives == 2:
+                led.solid(led.CODE_Col_Red2)
+            elif lives == 3:
+                led.solid(led.CODE_Col_Red3)
+            elif lives == 4:
+                led.solid(led.CODE_Col_Yellow)
+            elif lives == 5:
+                led.solid(led.CODE_Col_Green)
             
 def clearLives():
     if lifeDisplay:
         sev.clear()
+        led.solid(led.CODE_Display_Fade)
+        time.sleep(1.1)
+        led.solid(led.CODE_Display_On)
 
 def checkTimeouts():
     """Check all targets for expired instructions"""
