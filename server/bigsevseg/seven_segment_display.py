@@ -41,8 +41,6 @@ test_7 = ['G']
 digits = [digit_1, digit_2, digit_3, digit_4, digit_5, digit_6, digit_7, digit_8, digit_9, digit_0]
 tests = [test_1, test_2, test_3, test_4, test_5, test_6, test_7]
 
-patterns = digits
-
 for i in seg:
     print seg[i]
     sevenSeg.config(seg[i], ExpIO.Adafruit_MCP230XX.OUTPUT)
@@ -56,11 +54,7 @@ def clear():
 def digit(digit):
     for s in digit:
         sevenSeg.output(seg[s], 1)
-
-while True:
-    print "blink"
-    for i in patterns:
-        clear()
-        digit(i)
-        print i
-        time.sleep(0.5)
+        
+def displayDigit(num):
+    clear()
+    digit(digits[num])
