@@ -2,9 +2,7 @@ import sys
 sys.path.append('./bigsevseg')
 import Adafruit_MCP230xx as ExpIO
 import time
-print "imports done"
 sevenSeg = ExpIO.Adafruit_MCP230XX(0x20, 16)
-print "init done"
 
 #    A
 #    _
@@ -42,10 +40,7 @@ digits = [digit_0, digit_1, digit_2, digit_3, digit_4, digit_5, digit_6, digit_7
 tests = [test_1, test_2, test_3, test_4, test_5, test_6, test_7]
 
 for i in seg:
-    print seg[i]
     sevenSeg.config(seg[i], ExpIO.Adafruit_MCP230XX.OUTPUT)
-
-print "All pins set to output"
 
 def clear():
     for i in seg:

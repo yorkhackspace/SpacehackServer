@@ -8,9 +8,9 @@ import time
 import random
 import json
 
-sound = False #Switch this off if you don't have pyGame
+sound = True #Switch this off if you don't have pyGame
 
-debugMode = True
+debugMode = False
 
 def playSound(filename):
     """Play a sound, if enabled"""
