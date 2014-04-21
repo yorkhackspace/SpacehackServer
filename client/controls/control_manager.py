@@ -649,23 +649,23 @@ def initialiseControls(config, sortedlist, lcdManager):
         if hardwaretype != 'instructions':
             controlconfig = config['local']['controls'][ctrlid]
             if hardwaretype == 'phonestylemenu': # 2 buttons, RGB LED
-                controls[ctrlid] = (SHControlPhoneStyleMenu(controlconfig), ctrlid)                
+                controls[ctrlid] = (SHControlPhoneStyleMenu(controlconfig, ctrlid))
             elif hardwaretype == 'bargraphpotentiometer': #10k pot, 10 LEDs
-                controls[ctrlid] =(SHControlBargraphPot(controlconfig), ctrlid)
+                controls[ctrlid] =(SHControlBargraphPot(controlconfig, ctrlid))
             elif hardwaretype == 'combo7SegColourRotary': #I2C 7Seg, button, rotary, RGB
-                controls[ctrlid] =(SHControlCombo7SegColourRotary(controlconfig), ctrlid)                
+                controls[ctrlid] =(SHControlCombo7SegColourRotary(controlconfig, ctrlid))
             elif hardwaretype == 'switchbank': #Four switches, four LEDs
-                controls[ctrlid] =(SHControlSwitchbank(controlconfig), ctrlid)                
+                controls[ctrlid] =(SHControlSwitchbank(controlconfig, ctrlid))
             elif hardwaretype == 'illuminatedbutton': #one button, one LED
-                controls[ctrlid] =(SHControlIlluminatedButton(controlconfig), ctrlid)                
+                controls[ctrlid] =(SHControlIlluminatedButton(controlconfig, ctrlid))
             elif hardwaretype == 'potentiometer': #slide or rotary 10k pot
-                controls[ctrlid] =(SHControlPot(controlconfig), ctrlid)
+                controls[ctrlid] =(SHControlPot(controlconfig, ctrlid))
             elif hardwaretype == 'illuminatedtoggle': #one switch, one LED            
-                controls[ctrlid] =(SHControlIlluminatedToggle(controlconfig), ctrlid)                
+                controls[ctrlid] =(SHControlIlluminatedToggle(controlconfig, ctrlid))
             elif hardwaretype == 'fourbuttons': #four buttons
-                controls[ctrlid] =(SHControlFourButtons(controlconfig), ctrlid)   
+                controls[ctrlid] =(SHControlFourButtons(controlconfig, ctrlid))
             elif hardwaretype == 'keypad': #four rows, four cols
-                controls[ctrlid] =(SHControlKeypad(controlconfig), ctrlid)    
+                controls[ctrlid] =(SHControlKeypad(controlconfig, ctrlid))
             else:
                 print "Unknown control type in config file"
                 controls.append(SHControl(controlconfig))
