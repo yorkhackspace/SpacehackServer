@@ -347,9 +347,9 @@ def showLives():
             elif lives == 1:
                 led.flash(led.CODE_Col_Red, led.CODE_Col_Red1, 120)
             elif lives == 2:
-                led.solid(led.CODE_Col_Red2)
+                led.solid(led.CODE_Col_Red1)
             elif lives == 3:
-                led.solid(led.CODE_Col_Red3)
+                led.solid(led.CODE_Col_Red2)
             elif lives == 4:
                 led.solid(led.CODE_Col_Yellow)
             elif lives == 5:
