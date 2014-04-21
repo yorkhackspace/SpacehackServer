@@ -8,7 +8,11 @@ import mosquitto
 import time
 import random
 import json
-import seven_segment_display as sev
+
+lifeDisplay = True
+
+if lifeDisplay:
+    import seven_segment_display as sev
 
 sound = True #Switch this off if you don't have pyGame
 
@@ -334,12 +338,14 @@ def pickNewTarget(consoleip):
     client.publish('clients/' + consoleip + '/instructions', str(targetinstruction))
 
 def showLives():
-    lives = playerstats['game']['lives']
-    if 0 <= lives <= 9:
-        sev.displayDigit()
-        
+    if lifeDisplay:
+        lives = playerstats['game']['lives']
+        if 0 <= lives <= 9:
+            sev.displayDigit()
+            
 def clearLives():
-    sev.clear()
+    if lifeDisplay:
+        sev.clear()
 
 def checkTimeouts():
     """Check all targets for expired instructions"""
@@ -353,7 +359,7 @@ def checkTimeouts():
             playerstats[consoledef['target']['console']]['targets']['missed'] += 1
             numinstructions -= 1
             playerstats['game']['lives'] -= 1
-            
+            showLives()
             if playerstats['game']['lives'] <= 0:
                 #Game over!
                 gameOver()
@@ -475,6 +481,7 @@ def initRound():
     defineControls()
     playerstats['game']['rounds'] += 1
     playerstats['game']['lives'] = 5
+    showLives()
     numinstructions = 10
     lastgenerated = time.time()
     
@@ -556,6 +563,7 @@ def resetToWaiting():
     """Reset game back to waiting for new players"""
     global gamestate
     gamestate = 'readytostart'
+    clearLives()
     for consoleip in consoles:
         consolesetup = {}
         consolesetup['instructions'] = controls.blurb['readytostart']
