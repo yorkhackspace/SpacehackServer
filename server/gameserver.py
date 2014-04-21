@@ -438,6 +438,7 @@ def initGame():
     currenttimeout = 15.0
     for consoleip in players:
         #Slight fudge in assuming control 5 is the big button
+        client.publish('clients/' + consoleip + '/5/name', "")
         client.publish('clients/' + consoleip + '/5/name', "Get ready!")
     tellAllPlayers(players, controls.blurb['logo'])
     #Music
