@@ -38,7 +38,7 @@ test_5 = ['E']
 test_6 = ['F']
 test_7 = ['G']
 
-digits = [digit_1, digit_2, digit_3, digit_4, digit_5, digit_6, digit_7, digit_8, digit_9, digit_0]
+digits = [digit_0, digit_1, digit_2, digit_3, digit_4, digit_5, digit_6, digit_7, digit_8, digit_9]
 tests = [test_1, test_2, test_3, test_4, test_5, test_6, test_7]
 
 for i in seg:
