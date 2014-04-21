@@ -35,7 +35,8 @@ currentsetup = {}
 currenttimeout = 10.0
 lastgenerated = time.time()
 numinstructions = 0
-gamestate = 'initserver' #initserver, readytostart, waitingforplayers, initgame, setupround, playround, roundover, gameover
+gamestate = 'initserver' #initserver, readytostart, waitingforplayers, initgame, setupround, playround, roundover, hyperspace, gameover
+warningsound = None
 
 #Show when we've connected
 def on_connect(mosq, obj, rc):
@@ -332,7 +333,7 @@ def pickNewTarget(consoleip):
 
 def checkTimeouts():
     """Check all targets for expired instructions"""
-    global numinstructions
+    global numinstructions, warningsound
     for consoleip in players:
         consoledef = console[consoleip]
         if 'target' in consoledef and consoledef['target']['timestamp'] + consoledef['target']['timeout'] < time.time():
@@ -352,7 +353,11 @@ def checkTimeouts():
                 #Pick a new target and carry on
                 increaseCorruption(consoledef['target']['console'], consoledef['target']['control'])
                 pickNewTarget(consoleip)
-                
+                #Start a warning sound if we're on our last life
+                if playerstats['game']['lives'] == 1 and sound:
+                    warningsound = pygame.mixer.Sound("sounds/" + random.choice(controls.soundfiles['warning']))
+                    warningsound.play()
+                    
 def increaseCorruption(consoleip, ctrlid):
     """Introduce text corruptions to control names as artificial 'malfunctions'"""
     ctrldef = currentsetup[consoleip]['controls'][ctrlid]
@@ -440,7 +445,7 @@ def initGame():
         playerstats[consoleip]['targets']['missed'] = 0
     playerstats['game'] = {}
     playerstats['game']['rounds'] = 0
-    #stop music?
+    #continuous spaceship mix
     if sound:
         for fn in controls.soundfiles['continuous']:
             snd = pygame.mixer.Sound("sounds/" + fn)
@@ -467,7 +472,11 @@ def roundOver():
     global gamestate
     global currenttimeout
     global lastgenerated
+    global warningsound
     gamestate = 'roundover'
+    if sound and not warningsound is None:
+        warningsound.stop()
+        warningsound = None
     #Zap all existing targets
     for consoleip in players:
         consoledef = console[consoleip]
