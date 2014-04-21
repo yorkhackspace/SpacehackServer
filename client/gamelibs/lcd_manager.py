@@ -68,12 +68,13 @@ class LcdManager(object):
             self.mytimeoutdisplayblocks = blockstodisplay
 
     #Pretty print to the LCDs taking into account width
-    def display(self, message, width, ctrlid):
+    def display(self, message, width, ctrlid, doClear=True):
         """Pretty print to the LCDs taking into account width"""
         words = message.split(" ")
         line = ""
         pos=0
-        self.lcd[ctrlid].clear()
+        if doClear:
+            self.lcd[ctrlid].clear()
         for word in words:
             if len(line) + len(word) > width:
                 self.lcd[ctrlid].setCursor(0, pos)

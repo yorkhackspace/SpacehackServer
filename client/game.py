@@ -84,7 +84,7 @@ def on_message(mosq, obj, msg):
                     #switch it on
                     myLcdManager.display(roundconfig['controls'][ctrlid]['name'], config['local']['controls'][ctrlid]['display']['width'], ctrlid)
             elif nodes[3] == 'name':
-                myLcdManager.display(str(msg.payload), config['local']['controls'][ctrlid]['display']['width'], ctrlid)
+                myLcdManager.display(str(msg.payload), config['local']['controls'][ctrlid]['display']['width'], ctrlid, False)
     elif nodes[0] == 'server':
         if nodes[1] == 'ready':
             mess = str(msg.payload)
