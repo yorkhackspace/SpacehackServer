@@ -364,6 +364,12 @@ class SHControlCombo7SegColourRotary(SHControl):
                     qdir = rotaryQueue.get(False)
                 except Empty:
                     qdir = 'still'
+                    
+                if 'invert' in self.controlsetup:
+                    if qdir == 'cw': 
+                        qdir = 'ccw'
+                    elif qdir == 'ccw': 
+                        qdir = 'cw'
                 
                 if ctrltype == 'selector':
                     value = ctrlvalue
