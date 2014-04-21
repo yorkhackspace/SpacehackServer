@@ -49,18 +49,18 @@ for i in seg:
 
 print "All pins set to output"
 
-def clearSevenSeg():
+def clear():
     for i in seg:
         sevenSeg.output(seg[i], 0)
 
-def digitSevenSeg(digit):
+def digit(digit):
     for s in digit:
         sevenSeg.output(seg[s], 1)
 
 while True:
     print "blink"
     for i in patterns:
-        clearSevenSeg()
-        digitSevenSeg(i)
+        clear()
+        digit(i)
         print i
         time.sleep(0.5)
