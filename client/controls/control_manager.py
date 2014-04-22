@@ -486,8 +486,8 @@ class SHControlSwitchbank(SHControl):
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override):
-            #TODO
-            print "todo\n"
+            #Might be more flexible to move the LED outputs here
+            pass
 
 class SHControlIlluminatedButton(SHControl):
     
@@ -574,8 +574,8 @@ class SHControlFourButtons(SHControl):
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override):
-            #TODO
-            print "todo\n"
+            #TNothing to do here
+            pass
 
 class SHControlKeypad(SHControl):
     
