@@ -558,10 +558,10 @@ class SHControlIlluminatedToggle(SHControl):
             if self.ctrltype == 'toggle':
                 if self.controlsetup['display']['height']>3:
                     if value:
-    	                displayValueLine("On", ctrlid)
+                        myLcdManager.displayValueLine("On", ctrlid)
                         GPIO.output(self.pins['LED'], GPIO.LOW)
                     else:
-                        displayValueLine("Off", ctrlid)
+                        myLcdManager.displayValueLine("Off", ctrlid)
                         GPIO.output(self.pins['LED'], GPIO.HIGH)
 
 class SHControlFourButtons(SHControl):
