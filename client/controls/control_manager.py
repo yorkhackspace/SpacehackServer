@@ -556,7 +556,7 @@ class SHControlIlluminatedToggle(SHControl):
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
         if SHControl.processValueAssignment(self, roundconfig, value, ctrlid, override):
             if self.ctrltype == 'toggle':
-                if controlsetup['display']['height']>3:
+                if self.controlsetup['display']['height']>3:
                     if value:
     	                displayValueLine("On", ctrlid)
                         GPIO.output(self.pins['LED'], GPIO.LOW)
