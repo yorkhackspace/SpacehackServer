@@ -574,10 +574,10 @@ class SHControlFourButtons(SHControl):
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
-        btn1 = GPIO.input(self.pins['BTN1'])
-        btn2 = GPIO.input(self.pins['BTN2'])
-        btn3 = GPIO.input(self.pins['BTN3'])
-        btn4 = GPIO.input(self.pins['BTN4'])
+        btn1 = GPIO.input(self.pins['BTN_1'])
+        btn2 = GPIO.input(self.pins['BTN_2'])
+        btn3 = GPIO.input(self.pins['BTN_3'])
+        btn4 = GPIO.input(self.pins['BTN_4'])
         state = [btn1, btn2, btn3, btn4]
         if not ctrlstate == state:
             for i in range(4):
