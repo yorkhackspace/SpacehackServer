@@ -582,8 +582,6 @@ class SHControlFourButtons(SHControl):
         state = [btn1, btn2, btn3, btn4]
         if ctrlstate == None:
             ctrlstate = state
-        print state
-        print ctrlstate
         if not ctrlstate == state:
             for i in range(4):
                 if state[i] - ctrlstate[i] == 1:
