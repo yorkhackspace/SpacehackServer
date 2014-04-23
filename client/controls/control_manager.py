@@ -550,8 +550,7 @@ class SHControlIlluminatedToggle(SHControl):
         state = sw
         if ctrlstate != state:
             if ctrltype == 'toggle':
-                if state:
-                    int(value = not ctrlvalue)
+                value = state
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
