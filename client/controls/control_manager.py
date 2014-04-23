@@ -578,7 +578,10 @@ class SHControlFourButtons(SHControl):
         btn2 = GPIO.input(self.pins['BTN_2'])
         btn3 = GPIO.input(self.pins['BTN_3'])
         btn4 = GPIO.input(self.pins['BTN_4'])
+        
         state = [btn1, btn2, btn3, btn4]
+        if type(ctrlstate) == None:
+            ctrlstate = state
         if not ctrlstate == state:
             for i in range(4):
                 if state[i] - ctrlstate[i] == 1:
