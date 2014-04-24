@@ -28,6 +28,7 @@ Drain
 Eject
 Elevate
 Emit
+Enbiggen
 Energize
 Engage
 Evacuate
