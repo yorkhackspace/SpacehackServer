@@ -1,8 +1,8 @@
 Deactivate
+Disable
 Disengage
-Turn off
-Switch off
 Power down
 Release
-Disable
+Switch off
+Turn off
 Unplug
