@@ -1,4 +1,5 @@
 -brushed
+-cored
 -filtered
 -flecked
 -girdled
@@ -11,8 +12,13 @@
 -plated
 -pocked
 -proofed
+-shanked
+-sprung
 -stemmed
 -stirrupped
+-tapped
 -tinned
 -tinted
+-tipped
 -toothed
+-wound
