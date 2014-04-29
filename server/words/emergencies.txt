@@ -301,7 +301,7 @@
     "Flash Gordon approaching? Open fire!  All weapons",
     "What is this thing you call... love?",
     "It's cold outside, there's no kind of atmosphere",
-    "Game over man, game over",
+    "So this is it, we're going to die",
     "They mostly come out at night, mostly",
     "Nuke the site from orbit",
     "I find your lack of faith disturbing",
