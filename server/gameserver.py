@@ -190,16 +190,22 @@ def defineControls():
         consolesetup['instructions']=emergency
         consolesetup['timeout'] = currenttimeout
         consolesetup['controls']={}
-        for control in console[consoleip]["controls"]:
+        #Pay attention to 'enabled' for the control as a whole
+        for control in (x in console[consoleip]["controls"] if 'enabled' not in x or x['enabled'] == 1):
             ctrlid = control['id']
             consolesetup['controls'][ctrlid]={}
-            consolesetup['controls'][ctrlid]['enabled']=1
+            #Pay attention to 'enabled' attribute
+            if 'enabled' in control:
+                consolesetup['controls'][ctrlid]['enabled']=control['enabled']
+            else:
+                consolesetup['controls'][ctrlid]['enabled']=1
             #In case LCDs fail - allow a 'fixed name' we can tape over the LCD
             if 'fixedname' in control:
                 consolesetup['controls'][ctrlid]['name'] = str(control['fixedname'])
             else: #Normal case - generate a new control name
                 consolesetup['controls'][ctrlid]['name']=controls.getControlName(control['width'], 2, 12)
-            ctrldef = random.choice([x for x in control['supported']])
+            #Pay attention to 'enabled' for particular supported mode
+            ctrldef = random.choice([x for x in control['supported'] if 'enabled' not in x or x['enabled'] == 1])
             ctrltype = ctrldef['type']
             if ctrltype in ['words', 'verbs']:
                 if ctrldef['fixed']:
