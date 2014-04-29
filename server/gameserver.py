@@ -1,4 +1,3 @@
-
 #SpaceHack!  Game server main module
 #York Hackspace January 2014
 #This runs on a Raspberry Pi
@@ -531,6 +530,9 @@ def roundOver():
 def gameOver():
     """End the current game and dole out the medals"""
     global gamestate
+    #Check we're not already here (fixes issue #4)
+    if gamestate != 'playround':
+        return
     gamestate = 'gameover'
     for consoleip in players:
         client.publish('clients/' + consoleip + '/timeout', "0.0")
