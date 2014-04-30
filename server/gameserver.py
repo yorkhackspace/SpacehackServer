@@ -191,7 +191,7 @@ def defineControls():
         consolesetup['timeout'] = currenttimeout
         consolesetup['controls']={}
         #Pay attention to 'enabled' for the control as a whole
-        for control in (x in console[consoleip]["controls"] if 'enabled' not in x or x['enabled'] == 1):
+        for control in (x for x in console[consoleip]["controls"] if 'enabled' not in x or x['enabled'] == 1):
             ctrlid = control['id']
             consolesetup['controls'][ctrlid]={}
             #Pay attention to 'enabled' attribute
