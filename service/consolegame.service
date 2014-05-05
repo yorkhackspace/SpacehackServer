@@ -8,3 +8,5 @@ WorkingDirectory=/home/root/ConsoleGame/client
 Type=simple
 Restart=always
 
+[Install]
+WantedBy=multi-user.target
