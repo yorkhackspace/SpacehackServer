@@ -1,0 +1,23 @@
+{
+  "intro": [
+    "Hi there! This is Eddie, your shipboard computer! I'm feeling just",
+    "GREAT guys, and I just know I'm going to get a bundle of kicks out of",
+    "telling you how to operate the controls of the Infinite Improbability Drive!",
+    "Just read the instructions, shout them out in case they're not for you,",
+    "listen out for them from your crewmates, and make sure they ALL get done!",
+    "Be aware the control panels will be affected by improbability leaks!",
+    ".................... ........Get......... .......Ready!....... ...................."
+  ],
+  "ending": {
+    "splash": "+------------------+ | * * BA-DA * * * *| |* * * * BOOM! * * | +------------------+",
+    "start": "The ship has been destroyed with the loss of all crew. Including you.",
+    "you": "You correctly set {1} of {2} control instructions, and missed {3}.",
+    "them": "{1} of {2} of the instructions you read out were achieved.",
+    "end": "In recognition of your deeds, you have been posthumously awarded:"
+  },
+  "readytostart": "To start a new game, all players must push and hold the big button.",
+  "gameinprogress": "Game already in progress, please wait for it to finish",
+  "hyperspace": "The Heart of Gold made it safely to hyperspace!",
+  "startbutton": "Push and hold to start a new game",
+  "logo": "+------------------+ | * * INFINITE* * *| |* IMPROBABILITY!* | +------------------+"
+}
