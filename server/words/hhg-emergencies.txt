@@ -10,7 +10,8 @@
     "ZOMG",
     "Breaking",
     "Caution",
-    "Mayday"
+    "Mayday",
+    "Hey guys"
   ],
   "goingto": [
     "headed for",
@@ -52,7 +53,10 @@
     "maker space",
     "a parallel dimension",
     "a supernova",
-    "an abandoned ghost ship"
+    "an abandoned ghost ship",
+    "planet LV426",
+    "sector ZZ9 Plural Z Alpha",
+    "a Vogon poetry recital"
   ],
   "attackedby": [
     "invaded by",
@@ -146,7 +150,8 @@
     "hull integrity",
     "plot credibility",
     "air miles",
-    "warp velocity"
+    "warp velocity",
+    "improbability"
   ],
   "leaking": [
     "leaking",
@@ -180,7 +185,8 @@
     "diesel",
     "WD40",
     "that old Janx Spirit",
-    "a drink almost unlike tea"
+    "a drink almost unlike tea",
+    "improbability"
   ],
   "broken": [
     "a broken",
@@ -250,7 +256,8 @@
     "starboard bow",
     "officer's quarters",
     "ready room",
-    "bistromathics drive"
+    "bistromathics drive",
+    "brownian motion source"
   ],
   "buildingup": [
     "is building up",
@@ -290,7 +297,8 @@
     "crew effluent",
     "buckyballs",
     "Babel fish",
-    "Vogon poetry books"
+    "Vogon poetry books",
+    "irony"
   ],
   "cliches": [
     "The engines cannae take it any more",
@@ -326,10 +334,11 @@
     "I swallowed a bug",
     "We come in peace, shoot to kill",
     "Life, don't talk to me about life",
-    "I've got this pain in all the diodes down my left side",
-    "The ship thinks it is to be a Disaster Area finale",
-    "A bowl of petunias and a sperm whale just appeared",
+    "I've got this pain in the diodes on my left side",
+    "The ship is part of a Disaster Area finale",
+    "A bowl of petunias and a whale just appeared",
     "The computer is busy thinking about tea",
-    "Vogon constructor fleet commencing demolition"
+    "Vogon constructor fleet commencing demolition",
+    "Entering the long dark teatime of the soul"
   ]
 }
