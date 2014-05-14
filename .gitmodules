@@ -1,3 +1,3 @@
 [submodule "GameStarter"]
 	path = GameStarter
-	url = git@github.com:danieljabailey/GameStarter.git
+	url = http://github.com/danieljabailey/GameStarter.git
