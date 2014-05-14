@@ -179,13 +179,13 @@ def receiveValue(consoleip, ctrlid, value):
                 if not consoleip in gsIDs:
                     gsIDs[consoleip] = nextID
                     nextID += 1
-                    players.append(consoleip)
+                    #players.append(consoleip)
                 gs.push(gsIDs[consoleip])
             else:
                 #remove from list of players
                 if consoleip in gsIDs:
                     gs.release(gsIDs[consoleip])
-                    players.remove(consoleip)
+                    #players.remove(consoleip)
             #Either way, reset the clock for game start
             gamestate = 'waitingforplayers'
             lastgenerated = time.time()
@@ -453,9 +453,19 @@ def initGame():
     #Start game!
     global gamestate
     global currenttimeout
+    global nextID
     gamestate = 'initgame'
     clearLives()
     currenttimeout = 15.0
+    # get game players from GameStarter
+    for key, value in gsIDs.iteritems():
+        if gs.isStartablePlayer(value):
+            print("Player %d (%s) startable" % (value, key))
+            players.append(key)
+        else:
+            print("Player %d (%s) not startable" % (value, key))
+
+    print("Player IPs: %r, player IDs: %r" % (players, gsIDs))
     for consoleip in players:
         #Slight fudge in assuming control 5 is the big button
         client.publish('clients/' + consoleip + '/5/name', "")
