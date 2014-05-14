@@ -52,7 +52,7 @@ gamestate = 'initserver' #initserver, readytostart, waitingforplayers, initgame,
 warningsound = None
 
 #Show when we've connected
-def on_connect(obj, rc):
+def on_connect(mosq, obj, rc):
     """Receive MQTT connection notification"""
     if rc == 0:
         print("Connected to MQTT")
@@ -62,7 +62,7 @@ def on_connect(obj, rc):
         print("Failed - return code is " + rc)
 
 #MQTT message arrived
-def on_message(obj, msg):
+def on_message(mosq, obj, msg):
     """Receive and process incoming MQTT published message"""
     nodes = msg.topic.split('/')
     print(gamestate + ' - ' + msg.topic + " - " + str(msg.payload))
@@ -179,13 +179,13 @@ def receiveValue(consoleip, ctrlid, value):
                 if not consoleip in gsIDs:
                     gsIDs[consoleip] = nextID
                     nextID += 1
-                    #players.append(consoleip)
+                    players.append(consoleip)
                 gs.push(gsIDs[consoleip])
             else:
                 #remove from list of players
                 if consoleip in gsIDs:
-                    gs.release(gsID[consoleip])
-                    #players.remove(consoleip)
+                    gs.release(gsIDs[consoleip])
+                    players.remove(consoleip)
             #Either way, reset the clock for game start
             gamestate = 'waitingforplayers'
             lastgenerated = time.time()
