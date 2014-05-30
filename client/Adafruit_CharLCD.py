@@ -294,9 +294,9 @@ class Adafruit_CharLCD:
 
         for char in text:
             if char == '\n':
-                self.write4bits(0xC0) # next line
+                self.write(0xC0) # next line
             else:
-                self.write4bits(ord(char),True)
+                self.write(ord(char),True)
 
 if __name__ == '__main__':
 
