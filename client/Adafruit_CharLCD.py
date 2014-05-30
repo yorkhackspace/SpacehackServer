@@ -265,9 +265,9 @@ class Adafruit_CharLCD:
 
     def write(self, bits, char_mode=False):
         if len(self.pins_db) > 4:
-            self.write8bits(self, bits, char_mode);
+            self.write8bits(bits, char_mode);
         else:
-            self.write4bits(self, bits, char_mode);
+            self.write4bits(bits, char_mode);
 
     def delayMicroseconds(self, microseconds):
         seconds = microseconds / float(1000000) # divide microseconds by 1 million for seconds
