@@ -95,6 +95,8 @@ class Adafruit_CharLCD:
             self.displayfunction |= self.LCD_4BITMODE;
             self.write4bits(self.LCD_FUNCTIONSET | self.displayfunction)
 
+#        self.write(0x33)
+        self.write(0x32)
         self.write(0x28) # 2 line 5x7 matrix
         self.write(0x0C) # turn cursor off 0x0E to enable cursor
         self.write(0x06) # shift cursor right
