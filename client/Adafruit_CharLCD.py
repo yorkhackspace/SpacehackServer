@@ -95,9 +95,9 @@ class Adafruit_CharLCD:
 
         self.write4bits(0x33)
         self.write4bits(0x32)
-        self.write(0x28) # 2 line 5x7 matrix
-        self.write(0x0C) # turn cursor off 0x0E to enable cursor
-        self.write(0x06) # shift cursor right
+        self.write4bits(0x28) # 2 line 5x7 matrix
+        self.write4bits(0x0C) # turn cursor off 0x0E to enable cursor
+        self.write4bits(0x06) # shift cursor right
 
 
         #if len(self.pins_db) > 4:
