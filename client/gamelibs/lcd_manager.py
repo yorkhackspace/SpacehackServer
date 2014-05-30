@@ -16,7 +16,7 @@ class LcdManager(object):
         nokiabus = config['local']['buses']['nokia']
         hd44780data_pins = []
         for i in range(8):
-            thispin = 'LCD_D'+i
+            thispin = 'LCD_D'+str(i)
             if (thispin) in hd44780bus:
                 hd44780data_pins.append(hd44780bus[thispin])
 
