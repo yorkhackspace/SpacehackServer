@@ -90,10 +90,10 @@ class Adafruit_CharLCD:
 
         if len(self.pins_db) > 4:
             self.displayfunction |= self.LCD_8BITMODE;
+            self.write8bits(self.LCD_FUNCTIONSET | self.displayfunction)
         else:
             self.displayfunction |= self.LCD_4BITMODE;
-
-        self.write8bits(self.LCD_FUNCTIONSET | self.displayfunction)
+            self.write4bits(self.LCD_FUNCTIONSET | self.displayfunction)
 
         self.write(0x28) # 2 line 5x7 matrix
         self.write(0x0C) # turn cursor off 0x0E to enable cursor
