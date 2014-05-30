@@ -100,10 +100,10 @@ class Adafruit_CharLCD:
         self.write(0x06) # shift cursor right
 
 
-        if len(self.pins_db) > 4:
-            self.write8bits(self.LCD_FUNCTIONSET | self.displayfunction)
-        else:
-            self.write4bits(self.LCD_FUNCTIONSET | self.displayfunction)
+        #if len(self.pins_db) > 4:
+        #    self.write8bits(self.LCD_FUNCTIONSET | self.displayfunction)
+        #else:
+        self.write4bits(self.LCD_FUNCTIONSET | self.displayfunction)
 
         """ Initialize to default text direction (for romance languages) """
         self.displaymode =  self.LCD_ENTRYLEFT | self.LCD_ENTRYSHIFTDECREMENT
