@@ -88,7 +88,7 @@ class Adafruit_CharLCD:
         self.displayfunction = self.LCD_1LINE | self.LCD_5x8DOTS
         self.displayfunction |= self.LCD_2LINE
 
-        if self.pins_db.length() > 4:
+        if len(self.pins_db) > 4:
             self.displayfunction |= self.LCD_8BITMODE;
         else:
             self.displayfunction |= self.LCD_4BITMODE;
@@ -264,7 +264,7 @@ class Adafruit_CharLCD:
         self.pulseEnable()
 
     def write(self, bits, char_mode=False):
-        if self.pins_db.length() > 4:
+        if len(self.pins_db) > 4:
             self.write8bits(self, bits, char_mode);
         else:
             self.write4bits(self, bits, char_mode);
