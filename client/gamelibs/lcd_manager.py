@@ -37,7 +37,7 @@ class LcdManager(object):
                     myContrast = int(dispdef['contrast'])
                 else:
                     myContrast = 0xbb
-                newlcd = NokiaLCD(pin_SCE=dispdef['pin'], InContrast=myContrast)
+                newlcd = NokiaLCD(pin_SCE=dispdef['pin'], contrast=myContrast)
                 newlcd.setwidth(dispdef['width'])
                 newlcd.setheight(dispdef['height'])
                 self.lcd[ctrlid]=newlcd
