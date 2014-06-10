@@ -8,6 +8,9 @@ York Hackspace January 2014
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_Nokia_LCD as LCD
 import Adafruit_GPIO.SPI as SPI
+import Image
+import ImageDraw
+import ImageFont
 
 
 class NokiaLCD:
@@ -23,8 +26,13 @@ class NokiaLCD:
         self.contrast = contrast
         GPIO.setup(pin_SCE, GPIO.OUT)
         GPIO.output(pin_SCE, GPIO.HIGH)
-        self.width = 1
-        self.height = 1
+        self.width = 84
+        self.height = 48
+        self.buffer = Image.new('1', (LCD.LCDWIDTH, LCD.LCDHEIGHT))
+        self.draw = ImageDraw.Draw(self.buffer)
+        self.cursor = (0, 0)
+        self.font = ImageFont.load_default()
+
 
     def reset_all_displays(self):
         """This will reset all the connected displays"""
@@ -46,17 +54,28 @@ class NokiaLCD:
         self.unselect_display()
 
     def message(self, displaytext):
-        GPIO.output(self.SCE, GPIO.LOW)
-        PCD.text(displaytext)
-        GPIO.output(self.SCE, GPIO.HIGH)
+        """Display a message at the current cursor"""
+        self.draw.text(self.cursor, displaytext, font=self.font)
+        self.display_buffer()
+
+    def display_buffer(self):
+        """Copy the buffer to the display"""
+        self.lcd.image(self.buffer)
+        self.select_display()
+        self.lcd.display()
+        self.unselect_display()
 
     def clear(self):
-        GPIO.output(self.SCE, GPIO.LOW)
-        PCD.cls()
-        GPIO.output(self.SCE, GPIO.HIGH)
+        """Clears the display"""
+        self.select_display()
+        self.lcd.clear()
+        self.unselect_display()
+        self.clear_buffer()
+
+    def clear_buffer(self):
+        """Clears the local buffer"""
+        self.draw((0, 0, 83, 47), outline=255, fill=255)
 
     def setCursor(self, col, row):
-        GPIO.output(self.SCE, GPIO.LOW)
-        PCD.gotorc(row, col)
-        GPIO.output(self.SCE, GPIO.HIGH)
+        self.cursor = (row * 6, col)
 
