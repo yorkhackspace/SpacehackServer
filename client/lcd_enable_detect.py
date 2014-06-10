@@ -10,10 +10,8 @@ import json
 import time
 
 #import game libraries
-sys.path.append('./gamelibs')
-sys.path.append('./controls')
-import config_manager
-import lcd_manager
+from gamelibs import config_manager
+from gamelibs import lcd_manager
 
 #Who am I? Get my ip address
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
