@@ -19,10 +19,10 @@ class NokiaLCD:
     def __init__(self, pin_DC="P9_26", pin_RST="P9_25",
                  pin_SCE="P9_11", contrast=0xbb):
         self.SCE = pin_SCE
-        spi_port = 0
+        spi_port = 1
         spi_device = 0
         spi = SPI.SpiDev(spi_port, spi_device, max_speed_hz=4000000)
-        self.lcd = LCD.PCD8544(pin_DC, pin_RST, spi)
+        self.lcd = LCD.PCD8544(pin_DC, pin_RST, spi=spi)
         self.contrast = contrast
         GPIO.setup(pin_SCE, GPIO.OUT)
         GPIO.output(pin_SCE, GPIO.HIGH)
@@ -74,7 +74,7 @@ class NokiaLCD:
 
     def clear_buffer(self):
         """Clears the local buffer"""
-        self.draw((0, 0, 83, 47), outline=255, fill=255)
+        self.draw.rectangle((0, 0, 83, 47), outline=255, fill=255)
 
     def setCursor(self, col, row):
         self.cursor = (row * 6, col)
