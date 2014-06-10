@@ -25,20 +25,8 @@ class NokiaLCD:
             PCD.init()
             nokiasinitialised = True
 
-    width = 1
-    height = 1
-
-    def getheight(self):
-        return self.height
-
-    def getwidth(self):
-        return self.width
-
-    def setheight(self, height):
-        self.height = height
-
-    def setwidth(self, width):
-        self.width = width
+        self.width = 1
+        self.height = 1
 
     def message(self, displaytext):
         GPIO.output(self.SCE, GPIO.LOW)
