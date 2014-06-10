@@ -3,14 +3,13 @@
 import Adafruit_BBIO.GPIO as GPIO
 from Adafruit_CharLCD import Adafruit_CharLCD
 from NokiaLCD import NokiaLCD
-import PCD8544_BBB as PCD
 import time
 
 class LcdManager(object):
-    lcd={}
+    lcd = {}
 
     def __init__(self, sortedlist, config):
-        SCEPins = []
+        first_nokia = True
         #get bus pins first
         hd44780bus = config['local']['buses']['hd44780']
         nokiabus = config['local']['buses']['nokia']
@@ -31,27 +30,21 @@ class LcdManager(object):
                 GPIO.output(newlcd.pin_e, GPIO.LOW)
                 newlcd.begin(dispdef['width'], dispdef['height'])
                 self.lcd[ctrlid] = newlcd
-                print("Control " + ctrlid + " is hd44780 on pin " + newlcd.pin_e)
+                print "Control %s is hd44780 on pin %s" % (ctrlid, newlcd.pin_e)
             else:
                 if "contrast" in dispdef:
                     contrast = int(dispdef['contrast'])
                 else:
                     contrast = 0xbb
                 newlcd = NokiaLCD(pin_SCE=dispdef['pin'], contrast=contrast)
+                if first_nokia:
+                    newlcd.reset_all_displays()
+                    first_nokia = False
                 newlcd.width = dispdef['width']
                 newlcd.height = dispdef['height']
+                newlcd.display_init()
                 self.lcd[ctrlid] = newlcd
-                print("Control " + ctrlid + " is nokia on pin " + dispdef['pin'])
-                SCEPins.append(dispdef['pin'])
-        for pin in SCEPins:
-            GPIO.output(pin, GPIO.LOW)
-        PCD.screenInit()
-        for pin in SCEPins:
-            GPIO.output(pin, GPIO.HIGH)
-        for ctrlid in sortedlist:
-            dispdef = config['local']['controls'][ctrlid]['display']
-            if dispdef['type'] == 'nokia':
-                self.lcd[ctrlid].setContrast()
+                print "Control %s is nokia on pin %s" % (ctrlid, dispdef['pin'])
 
     mytimeoutdisplayblocks = 0
 

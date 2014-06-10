@@ -6,27 +6,44 @@ York Hackspace January 2014
 """
 
 import Adafruit_BBIO.GPIO as GPIO
-import PCD8544_BBB as PCD
 import Adafruit_Nokia_LCD as LCD
 import Adafruit_GPIO.SPI as SPI
 
-nokiasinitialised = False
 
 class NokiaLCD:
-    def __init__(self, pin_DC="P9_26", pin_RST="P9_25", pin_LED="P9_27",
-                 pin_SCE="P9_11", pin_SCLK="P9_14", pin_DIN="P9_12", contrast=0xbb):
-        self.DC, self.RST, self.LED = pin_DC, pin_RST, pin_LED
-        self.SCE, self.SCLK, self.DIN = pin_SCE, pin_SCLK, pin_DIN
+    """Wrapper for the NokiaLCD to support many on common
+    SPI bus"""
+    def __init__(self, pin_DC="P9_26", pin_RST="P9_25",
+                 pin_SCE="P9_11", contrast=0xbb):
+        self.SCE = pin_SCE
+        spi_port = 0
+        spi_device = 0
+        spi = SPI.SpiDev(spi_port, spi_device, max_speed_hz=4000000)
+        self.lcd = LCD.PCD8544(pin_DC, pin_RST, spi)
         self.contrast = contrast
         GPIO.setup(pin_SCE, GPIO.OUT)
         GPIO.output(pin_SCE, GPIO.HIGH)
-        global nokiasinitialised
-        if not nokiasinitialised:
-            PCD.init()
-            nokiasinitialised = True
-
         self.width = 1
         self.height = 1
+
+    def reset_all_displays(self):
+        """This will reset all the connected displays"""
+        self.lcd.reset()
+
+    def select_display(self):
+        """Set display to receive a command"""
+        GPIO.output(self.SCE, GPIO.LOW)
+
+    def unselect_display(self):
+        """Set display to stop receiving commands"""
+        GPIO.output(self.SCE, GPIO.HIGH)
+
+    def display_init(self):
+        """Setup the display bias and contrast"""
+        self.select_display()
+        self.lcd.set_bias(4)
+        self.lcd.set_contrast(self.contrast)
+        self.unselect_display()
 
     def message(self, displaytext):
         GPIO.output(self.SCE, GPIO.LOW)
