@@ -9,7 +9,7 @@ class LcdManager(object):
     lcd = {}
 
     def __init__(self, sortedlist, config):
-        first_nokia = True
+        nokia_lcds = []
         #get bus pins first
         hd44780bus = config['local']['buses']['hd44780']
         nokiabus = config['local']['buses']['nokia']
@@ -37,14 +37,18 @@ class LcdManager(object):
                 else:
                     contrast = 0xbb
                 newlcd = NokiaLCD(pin_SCE=dispdef['pin'], contrast=contrast)
-                if first_nokia:
-                    newlcd.reset_all_displays()
-                    first_nokia = False
                 newlcd.width = dispdef['width']
                 newlcd.height = dispdef['height']
                 newlcd.display_init()
                 self.lcd[ctrlid] = newlcd
+                nokia_lcds.append(newlcd)
                 print "Control %s is nokia on pin %s" % (ctrlid, dispdef['pin'])
+        # Do this now as it does not work in the big loop for some reason.
+        if len(nokia_lcds) > 0:
+            nokia_lcds[0].reset_all_displays()
+            for nokia_lcd in nokia_lcds:
+                nokia_lcd.disaply()
+
 
     mytimeoutdisplayblocks = 0
 
