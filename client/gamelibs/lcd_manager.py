@@ -12,7 +12,6 @@ class LcdManager(object):
         nokia_lcds = []
         #get bus pins first
         hd44780bus = config['local']['buses']['hd44780']
-        nokiabus = config['local']['buses']['nokia']
         hd44780data_pins = []
         for i in range(8):
             thispin = 'LCD_D'+str(i)
@@ -22,8 +21,6 @@ class LcdManager(object):
         for ctrlid in sortedlist:
             dispdef = config['local']['controls'][ctrlid]['display']
             if dispdef['type'] == 'hd44780':
-
-
                 newlcd = Adafruit_CharLCD(pin_rs = hd44780bus['LCD_RS'], pins_db=hd44780data_pins)
                 newlcd.pin_e = dispdef['pin']
                 GPIO.setup(newlcd.pin_e, GPIO.OUT)
