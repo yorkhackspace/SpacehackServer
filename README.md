@@ -5,6 +5,8 @@ SpaceHack
 
 SpaceHack is an exciting yet light-hearted starship emergency simulator, a hands-on visitor-participation game set aboard the perpetually disaster-prone USS Guppy on its voyage around the universe.  Newly recruited Star Corps cadets must operate their command consoles to flip switches, turn dials, push buttons and more according to a sequence of instructions relayed to them by their fellow crew memebers, or face destruction.  How long can you keep the ship safe?
 
+[![SpaceHack at Maker Faire UK](http://img.youtube.com/vi/oCWH3n4aLJI/0.jpg)](http://www.youtube.com/watch?v=oCWH3n4aLJI)
+
 Directory structure
 ===================
 
