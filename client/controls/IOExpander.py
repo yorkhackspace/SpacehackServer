@@ -80,7 +80,7 @@ class ioexpander(object):
 		else:
 			print("Error, unknown port: " + port + ".")
 
-		if ((readData & (1<<int(pin))) > 1):
+		if ((readData & (1<<int(pin))) > 0):
 			return 1
 		return 0
 
