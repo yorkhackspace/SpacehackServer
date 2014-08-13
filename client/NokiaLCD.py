@@ -31,8 +31,8 @@ class NokiaLCD:
         self.buffer = Image.new('1', (LCD.LCDWIDTH, LCD.LCDHEIGHT))
         self.draw = ImageDraw.Draw(self.buffer)
         self.cursor = (0, 0)
-        self.font = ImageFont.load_default()
-        self.line_height = 7
+        self.line_height = 8
+        self.font = ImageFont.truetype("nokiafc22.ttf", self.line_height)
 
 
     def reset_all_displays(self):
@@ -84,5 +84,5 @@ class NokiaLCD:
         self.draw.rectangle(rect_area, outline=255, fill=255)
 
     def setCursor(self, col, row):
-        self.cursor = (col, row * self.line_height)
+        self.cursor = (col, (row * self.line_height)-1)
 
