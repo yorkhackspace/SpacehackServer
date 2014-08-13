@@ -18,11 +18,9 @@ import time
 import os
 
 #import game libraries
-sys.path.append('./gamelibs')
-sys.path.append('./controls')
-import config_manager
-import lcd_manager
-import control_manager
+from gamelibs import config_manager
+from gamelibs import lcd_manager
+from controls import control_manager
 
 #Vars
 roundconfig = {}
