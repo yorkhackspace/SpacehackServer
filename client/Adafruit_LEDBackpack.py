@@ -84,4 +84,5 @@ class LEDBackpack:
       self.writeDisplay()
 
 led = LEDBackpack(0x70)
+#led.setBufferRow(0,0x55)
 
