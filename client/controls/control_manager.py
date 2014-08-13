@@ -606,13 +606,11 @@ class SHControlKeypad(SHControl):
         else:
             print "No 'keypad_mode' in keypad config, defaulting to scan mode"
             self.keypadmode = "scan"
-        print "Keypad mode is " + str(self.keypadmode)
         self.keypad = Keypad_BBB.keypad(self.keypadmode, GPIO, self.pins['ROW_1'], self.pins['ROW_2'], self.pins['ROW_3'], self.pins['ROW_4'], self.pins['COL_1'], self.pins['COL_2'], self.pins['COL_3'], self.pins['COL_4'])
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
         state = self.keypad.getKey()
-        print "keypad key is " + str(state)
         if (ctrlstate != state) and (state != None):
             if not 'buffer' in ctrldef:
                 ctrldef['buffer'] = ""
