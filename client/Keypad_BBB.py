@@ -20,8 +20,6 @@
 # https://github.com/bandono/matrixQPi?source=cc
 # #####################################################
  
-import Adafruit_BBIO.GPIO as GPIO
-
 class keypad():
     # CONSTANTS   
     KEYPAD = [
@@ -31,26 +29,48 @@ class keypad():
         ["*", "0", "#", "D"]
     ]
      
-    def __init__(self, pin_R1, pin_R2, pin_R3, pin_R4, pin_C1, pin_C2, pin_C3, pin_C4):
+    def __init__(self, mode, GPIO, pin_R1, pin_R2, pin_R3, pin_R4, pin_C1, pin_C2, pin_C3, pin_C4):
         self.ROW = [pin_R1, pin_R2, pin_R3, pin_R4]
         self.COLUMN = [pin_C1, pin_C2, pin_C3, pin_C4]
+        self.mode = mode
+        self.GPIO = GPIO
+	if self.mode == "auto":
+		#init pins now
+		for pin in self.ROW:
+			self.GPIO.setup(pin, self.GPIO.IN)
+		for pin in self.COLUMN:
+			self.GPIO.setup(pin, self.GPIO.IN)
 
+    def getKeyAuto(self):
+        rowin = -1
+        colin = -1
+        #print "raw in " + bin(self.GPIO.get_exp(1).read_byte(0x09))
+        for r in range(0,4):
+            if self.GPIO.input(self.ROW[r]) == self.GPIO.HIGH:
+                #print "high row - " + str(r)
+                rowin = r
+            if self.GPIO.input(self.COLUMN[r]) == self.GPIO.HIGH:
+                #print "high col - " + str(r)
+                colin = r
+        if rowin>=0 and colin>=0:
+            return self.KEYPAD[rowin][colin]
+        return
 
-    def getKey(self):
+    def getKeyScan(self):
         # Set all columns as output low
         for j in range(len(self.COLUMN)):
-            GPIO.setup(self.COLUMN[j], GPIO.OUT)
-            GPIO.output(self.COLUMN[j], GPIO.HIGH)
+            self.GPIO.setup(self.COLUMN[j], self.GPIO.OUT)
+            self.GPIO.output(self.COLUMN[j], self.GPIO.HIGH)
          
         # Set all rows as input
         for i in range(len(self.ROW)):
-            GPIO.setup(self.ROW[i], GPIO.IN, GPIO.PUD_DOWN)
+            self.GPIO.setup(self.ROW[i], self.GPIO.IN, self.GPIO.PUD_DOWN)
          
         # Scan rows for pushed key/button
         # A valid key press should set "rowVal"  between 0 and 3.
         rowVal = -1
         for i in range(len(self.ROW)):
-            tmpRead = GPIO.input(self.ROW[i])
+            tmpRead = self.GPIO.input(self.ROW[i])
             if tmpRead == 1:
                 rowVal = i
                  
@@ -61,21 +81,21 @@ class keypad():
          
         # Convert columns to input
         for j in range(len(self.COLUMN)):
-            GPIO.setup(self.COLUMN[j], GPIO.IN, GPIO.PUD_DOWN)
+            self.GPIO.setup(self.COLUMN[j], self.GPIO.IN, self.GPIO.PUD_DOWN)
          
         # Convert rows to output
         for i in range(len(self.ROW)):
-            GPIO.setup(self.ROW[i], GPIO.OUT)
-            GPIO.output(self.ROW[i], GPIO.LOW)
+            self.GPIO.setup(self.ROW[i], self.GPIO.OUT)
+            self.GPIO.output(self.ROW[i], self.GPIO.LOW)
             
         # Switch the i-th row found from scan to output
-        GPIO.output(self.ROW[rowVal], GPIO.HIGH)
+        self.GPIO.output(self.ROW[rowVal], self.GPIO.HIGH)
  
         # Scan columns for still-pushed key/button
         # A valid key press should set "colVal"  between 0 and 3.
         colVal = -1
         for j in range(len(self.COLUMN)):
-            tmpRead = GPIO.input(self.COLUMN[j])
+            tmpRead = self.GPIO.input(self.COLUMN[j])
             if tmpRead == 1:
                 colVal=j
                  
@@ -88,12 +108,18 @@ class keypad():
         self.exit()
         return self.KEYPAD[rowVal][colVal]
          
+    def getKey(self):
+        if self.mode == "scan":
+            return self.getKeyScan()
+        elif self.mode == "auto":
+            return self.getKeyAuto()
+
     def exit(self):
         # Reinitialize all rows and columns as input at exit
         for i in range(len(self.ROW)):
-                GPIO.setup(self.ROW[i], GPIO.IN, GPIO.PUD_DOWN) 
+                self.GPIO.setup(self.ROW[i], self.GPIO.IN, self.GPIO.PUD_DOWN) 
         for j in range(len(self.COLUMN)):
-                GPIO.setup(self.COLUMN[j], GPIO.IN, GPIO.PUD_DOWN)
+                self.GPIO.setup(self.COLUMN[j], self.GPIO.IN, self.GPIO.PUD_DOWN)
          
 if __name__ == '__main__':
     # Initialize the keypad class

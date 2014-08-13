@@ -601,11 +601,18 @@ class SHControlKeypad(SHControl):
     
     def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig, ctrlid)
-        self.keypad = Keypad_BBB.keypad(self.pins['ROW_1'], self.pins['ROW_2'], self.pins['ROW_3'], self.pins['ROW_4'], self.pins['COL_1'], self.pins['COL_2'], self.pins['COL_3'], self.pins['COL_4'])
+        if "keypad_mode" in controlconfig:
+            self.keypadmode = controlconfig["keypad_mode"]
+        else:
+            print "No 'keypad_mode' in keypad config, defaulting to scan mode"
+            self.keypadmode = "scan"
+        print "Keypad mode is " + str(self.keypadmode)
+        self.keypad = Keypad_BBB.keypad(self.keypadmode, GPIO, self.pins['ROW_1'], self.pins['ROW_2'], self.pins['ROW_3'], self.pins['ROW_4'], self.pins['COL_1'], self.pins['COL_2'], self.pins['COL_3'], self.pins['COL_4'])
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
         state = self.keypad.getKey()
+        print "keypad key is " + str(state)
         if (ctrlstate != state) and (state != None):
             if not 'buffer' in ctrldef:
                 ctrldef['buffer'] = ""
@@ -646,11 +653,12 @@ def initialiseControls(config, sortedlist, lcdManager):
 
     if 'expanders' in config['local']:
         expanders = config['local']['expanders']
-	bus = expanders['bus']
-	ids = expanders['ids']
-	enableExpanders(bus)
-	for id in ids:
-		attachExpander(id)
+        bus = expanders['bus']
+        ids = expanders['ids']
+        enableExpanders(bus)
+        for id in ids:
+            print "Attaching expander " + str(id)
+            attachExpander(id)
 
     global allcontrolsconfig, myLcdManager
     myLcdManager = lcdManager

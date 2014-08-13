@@ -2,14 +2,16 @@
 import sh_gpio as GPIO
 
 GPIO.init_smbus(1)
-GPIO.attach_expander(0)
 
 Run = True
 while (Run):
-	pin = raw_input("Enter pin name or 'q' to exit: ")
+	pin = raw_input("Enter pin name or 'q' to exit or 'a' to attach expander: ")
 	InPin = True
 	if pin == "q":
 		Run = False
+	elif pin == "a":
+		exp = raw_input("enter expander number: ")
+		GPIO.attach_expander(int(exp))
 	else:
 		while InPin:
 			Command = raw_input("Select command; i-Input, o-Output, r-Read, 1-Set high, 0-Set low, b-Back, p-Poll: ")

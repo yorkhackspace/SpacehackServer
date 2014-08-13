@@ -27,7 +27,8 @@ def init_smbus(bus_id):
 
 
 def attach_expander(expander_id):
-	expanders.append(IOX.ioexpander(0x20 + expander_id))	
+	expanders.append(IOX.ioexpander(0x20 + int(expander_id)))	
+	print "Attached expander at address " + str(0x20 + int(expander_id))
 
 def expander_error(exp_id):
 	raise Exception("No such expander attached: " + str(exp_id) +  ". call attach_expander(" + str(exp_id) + ") first.")
