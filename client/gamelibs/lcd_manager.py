@@ -44,7 +44,7 @@ class LcdManager(object):
         if len(nokia_lcds) > 0:
             nokia_lcds[0].reset_all_displays()
             for nokia_lcd in nokia_lcds:
-                nokia_lcd.disaply()
+                nokia_lcd.display_init()
 
 
     mytimeoutdisplayblocks = 0
