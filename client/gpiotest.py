@@ -1,4 +1,8 @@
-import Adafruit_BBIO.GPIO as GPIO
+#import Adafruit_BBIO.GPIO as GPIO
+import sh_gpio as GPIO
+
+GPIO.init_smbus(1)
+GPIO.attach_expander(0)
 
 Run = True
 while (Run):

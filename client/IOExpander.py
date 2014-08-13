@@ -33,6 +33,9 @@ class ioexpander(object):
 		self.GPIOB = 0x00
 		self.write_byte(ioexpander.COM_IOCON_16, ioexpander.BIT_IOCON_BANK)
 
+	def get_address(self):
+		return self.address
+
 	def write_byte(self, reg, data):
 		self.bus.write_byte_data(self.address, reg, data)
 
@@ -81,21 +84,21 @@ class ioexpander(object):
 			return 1
 		return 0
 
-io = ioexpander(0x20)
-
-outputs = ["B0", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "A7", "A6", "A5"]
-inputs = ["A4", "A3", "A2", "A1", "A0"]
-
-for out_pin in outputs:
-	io.setPinDir(out_pin, ioexpander.DIR_OUTPUT)
-while(1):
-	for out_pin in outputs:
-		io.setPinData(out_pin, 1)
-	time.sleep(0.5)
-
-	for out_pin in outputs:
-		io.setPinData(out_pin, 0)
-	time.sleep(0.5)
-
-	for in_pin in inputs:
-		print in_pin + " = " + str(io.getPinData(in_pin))
+#io = ioexpander(0x20)
+#
+#outputs = ["B0", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "A7", "A6", "A5"]
+#inputs = ["A4", "A3", "A2", "A1", "A0"]
+##
+#for out_pin in outputs:
+#	io.setPinDir(out_pin, ioexpander.DIR_OUTPUT)
+#while(1):
+#	for out_pin in outputs:
+#		io.setPinData(out_pin, 1)
+#	time.sleep(0.5)
+#
+#	for out_pin in outputs:
+#		io.setPinData(out_pin, 0)
+#	time.sleep(0.5)
+#
+#	for in_pin in inputs:
+#		print in_pin + " = " + str(io.getPinData(in_pin))
