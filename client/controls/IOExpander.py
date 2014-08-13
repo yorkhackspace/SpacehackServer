@@ -37,10 +37,16 @@ class ioexpander(object):
 		return self.address
 
 	def write_byte(self, reg, data):
-		self.bus.write_byte_data(self.address, reg, data)
+		try:
+			self.bus.write_byte_data(self.address, reg, data)
+		except Exception as e:
+			print e
 
 	def read_byte(self, reg):
-		return self.bus.read_byte_data(self.address, reg)
+		try:
+			return self.bus.read_byte_data(self.address, reg)
+		except Exception as e:
+			print e
 
 	def setPinDir(self, pin_id, dir):
 		port = pin_id[0]

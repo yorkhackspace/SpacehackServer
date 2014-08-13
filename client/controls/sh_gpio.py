@@ -81,3 +81,12 @@ def add_event_detect(pin_id, edge):
 	else:
 		pin_id_error()
 	return 0
+
+def event_detected(pin_id):
+	if pin_id[0] == 'P':
+		return GPIO.event_detected(pin_id)
+	elif pin_id[0] == 'E':
+		raise Exception("Interrupt feature is not yet implemented on this pin (" + pin + ")")
+	else:
+		pin_id_error()
+	return 0

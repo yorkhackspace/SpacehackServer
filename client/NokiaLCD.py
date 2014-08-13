@@ -32,7 +32,7 @@ class NokiaLCD:
         self.draw = ImageDraw.Draw(self.buffer)
         self.cursor = (0, 0)
         self.font = ImageFont.load_default()
-        self.line_height = 8
+        self.line_height = 7
 
 
     def reset_all_displays(self):
@@ -58,7 +58,6 @@ class NokiaLCD:
         """Display a message at the current cursor"""
         self.clear_current_line()
         self.draw.text(self.cursor, displaytext, font=self.font)
-        #self.draw.text((18,0), displaytext, font=self.font)
         self.display_buffer()
 
     def display_buffer(self):
@@ -82,10 +81,6 @@ class NokiaLCD:
     def clear_current_line(self):
         """Clears the local buffer"""
         rect_area = (0, self.cursor[1], self.pix_width-1, self.cursor[1]+self.line_height)
-        #rect_area = (0, self.cursor[1], 83, self.cursor[1]+self.line_height)
-        print "elf width is %d" % self.pix_width
-        print "rect is "
-        print rect_area
         self.draw.rectangle(rect_area, outline=255, fill=255)
 
     def setCursor(self, col, row):
