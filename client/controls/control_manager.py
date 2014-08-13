@@ -1,4 +1,5 @@
-import Adafruit_BBIO.GPIO as GPIO
+#import Adafruit_BBIO.GPIO as GPIO
+import sh_gpio as GPIO
 import Adafruit_BBIO.PWM as PWM
 import Adafruit_BBIO.ADC as ADC
 from Adafruit_7Segment import SevenSegment
@@ -643,6 +644,14 @@ class SHControlKeypad(SHControl):
 
 def initialiseControls(config, sortedlist, lcdManager):
 
+    if 'expanders' in config['local']:
+        expanders = config['local']['expanders']
+	bus = expanders['bus']
+	ids = expanders['ids']
+	enableExpanders(bus)
+	for id in ids:
+		attachExpander(id)
+
     global allcontrolsconfig, myLcdManager
     myLcdManager = lcdManager
     allcontrolsconfig = config['local']['controls']
@@ -729,3 +738,8 @@ def processRoundConfig(config, roundconfig, controlids):
             if 'value' in ctrldef:
                 processControlValueAssignment(roundconfig, ctrldef['value'], ctrlid, True)
 
+def enableExpanders(bus):
+	GPIO.init_smbus(bus)
+
+def attachExpander(exp_id):
+	GPIO.attach_expander(exp_id)	
