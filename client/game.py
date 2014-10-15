@@ -56,7 +56,7 @@ def on_message(mosq, obj, msg):
     nodes = msg.topic.split('/')
     global timeoutstarted
     global timeoutdisplayblocks
-    global myLCDManager
+    global myLcdManager
     if nodes[0]=='clients':
         if nodes[2]=='configure':
             if str(msg.payload) == 'reboot':
