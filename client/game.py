@@ -56,11 +56,13 @@ def on_message(mosq, obj, msg):
     nodes = msg.topic.split('/')
     global timeoutstarted
     global timeoutdisplayblocks
+    global myLCDManager
     if nodes[0]=='clients':
         if nodes[2]=='configure':
             if str(msg.payload) == 'reboot':
                 os.system('reboot')
             else:
+                myLcdManager = lcd_manager.LcdManager(sortedlist, config)
                 processRoundConfig(str(msg.payload))
                 timeoutstarted = 0.0
                 timeoutdisplayblocks = 0
@@ -92,6 +94,7 @@ def on_message(mosq, obj, msg):
         if nodes[1] == 'ready':
             mess = str(msg.payload)
             if mess == 'started':
+                myLcdManager = lcd_manager.LcdManager(sortedlist, config)
                 client.publish("server/register", json.dumps(config['interface']))
             elif mess == 'ready':
                 global hasregistered
