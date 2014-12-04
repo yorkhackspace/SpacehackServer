@@ -60,8 +60,8 @@ class NokiaLCD:
 
     def display_buffer(self):
         """Copy the buffer to the display"""
-        self.lcd.image(self.buffer)
         self.select_display()
+        self.lcd.image(self.buffer)
         self.lcd.display()
         self.unselect_display()
 

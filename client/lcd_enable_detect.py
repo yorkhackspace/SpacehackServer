@@ -28,4 +28,4 @@ for ctrlid in controlids:
     
 #Main loop
 while(True):
-    print "a"
+	pass
