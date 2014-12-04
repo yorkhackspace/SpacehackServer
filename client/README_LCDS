@@ -1,0 +1,46 @@
+
+The LCDS now all work in hardware mode.
+
+Configuration:
+	The config for the HD44780 bus must contain pin IDs for LCD_RS and at least pins LCD_D4 to LCD_D7.
+	To enable 8 bit mode on a console that supports it, all you need to do is add pin IDs for pins LCD_D0 to LCD_D3
+
+	Here is an example HD44780 bus section with correct pin IDs for 8 bit mode on the new LCDs:
+		"hd44780": {
+			"LCD_RS": "P8_15",
+			"LCD_D0": "P8_7",
+			"LCD_D1": "P8_8",
+			"LCD_D2": "P8_9",
+			"LCD_D3": "P8_10",
+			"LCD_D4": "P8_11",
+			"LCD_D5": "P8_12",
+			"LCD_D6": "P8_13",
+			"LCD_D7": "P8_14"
+		}
+
+	The config for the Nokia bus must contain pin IDs for LCD_DC and LCD_RST.
+
+	Here is an example of a Nokia bus config section with correct pin IDs for hardware SPI on the new boards.
+		"Nokia": {
+			"LCD_DC": "P9_15",
+			"LCD_RST": "P9_12"
+		}
+	Note that older setups with software SPI will require pin IDs for LCD_DIN, LCD_SCLK and possibly LCD_LED.
+
+
+Enable pins:
+
+	HD44780 pins
+
+	P8_16     -> Contrast selector A
+
+	P8_17     \
+	P8_18      \
+	P8_19       > contrast selector B - E
+	P8_27     _/
+
+	Nokia enable pins
+
+	P9_23
+	P9_24
+	P9_25
