@@ -12,11 +12,15 @@ class LcdManager(object):
         nokia_lcds = []
         #get bus pins first
         hd44780bus = config['local']['buses']['hd44780']
+        nokiabus = config['local']['buses']['nokia']
         hd44780data_pins = []
         for i in range(8):
             thispin = 'LCD_D'+str(i)
             if thispin in hd44780bus:
                 hd44780data_pins.append(hd44780bus[thispin])
+
+        nokia_rst = nokiabus['LCD_RST']
+        nokia_dc = nokiabus['LCD_DC']
 
         for ctrlid in sortedlist:
             dispdef = config['local']['controls'][ctrlid]['display']
@@ -33,7 +37,7 @@ class LcdManager(object):
                     contrast = int(dispdef['contrast'])
                 else:
                     contrast = 0xbb
-                newlcd = NokiaLCD(pin_SCE=dispdef['pin'], contrast=contrast)
+                newlcd = NokiaLCD(pin_DC=nokia_dc, pin_RST=nokia_rst, pin_SCE=dispdef['pin'], contrast=contrast)
                 newlcd.width = dispdef['width']
                 newlcd.height = dispdef['height']
                 newlcd.display_init()
