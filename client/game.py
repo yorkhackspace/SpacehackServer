@@ -3,10 +3,11 @@
 #This runs on a Beaglebone Black
 
 import sys
-import mosquitto
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
 import Adafruit_BBIO.ADC as ADC
+import paho.mqtt.client as mqtt
+import logging
 
 from Adafruit_CharLCD import Adafruit_CharLCD
 from NokiaLCD import NokiaLCD
@@ -45,14 +46,14 @@ myLcdManager = lcd_manager.LcdManager(sortedlist, config)
 control_manager.initialiseControls(config, sortedlist, myLcdManager)
 
 #MQTT client
-client = mosquitto.Mosquitto("Game-" + ipaddress) #client ID
 print config['local']
 server = config['local']['server']
 
 #MQTT message arrived
-def on_message(mosq, obj, msg):
+def on_message(client, userdata, msg):
     """Process incoming MQTT message"""
-    print(msg.topic + " - " + str(msg.payload))
+    global resetBlocks
+    print("{0} - {1}".format(msg.topic, msg.payload))
     nodes = msg.topic.split('/')
     global timeoutstarted
     global timeoutdisplayblocks
@@ -116,23 +117,39 @@ def processRoundConfig(roundconfigstring):
     control_manager.processRoundConfig(config, roundconfig, controlids)
 
 #Setup MQTT
+
+
+def controller_ids():
+    return [x['id'] for x in config['interface']['controls']]
+
+def on_connect(client, userdata, flags, rc):
+    logging.info("Connected to console with result {}".format(rc))
+    # client.subscribe("foo")
+    subsbase = "clients/" + ipaddress + "/"
+    client.subscribe(subsbase + "configure")
+    client.subscribe(subsbase + "instructions")
+    client.subscribe(subsbase + "timeout")
+    client.subscribe("server/ready")
+    for controlid in controller_ids():
+        client.subscribe(subsbase + str(controlid) + '/name')
+        client.subscribe(subsbase + str(controlid) + '/enabled')
+
+client = mqtt.Client()
 client.on_message = on_message
+client.on_connect = on_connect
 client.connect(server)
 subsbase = "clients/" + ipaddress + "/"
-client.subscribe(subsbase + "configure")
-client.subscribe(subsbase + "instructions")
-client.subscribe(subsbase + "timeout")
-client.subscribe("server/ready")
+client.start_loop()
 
-for controlid in [x['id'] for x in config['interface']['controls']]:
-    client.subscribe(subsbase + str(controlid) + '/name')
-    client.subscribe(subsbase + str(controlid) + '/enabled')
+def main_loop():
+    global resetBlocks
+    while True:
+        control_manager.pollControls(config, roundconfig,
+                                     controlids, client, ipaddress)
+        myLcdManager.displayTimer(timeoutstarted, resetBlocks,
+                                  roundconfig.get('timeout', 0))
+        if resetBlocks:
+            resetBlocks = False
 
-#Main loop
-while(client.loop(0) == 0):
-    control_manager.pollControls(config, roundconfig, controlids, client, ipaddress)
-    myLcdManager.displayTimer(timeoutstarted, resetBlocks, roundconfig.get('timeout', 0))
-    if resetBlocks:
-        resetBlocks = False
-
-
+if __name__ == '__main__':
+    main_loop()
