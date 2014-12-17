@@ -137,7 +137,7 @@ client.on_message = on_message
 client.on_connect = on_connect
 client.connect(server)
 subsbase = "clients/" + ipaddress + "/"
-client.start_loop()
+client.loop_start()
 
 def main_loop():
     global resetBlocks
