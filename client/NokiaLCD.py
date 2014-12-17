@@ -1,6 +1,6 @@
 # Class instance wrapper for Nokia LCDs with a PCD8544 controller
 # This should be duck-type polymorphic with the calls used for the
-# hd44780 LCDs so we can write to either 
+# hd44780 LCDs so we can write to either
 # York Hackspace January 2014
 
 import Adafruit_BBIO.GPIO as GPIO
@@ -20,19 +20,19 @@ class NokiaLCD:
         if not nokiasinitialised:
             PCD.init()
             nokiasinitialised = True
-            
+
     width = 1
     height = 1
 
     def getheight(self):
         return self.height
-    
+
     def getwidth(self):
         return self.width
 
     def setheight(self, height):
         self.height = height
-    
+
     def setwidth(self, width):
         self.width = width
 
@@ -50,7 +50,7 @@ class NokiaLCD:
         GPIO.output(self.SCE, GPIO.LOW)
         PCD.gotorc(row, col)
         GPIO.output(self.SCE, GPIO.HIGH)
-        
+
     def setContrast(self):
         GPIO.output(self.SCE, GPIO.LOW)
         PCD.set_contrast(self.contrast)

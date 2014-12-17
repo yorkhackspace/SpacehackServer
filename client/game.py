@@ -51,7 +51,7 @@ server = config['local']['server']
 def on_message(client, userdata, msg):
     """Process incoming MQTT message"""
     global resetBlocks
-    print("{0} - {1}".format(msg.topic, msg.payload))
+    logging.info("{0} - {1}".format(msg.topic, msg.payload))
     nodes = msg.topic.split('/')
     global timeoutstarted
     global timeoutdisplayblocks
@@ -67,7 +67,7 @@ def on_message(client, userdata, msg):
                 timeoutdisplayblocks = 0
         elif nodes[2] == 'instructions':
             myLcdManager.display(str(msg.payload), 20, "0")
-            #start timer?
+            # start timer?
             if 'timeout' in roundconfig and roundconfig['timeout'] > 0.0:
                 resetBlocks = True
                 timeoutstarted = time.time()
@@ -78,11 +78,11 @@ def on_message(client, userdata, msg):
             if nodes[3] == 'enabled':
                 if str(msg.payload) == "0":
                     roundconfig['controls'][ctrlid]['enabled'] = False
-                    #switch it off
+                    # switch it off
                     myLcdManager.display(" ", config['local']['controls'][ctrlid]['display']['width'], ctrlid)
                 else:
                     roundconfig['controls'][ctrlid]['enabled'] = True
-                    #switch it on
+                    # switch it on
                     myLcdManager.display(roundconfig['controls'][ctrlid]['name'], config['local']['controls'][ctrlid]['display']['width'], ctrlid)
             elif nodes[3] == 'name':
                 if str(msg.payload) == '':
@@ -104,7 +104,7 @@ def on_message(client, userdata, msg):
                 os.system('poweroff')
 
 
-#Process an incoming config for a round
+# Process an incoming config for a round
 def processRoundConfig(roundconfigstring):
     """Process an incoming config for a round"""
     control_manager.initialiseControls(config, sortedlist, myLcdManager)
@@ -113,10 +113,6 @@ def processRoundConfig(roundconfigstring):
         roundconfig[key] = x[key]
     myLcdManager.display(roundconfig['instructions'], 20, "0")
     control_manager.processRoundConfig(config, roundconfig, controlids)
-
-#Setup MQTT
-
-
 
 def on_connect(client, userdata, flags, rc):
     logging.info("Connected to console with result {}".format(rc))
