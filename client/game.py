@@ -4,9 +4,6 @@ York Hackspace January 2014
 This runs on a Beaglebone Black
 """
 
-import Adafruit_BBIO.GPIO as GPIO
-import Adafruit_BBIO.PWM as PWM
-import Adafruit_BBIO.ADC as ADC
 import paho.mqtt.client as mqtt
 import logging
 import commands
@@ -26,12 +23,12 @@ hasregistered = False
 timeoutstarted = 0.0
 reset_blocks = False
 
-#Who am I? Get my ip address
+# Who am I? Get my ip address
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 
-#configuration. Load the config and get various dictionaries and arrays back
-configFileName = 'game-' + ipaddress +'.config'
-config, controlids, controldefs, sortedlist = config_manager.loadConfig(configFileName)
+# configuration. Load the config and get various dictionaries and arrays back
+config_file_name = 'game-%{}.config'.format(ipaddress)
+config, controlids, controldefs, sortedlist = config_manager.loadConfig(config_file_name)
 
 #initialise all of the LCDs and return a list of LCD objects
 myLcdManager = lcd_manager.LcdManager(sortedlist, config)
@@ -39,11 +36,9 @@ myLcdManager = lcd_manager.LcdManager(sortedlist, config)
 #initialise all controls
 control_manager.initialiseControls(config, sortedlist, myLcdManager)
 
-#MQTT client
-print config['local']
+logging.info(config['local'])
 server = config['local']['server']
 
-#MQTT message arrived
 def on_message(client, userdata, msg):
     """Process incoming MQTT message"""
     global reset_blocks
@@ -52,13 +47,13 @@ def on_message(client, userdata, msg):
     global timeoutstarted
     global timeoutdisplayblocks
     global myLcdManager
-    if nodes[0]=='clients':
-        if nodes[2]=='configure':
+    if nodes[0] == 'clients':
+        if nodes[2] == 'configure':
             if str(msg.payload) == 'reboot':
                 os.system('reboot')
             else:
                 myLcdManager = lcd_manager.LcdManager(sortedlist, config)
-                processRoundConfig(str(msg.payload))
+                process_round_config(str(msg.payload))
                 timeoutstarted = 0.0
                 timeoutdisplayblocks = 0
         elif nodes[2] == 'instructions':
@@ -101,12 +96,12 @@ def on_message(client, userdata, msg):
 
 
 # Process an incoming config for a round
-def processRoundConfig(roundconfigstring):
+def process_round_config(roundconfigstring):
     """Process an incoming config for a round"""
     control_manager.initialiseControls(config, sortedlist, myLcdManager)
-    x = json.loads(roundconfigstring)
-    for key in x.keys():
-        roundconfig[key] = x[key]
+    config_json = json.loads(roundconfigstring)
+    for key in config_json.keys():
+        roundconfig[key] = config_json[key]
     myLcdManager.display(roundconfig['instructions'], 20, "0")
     control_manager.processRoundConfig(config, roundconfig, controlids)
 
@@ -126,7 +121,6 @@ client = mqtt.Client()
 client.on_message = on_message
 client.on_connect = on_connect
 client.connect(server)
-subsbase = "clients/" + ipaddress + "/"
 client.loop_start()
 
 def main_loop():
