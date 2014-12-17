@@ -1,34 +1,30 @@
-# SpaceHack! Game client main module
-#York Hackspace January 2014
-#This runs on a Beaglebone Black
+"""
+SpaceHack! Game client main module
+York Hackspace January 2014
+This runs on a Beaglebone Black
+"""
 
-import sys
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
 import Adafruit_BBIO.ADC as ADC
 import paho.mqtt.client as mqtt
 import logging
-
-from Adafruit_CharLCD import Adafruit_CharLCD
-from NokiaLCD import NokiaLCD
-import Keypad_BBB
-from collections import OrderedDict
 import commands
 import json
 import time
 import os
 
-#import game libraries
+# import game libraries
 from gamelibs import config_manager
 from gamelibs import lcd_manager
 from controls import control_manager
 
-#Vars
+# Global Variables
 roundconfig = {}
 keypad = None
 hasregistered = False
 timeoutstarted = 0.0
-resetBlocks = False
+reset_blocks = False
 
 #Who am I? Get my ip address
 ipaddress = commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
@@ -50,7 +46,7 @@ server = config['local']['server']
 #MQTT message arrived
 def on_message(client, userdata, msg):
     """Process incoming MQTT message"""
-    global resetBlocks
+    global reset_blocks
     logging.info("{0} - {1}".format(msg.topic, msg.payload))
     nodes = msg.topic.split('/')
     global timeoutstarted
@@ -69,7 +65,7 @@ def on_message(client, userdata, msg):
             myLcdManager.display(str(msg.payload), 20, "0")
             # start timer?
             if 'timeout' in roundconfig and roundconfig['timeout'] > 0.0:
-                resetBlocks = True
+                reset_blocks = True
                 timeoutstarted = time.time()
         elif nodes[2] == 'timeout':
             roundconfig['timeout'] = float(str(msg.payload))
@@ -134,14 +130,14 @@ subsbase = "clients/" + ipaddress + "/"
 client.loop_start()
 
 def main_loop():
-    global resetBlocks
+    global reset_blocks
     while True:
         control_manager.pollControls(config, roundconfig,
                                      controlids, client, ipaddress)
-        myLcdManager.displayTimer(timeoutstarted, resetBlocks,
+        myLcdManager.displayTimer(timeoutstarted, reset_blocks,
                                   roundconfig.get('timeout', 0))
-        if resetBlocks:
-            resetBlocks = False
+        if reset_blocks:
+            reset_blocks = False
 
 if __name__ == '__main__':
     main_loop()
