@@ -1,0 +1,5 @@
+paho-mqtt==1.0
+Adafruit_BBIO
+git+https://github.com/adafruit/Adafruit_Python_GPIO.git
+git+https://github.com/adafruit/Adafruit_Nokia_LCD.git
+
