@@ -37,12 +37,12 @@ class SHControl(object):
         print "Error: SHControl.processRoundConfig() should never be called"
 
 class SHControlPhoneStyleMenu(SHControl):
-    
+
     def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig, ctrlid)
         GPIO.setup(self.pins['BTN_1'], GPIO.IN, GPIO.PUD_DOWN)
         GPIO.setup(self.pins['BTN_2'], GPIO.IN, GPIO.PUD_DOWN)
-        
+
         GPIO.setup(self.pins['RGB_R'], GPIO.OUT)
         GPIO.setup(self.pins['RGB_G'], GPIO.OUT)
         GPIO.setup(self.pins['RGB_B'], GPIO.OUT)
@@ -54,10 +54,10 @@ class SHControlPhoneStyleMenu(SHControl):
             myLcdManager.displayButtonsLine(ctrldef['pool'][0], ctrldef['pool'][1], ctrlid)
         else:
             myLcdManager.displayButtonsLine("<<<<", ">>>>", ctrlid)
-        
+
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
-        
+
         btn1 = GPIO.input(self.pins['BTN_1'])
         btn2 = GPIO.input(self.pins['BTN_2'])
         state = [btn1, btn2]
@@ -150,7 +150,7 @@ class SHControlPhoneStyleMenu(SHControl):
             GPIO.output(self.pins['RGB_R'], RGB[0])
             GPIO.output(self.pins['RGB_G'], RGB[1])
             GPIO.output(self.pins['RGB_B'], RGB[2])
-            
+
     #def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
     #    if ctrltype == 'toggle':
     #        myLcdManager.displayButtonsLine("Off", "On", ctrlid)
@@ -160,7 +160,7 @@ class SHControlPhoneStyleMenu(SHControl):
     #        myLcdManager.displayButtonsLine("<<<<", ">>>>", ctrlid)
 
 class SHControlPot(SHControl):
-    
+
     def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig, ctrlid)
         ADC.setup(self.pins['POT'])
@@ -233,9 +233,9 @@ class SHControlPot(SHControl):
                     myLcdManager.displayValueLine(value, ctrlid)
             elif self.ctrltype == 'verbs':
                 if self.controlsetup['display']['height']>3:
-                    myLcdManager.displayValueLine(value, ctrlid)      
+                    myLcdManager.displayValueLine(value, ctrlid)
 
-class SHControlBargraphPot(SHControlPot):   
+class SHControlBargraphPot(SHControlPot):
 
     def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig, ctrlid)
@@ -260,7 +260,7 @@ class SHControlBargraphPot(SHControlPot):
             if digit > i:
                 GPIO.output(self.bar[i], GPIO.HIGH)
             else:
-                GPIO.output(self.bar[i], GPIO.LOW) 
+                GPIO.output(self.bar[i], GPIO.LOW)
 
     def poll(self, controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue):
         value = ctrlvalue
@@ -301,9 +301,9 @@ class SHControlBargraphPot(SHControlPot):
                     SHControlBargraphPot.__updateDisplay(self, value)
             else:
                 SHControlBargraphPot.__updateDisplay(self, 0)
-        
+
 class SHControlCombo7SegColourRotary(SHControl):
-    
+
     #Adafruit I2C 7-segment
     segment = SevenSegment(address=0x70)
     lookup7segchar = {'0': 0x3F, '1': 0x06, '2': 0x5B, '3': 0x4F, '4': 0x66, '5': 0x6D,
@@ -331,7 +331,7 @@ class SHControlCombo7SegColourRotary(SHControl):
                 idx = i+1
             self.segment.writeDigitRaw(idx,self.lookup7segchar[digit])
 
-    
+
 
     def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig, ctrlid)
@@ -344,7 +344,7 @@ class SHControlCombo7SegColourRotary(SHControl):
         GPIO.output(self.pins['RGB_G'], GPIO.LOW)
         GPIO.output(self.pins['RGB_B'], GPIO.LOW)
         SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
-        
+
     def __prepType__(self, ctrldef, ctrltype, ctrlid):
         if ctrltype == 'button':
             SHControlCombo7SegColourRotary.__displayDigits(self, "PUSH")
@@ -359,7 +359,7 @@ class SHControlCombo7SegColourRotary(SHControl):
             rotaryInit = True
         value = ctrlvalue
         btn = GPIO.input(self.pins['BTN'])
-        
+
         if ctrltype in ['button', 'toggle']:
             state = btn
             if ctrlstate != state:
@@ -375,13 +375,13 @@ class SHControlCombo7SegColourRotary(SHControl):
                     qdir = rotaryQueue.get(False)
                 except Empty:
                     qdir = 'still'
-                    
+
                 if 'invert' in self.controlsetup:
-                    if qdir == 'cw': 
+                    if qdir == 'cw':
                         qdir = 'ccw'
-                    elif qdir == 'ccw': 
+                    elif qdir == 'ccw':
                         qdir = 'cw'
-                
+
                 if ctrltype == 'selector':
                     value = ctrlvalue
                     if qdir == 'ccw':
@@ -419,7 +419,7 @@ class SHControlCombo7SegColourRotary(SHControl):
                         else:
                             idx = len(ctrldef['pool']) - 1
                     value = str(ctrldef['pool'][idx])
-                
+
         return value, state
 
     def processValueAssignment(self, roundconfig, value, ctrlid, override=False):
@@ -459,20 +459,20 @@ class SHControlCombo7SegColourRotary(SHControl):
                     SHControlCombo7SegColourRotary.__displayDigits(self, value.upper())
             else:
                 SHControlCombo7SegColourRotary.__displayDigits(self, "    ")
-            
+
             GPIO.output(self.pins['RGB_R'], RGB[0])
             GPIO.output(self.pins['RGB_G'], RGB[1])
             GPIO.output(self.pins['RGB_B'], RGB[2])
         else:
-            print("Combo reports not valid for processing control value")            
-            
+            print("Combo reports not valid for processing control value")
+
     #def processRoundConfig(self, ctrldef, ctrlid, ctrltype):
     #    if ctrltype == 'button':
     #        SHControlCombo7SegColourRotary.__displayDigits(self, "PUSH")
 
 
 class SHControlSwitchbank(SHControl):
-    
+
     def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig, ctrlid)
         for i in range(1,5):
@@ -507,7 +507,7 @@ class SHControlSwitchbank(SHControl):
             pass
 
 class SHControlIlluminatedButton(SHControl):
-    
+
     def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig, ctrlid)
         GPIO.setup(self.pins['BTN'], GPIO.IN, GPIO.PUD_DOWN)
@@ -537,10 +537,10 @@ class SHControlIlluminatedButton(SHControl):
                     GPIO.output(self.pins['LED'], GPIO.LOW)
 
 class SHControlIlluminatedToggle(SHControl):
-    
+
     def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig, ctrlid)
-        GPIO.setup(self.pins['SW'], GPIO.IN, GPIO.PUD_DOWN)    
+        GPIO.setup(self.pins['SW'], GPIO.IN, GPIO.PUD_DOWN)
         GPIO.setup(self.pins['LED'], GPIO.OUT)
         GPIO.output(self.pins['LED'], GPIO.HIGH) #common anode, so HIGH for off, LOW for on
 
@@ -565,7 +565,7 @@ class SHControlIlluminatedToggle(SHControl):
                         GPIO.output(self.pins['LED'], GPIO.HIGH)
 
 class SHControlFourButtons(SHControl):
-    
+
     def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig, ctrlid)
         for i in range(1,5):
@@ -577,7 +577,7 @@ class SHControlFourButtons(SHControl):
         btn2 = GPIO.input(self.pins['BTN_2'])
         btn3 = GPIO.input(self.pins['BTN_3'])
         btn4 = GPIO.input(self.pins['BTN_4'])
-        
+
         state = [btn1, btn2, btn3, btn4]
         if ctrlstate == None:
             ctrlstate = state
@@ -597,7 +597,7 @@ class SHControlFourButtons(SHControl):
             pass
 
 class SHControlKeypad(SHControl):
-    
+
     def __init__(self, controlconfig, ctrlid):
         SHControl.__init__(self, controlconfig, ctrlid)
         self.keypad = Keypad_BBB.keypad(self.pins['ROW_1'], self.pins['ROW_2'], self.pins['ROW_3'], self.pins['ROW_4'], self.pins['COL_1'], self.pins['COL_2'], self.pins['COL_3'], self.pins['COL_4'])
@@ -662,7 +662,7 @@ def initialiseControls(config, sortedlist, lcdManager):
                 controls[ctrlid] =(SHControlIlluminatedButton(controlconfig, ctrlid))
             elif hardwaretype == 'potentiometer': #slide or rotary 10k pot
                 controls[ctrlid] =(SHControlPot(controlconfig, ctrlid))
-            elif hardwaretype == 'illuminatedtoggle': #one switch, one LED            
+            elif hardwaretype == 'illuminatedtoggle': #one switch, one LED
                 controls[ctrlid] =(SHControlIlluminatedToggle(controlconfig, ctrlid))
             elif hardwaretype == 'fourbuttons': #four buttons
                 controls[ctrlid] =(SHControlFourButtons(controlconfig, ctrlid))
@@ -676,35 +676,34 @@ def initialiseControls(config, sortedlist, lcdManager):
 #Poll controls, interpret into values, recognise changes, inform server
 def pollControls(config, roundconfig, controlids, mqttclient, ipaddress):
     """Poll controls, interpret into values, recognise changes, inform server"""
-    if len(roundconfig) > 0:
-        for ctrlid in controlids:
-            roundsetup = roundconfig['controls'][ctrlid]
-            controlsetup = config['local']['controls'][ctrlid]
-            if 'definition' in roundsetup and roundsetup['enabled']:
-                ctrltype = roundsetup['type'] #Which supported type are we this time
-                ctrldef = roundsetup['definition']
-                pins = controlsetup['pins']
-                #State is physical state of buttons etc
-                if 'state' in ctrldef:
-                    ctrlstate = ctrldef['state']
-                else:
-                    ctrlstate = None
-                #Value is as interpreted by the abstracted control type
-                if 'value' in ctrldef:
-                    ctrlvalue = ctrldef['value']
-                else:
-                    ctrlvalue = None
-                hardwaretype = config['local']['controls'][ctrlid]['hardware'] #Which hardware implementation
-                #For the particular hardware, poll the controls and decide what it means
-                value, state = controls[ctrlid].poll(controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue)
-                    
-                if value != ctrlvalue:
-                    controls[ctrlid].processValueAssignment(roundconfig, value, ctrlid)
-                    print("Publishing control " + ctrlid + " which is " + hardwaretype + " / " + ctrltype)
-                    print ("value = " + str(value))
-                    mqttclient.publish("clients/" + ipaddress + "/" + ctrlid + "/value", value)
-                    ctrldef['value'] = value
-                ctrldef['state'] = state
+    for ctrlid in controlids:
+        roundsetup = roundconfig['controls'][ctrlid]
+        controlsetup = config['local']['controls'][ctrlid]
+        if 'definition' in roundsetup and roundsetup['enabled']:
+            ctrltype = roundsetup['type'] #Which supported type are we this time
+            ctrldef = roundsetup['definition']
+            pins = controlsetup['pins']
+            #State is physical state of buttons etc
+            if 'state' in ctrldef:
+                ctrlstate = ctrldef['state']
+            else:
+                ctrlstate = None
+            #Value is as interpreted by the abstracted control type
+            if 'value' in ctrldef:
+                ctrlvalue = ctrldef['value']
+            else:
+                ctrlvalue = None
+            hardwaretype = config['local']['controls'][ctrlid]['hardware'] #Which hardware implementation
+            #For the particular hardware, poll the controls and decide what it means
+            value, state = controls[ctrlid].poll(controlsetup, ctrldef, ctrltype, ctrlstate, ctrlvalue)
+
+            if value != ctrlvalue:
+                controls[ctrlid].processValueAssignment(roundconfig, value, ctrlid)
+                print("Publishing control " + ctrlid + " which is " + hardwaretype + " / " + ctrltype)
+                print ("value = " + str(value))
+                mqttclient.publish("clients/" + ipaddress + "/" + ctrlid + "/value", value)
+                ctrldef['value'] = value
+            ctrldef['state'] = state
 
 
 #Process control value assignment

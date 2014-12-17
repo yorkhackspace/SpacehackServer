@@ -126,8 +126,10 @@ client.loop_start()
 def main_loop():
     global reset_blocks
     while True:
-        control_manager.pollControls(config, roundconfig,
-                                     controlids, client, ipaddress)
+
+        if len(roundconfig) > 0:
+            control_manager.pollControls(config, roundconfig,
+                                         controlids, client, ipaddress)
         myLcdManager.displayTimer(timeoutstarted, reset_blocks,
                                   roundconfig.get('timeout', 0))
         if reset_blocks:
