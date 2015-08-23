@@ -7,6 +7,7 @@ import mosquitto
 import time
 import random
 import json
+from GameStarter.gamestart import GameStarter
 
 lifeDisplay = True
 sound = True #Switch this off if you don't have pyGame
@@ -33,6 +34,10 @@ if sound:
 client = mosquitto.Mosquitto("PiServer") #ID shown to the broker
 server = "127.0.0.1" #Mosquitto MQTT broker running locally
 
+# Clever start button handling
+gs = GameStarter(4, 1.5, 4.0)
+gsIDs = {}
+nextID = 0
 
 #Game variables
 consoles = [] #all registered consoles
@@ -47,7 +52,7 @@ gamestate = 'initserver' #initserver, readytostart, waitingforplayers, initgame,
 warningsound = None
 
 #Show when we've connected
-def on_connect(mosq, obj, rc):
+def on_connect(obj, rc):
     """Receive MQTT connection notification"""
     if rc == 0:
         print("Connected to MQTT")
@@ -57,7 +62,7 @@ def on_connect(mosq, obj, rc):
         print("Failed - return code is " + rc)
 
 #MQTT message arrived
-def on_message(mosq, obj, msg):
+def on_message(obj, msg):
     """Receive and process incoming MQTT published message"""
     nodes = msg.topic.split('/')
     print(gamestate + ' - ' + msg.topic + " - " + str(msg.payload))
@@ -132,6 +137,8 @@ def receiveValue(consoleip, ctrlid, value):
     global lastgenerated
     global gamestate
     global numinstructions
+    global gsIDs
+    global nextID
     if gamestate == 'playround':
         #Check posted value against current targets
         matched = False
@@ -169,12 +176,16 @@ def receiveValue(consoleip, ctrlid, value):
         if 'gamestart' in currentsetup[consoleip]['controls'][ctrlid]:
             if value:
                 #Add to list of players
-                if not consoleip in players:
-                    players.append(consoleip)
+                if not consoleip in gsIDs:
+                    gsIDs[consoleip] = nextID
+                    nextID += 1
+                    #players.append(consoleip)
+                gs.push(gsIDs[consoleip])
             else:
                 #remove from list of players
-                if consoleip in players:
-                    players.remove(consoleip)
+                if consoleip in gsIDs:
+                    gs.release(gsID[consoleip])
+                    #players.remove(consoleip)
             #Either way, reset the clock for game start
             gamestate = 'waitingforplayers'
             lastgenerated = time.time()
@@ -637,11 +648,16 @@ client.subscribe('server/register')
 client.publish('server/ready', 'started')
 
 lastReady = time.time()
+lastGSStep = time.time()
 while(client.loop(0) == 0): 
+    if time.time() - lastGSStep > 0.05:
+        lastGSStep = time.time()
+        gs.timeStep(0.05)
     if time.time() - lastReady > 3.0:
         lastReady = time.time()
         client.publish('server/ready', 'ready')
-    if gamestate == 'waitingforplayers' and len(players) >= 1 and time.time() - lastgenerated > 5.0:
+    #if gamestate == 'waitingforplayers' and len(players) >= 1 and time.time() - lastgenerated > 5.0:
+    if gamestate == 'waitingforplayers' and gs.shouldStart():
         initGame()        
     elif gamestate == 'setupround' and time.time() - lastgenerated > 10.0:
         gamestate = 'playround'
