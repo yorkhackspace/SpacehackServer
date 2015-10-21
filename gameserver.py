@@ -35,7 +35,9 @@ client = mosquitto.Mosquitto("PiServer") #ID shown to the broker
 server = "127.0.0.1" #Mosquitto MQTT broker running locally
 
 # Clever start button handling
-gs = GameStarter(4, 1.5, 4.0)
+def gameStarterInit():
+    return GameStarter(4, 1.5, 4.0)
+gs = gameStarterInit()
 gsIDs = {}
 nextID = 0
 
@@ -464,6 +466,8 @@ def initGame():
             players.append(key)
         else:
             print("Player %d (%s) not startable" % (value, key))
+            
+    gs = gameStarterInit()
 
     print("Player IPs: %r, player IDs: %r" % (players, gsIDs))
     for consoleip in players:
