@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #SpaceHack!  Game server main module
 #York Hackspace January 2014
 #This runs on a Raspberry Pi
