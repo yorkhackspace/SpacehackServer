@@ -653,26 +653,30 @@ def resetToWaiting():
 #Main loop
 
 #Connect to MQTT (final code should make this a retry loop)
+print 'Connecting MQTT'
 client.on_connect = on_connect
 client.on_message = on_message
 client.connect(server)
 
 #Main topic subscription point for clients to register their configurations to
+print 'Listening for clients'
 client.subscribe('server/register')
 
+print 'Advertising server'
 client.publish('server/ready', 'started')
 
+print 'Entering main loop'
 lastReady = time.time()
 lastGSStep = time.time()
-while(client.loop(0) == 0): 
+while(client.loop(0) == 0):
     if time.time() - lastGSStep > 0.05:
         lastGSStep = time.time()
         gs.timeStep(0.05)
     if time.time() - lastReady > 3.0:
         lastReady = time.time()
         client.publish('server/ready', 'ready')
-    #if gamestate == 'waitingforplayers' and len(players) >= 1 and time.time() - lastgenerated > 5.0:
     if gamestate == 'waitingforplayers' and gs.shouldStart():
+        print 'Initializing new game'
         initGame()        
     elif gamestate == 'setupround' and time.time() - lastgenerated > 10.0:
         gamestate = 'playround'
@@ -682,6 +686,7 @@ while(client.loop(0) == 0):
         checkTimeouts()
        
     elif gamestate == 'hyperspace' and time.time() - lastgenerated > 4.0:
+        print 'Preparing next round'
         initRound()
 
 #If client.loop() returns non-zero, loop drops out to here.
