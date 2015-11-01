@@ -180,10 +180,11 @@ def defineControls():
     for consoleip in players:
         consolesetup={}
         print("Defining console " + consoleip)
-        consoles[consoleip].clearAllControls()
+        console = consoles[consoleip]
+        console.clearAllControls()
         consolesetup['timeout'] = currenttimeout
         #Pay attention to 'enabled' for the control as a whole
-        for control in (x for x in consoles[consoleip].interface["controls"] if 'enabled' not in x or x['enabled'] == 1):
+        for control in (x for x in console.interface["controls"] if 'enabled' not in x or x['enabled'] == 1):
             ctrlid = control['id']
             consolesetup['controls'][ctrlid]={}
             consolesetup['controls'][ctrlid]['enabled']=1
@@ -239,9 +240,8 @@ def defineControls():
             consolesetup['controls'][ctrlid]['type'] = ctrltype
             consolesetup['controls'][ctrlid]['definition']=ctrldef
             print("Control " + ctrlid + " is " + ctrldef['type'] + ": " + consolesetup['controls'][ctrlid]['name'])
-
-        consoles[consoleip].setup=consolesetup
-        consoles[consoleip].sendCurrentSetup()
+        console.setup=consolesetup
+        console.sendCurrentSetup()
 
 #Get a choice from a range that isn't the same as the old value
 def getChoice(choicerange, oldval):
