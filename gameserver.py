@@ -10,6 +10,7 @@ import random
 import json
 import os
 from GameStarter.gamestart import GameStarter
+from console import Console
 
 # Best guess whether we're on a laptop or the real thing
 runningOnPi = (os.uname()[4][:3] == 'arm')
@@ -45,11 +46,10 @@ gsIDs = {}
 nextID = 0
 
 #Game variables
-consoles = [] #all registered consoles
+consoles = {} #all registered consoles
 players = [] #all participating players
 playerstats = {}
 console = {}
-currentsetup = {}
 currenttimeout = 30.0
 lastgenerated = time.time()
 numinstructions = 0
@@ -76,8 +76,9 @@ def on_message(mosq, obj, msg):
             config = json.loads(str(msg.payload))
             consoleip = config['ip']
             console[consoleip] = config
+            # Create and store an object to manage this console
             if not consoleip in consoles:
-                consoles.append(consoleip)
+                consoles[consoleip] = Console(mosq, config)
             #set console up for game start
             consolesetup = {}
             if gamestate == 'waitingforplayers':
@@ -102,6 +103,7 @@ def on_message(mosq, obj, msg):
                             'enabled': 0,
                             'name':    ''
                         }
+                    # NOTE: implemented in console.py
                     client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
             else:
                 #There's a game on, but this client's late for it
@@ -116,6 +118,7 @@ def on_message(mosq, obj, msg):
                     #Game still active - sit the rest of it out
                     consolesetup['instructions'] = controls.blurb['gameinprogress']
                     consolesetup['controls'] = {}
+                    # NOTE: implemented in console.py
                     for control in config['controls']:
                         ctrlid = control['id']
                         consolesetup['controls'][ctrlid] = {
@@ -123,18 +126,19 @@ def on_message(mosq, obj, msg):
                             'enabled': 0,
                             'name':    ''
                         }
+                        # NOTE: implemented in console.py
                         client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
             if len(consolesetup) > 0:
-                currentsetup[consoleip] = consolesetup
-                client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
+                consoles[consoleip].setup = consolesetup
+                consoles[consoleip].sendCurrentSetup
     elif nodes[0] == 'clients':
         consoleip = nodes[1]
         ctrlid = nodes[2]
         if nodes[3] == 'value':
             value = str(msg.payload)
-            if consoleip in currentsetup:
-                if 'controls' in currentsetup[consoleip]:
-                    if currentsetup[consoleip]['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
+            if consoleip in consoles:
+                if 'controls' in consoles[consoleip].setup:
+                    if consoles[consoleip].setup['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
                         try:
                             value = int(value)
                         except ValueError:
@@ -151,8 +155,8 @@ def receiveValue(consoleip, ctrlid, value):
     if gamestate == 'playround':
         #Check posted value against current targets
         matched = False
-        if 'definition' in currentsetup[consoleip]['controls'][ctrlid]:
-            currentsetup[consoleip]['controls'][ctrlid]['definition']['value'] = value
+        if 'definition' in consoles[consoleip].setup['controls'][ctrlid]:
+            consoles[consoleip].setup['controls'][ctrlid]['definition']['value'] = value
         for targetip in players:
             consoledef = console[targetip]
             if ('target' in consoledef and consoledef['target']['console'] == consoleip 
@@ -175,14 +179,14 @@ def receiveValue(consoleip, ctrlid, value):
                     pickNewTarget(targetip)
         if not matched: #Need to also check if a game round has begun yet
             #Suppress caring about button releases - only important in game starts
-            if not (currentsetup[consoleip]['controls'][ctrlid]['type'] == 'button' and str(value) == "0"):
+            if not (consoles[consoleip].setup['controls'][ctrlid]['type'] == 'button' and str(value) == "0"):
                 playSound(random.choice(controls.soundfiles['wrong']))
     elif gamestate == 'setupround':
-        if 'definition' in currentsetup[consoleip]['controls'][ctrlid]:
-            currentsetup[consoleip]['controls'][ctrlid]['definition']['value'] = value
+        if 'definition' in consoles[consoleip].setup['controls'][ctrlid]:
+            consoles[consoleip].setup['controls'][ctrlid]['definition']['value'] = value
     elif gamestate == 'waitingforplayers':
         #button push?
-        if 'gamestart' in currentsetup[consoleip]['controls'][ctrlid]:
+        if 'gamestart' in consoles[consoleip].setup['controls'][ctrlid]:
             if value:
                 #Add to list of players
                 if not consoleip in gsIDs:
@@ -271,7 +275,7 @@ def defineControls():
             consolesetup['controls'][ctrlid]['definition']=ctrldef
             print("Control " + ctrlid + " is " + ctrldef['type'] + ": " + consolesetup['controls'][ctrlid]['name'])
 
-        currentsetup[consoleip]=consolesetup
+        consoles[consoleip].setup=consolesetup
         client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
 
 #Get a choice from a range that isn't the same as the old value
@@ -286,7 +290,7 @@ def pickNewTarget(consoleip):
     """Pick a new instruction to display on a given console."""
     #pick a random console and random control from that console
     targetconsole = random.choice(players)
-    targetsetup = currentsetup[targetconsole]
+    targetsetup = consoles[targetconsole].setup
     targetctrlid = random.choice(targetsetup['controls'].keys())
     targetcontrol = targetsetup['controls'][targetctrlid]
     targetname = targetcontrol['name']
@@ -399,10 +403,11 @@ def checkTimeouts():
                     warningsound = pygame.mixer.Sound("sounds/" + random.choice(controls.soundfiles['warning']))
                     warningsound.play(-1)
                     
+# NOTE: implemented in console.py
 def increaseCorruption(consoleip, ctrlid):
     try:
         """Introduce text corruptions to control names as artificial 'malfunctions'"""
-        ctrldef = currentsetup[consoleip]['controls'][ctrlid]
+        ctrldef = consoles[consoleip].setup['controls'][ctrlid]
         if 'corruptedname' in ctrldef:
             corruptednamelist = list(ctrldef['corruptedname'])
         else:
@@ -425,9 +430,10 @@ def increaseCorruption(consoleip, ctrlid):
     except:
         pass
         
+# NOTE: implemented in console.py
 def clearCorruption(consoleip, ctrlid):
     """Reset the corrupted control name when the player gets it right"""
-    ctrldef = currentsetup[consoleip]['controls'][ctrlid]
+    ctrldef = consoles[consoleip].setup['controls'][ctrlid]
     if 'corruptedname' in ctrldef:
         del ctrldef['corruptedname']
         client.publish("clients/" + consoleip + "/" + ctrlid + "/name", str(ctrldef['name']))
@@ -480,7 +486,7 @@ def initGame():
             consolesetup['controls'][ctrlid]['name'] = ""
             client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
         client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
-        currentsetup[consoleip] = consolesetup
+        consoles[consoleip].setup = consolesetup
     #Explanatory intro blurb
     if not debugMode:
         for txt in controls.blurb['intro']:
@@ -625,7 +631,7 @@ def resetToWaiting():
                 consolesetup['controls'][ctrlid]['type'] = 'inactive'
                 consolesetup['controls'][ctrlid]['enabled'] = 0
                 consolesetup['controls'][ctrlid]['name'] = ""
-        currentsetup[consoleip] = consolesetup
+        consoles[consoleip].setup = consolesetup
         client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
     global lastgenerated
     global numinstructions
