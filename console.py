@@ -19,6 +19,10 @@ class Console:
         }
         self.clearAllControls()
     
+    @property
+    def startButtonID(self):
+       return next(c['id'] for c in self.interface['controls'] if 'gamestart' in c)
+    
     def publish(self, subtopic, message):
         self.mqtt.publish('clients/' + self.ip + '/' + subtopic, message)
     
