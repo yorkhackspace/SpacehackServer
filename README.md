@@ -12,3 +12,10 @@ Server side code
 
 
 "Server" runs on a Raspberry Pi and handles running the game, control text generation and sound effects as well as hosting the game's MQTT broker.  The server knows nothing about particular hardware implementations of controls, only abstracted control types whose implementation is managed by the clients.  For instance the server understands a 'toggle' control type, but doesn't know that the clients might implement that with an illuminated button, or a flip switch, or a pair of buttons marked 'On' and 'Off', or a potentiometer with an 'Off' end and an 'On' end.
+
+Running locally (testing)
+=========================
+
+You'll need to install mosquitto, and have fairly up-to-date libraries (as of writing, Ubuntu trusty requires a PPA: https://launchpad.net/~mosquitto-dev/+archive/ubuntu/mosquitto-ppa
+
+To run the server, you need to start mosquitto first.
