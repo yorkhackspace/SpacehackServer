@@ -52,6 +52,7 @@ playerstats = {}
 currenttimeout = 30.0
 lastgenerated = time.time()
 numinstructions = 0
+instructions = {}
 gamestate = 'initserver' #initserver, waitingforplayers, initgame, setupround, playround, roundover, hyperspace, gameover
 warningsound = None
 
@@ -130,32 +131,28 @@ def receiveValue(consoleip, ctrlid, value):
     if gamestate == 'playround':
         # Record the control value
         consoles[consoleip].recordValue(value)
-        #Check posted value against current targets
-        matched = False
-        for targetip in players:
-            if not 'target' in consoledef:
-                continue
-            targetconsole = consoledef['target']['console']
-            targetctrlid  = consoledef['target']['control']
-            targetvalue   = consoledef['target']['value']
-            consoledef = consoles[targetip].interface
-            if ( targetconsole == consoleip  and targetctrlid == ctrlid and str(targetvalue) == str(value) ):
-                #Match
-                matched = True
-                consoles[consoleip].fixControl(ctrlid)
-                playSound(random.choice(controls.soundfiles['right']))
-
-                #update stats
-                playerstats[targetip]['instructions']['hit'] += 1
-                playerstats[consoleip]['targets']['hit'] += 1
-                numinstructions -= 1
-                if numinstructions <= 0:
-                    #Round over
-                    roundOver()
-                else:
-                    #Pick a new target and carry on
-                    pickNewTarget(targetip)
-        if not matched: #Need to also check if a game round has begun yet
+        #Check posted value against current instructions
+        match = (consoleip, ctrlid, value)
+        if match in instructions:
+            # Find out who issued the instruction
+            info = instructions[match]
+            instructorip = info['instructor']
+            consoles[consoleip].fixControl(ctrlid)
+            playSound(random.choice(controls.soundfiles['right']))
+            
+            #update stats
+            playerstats[instructorip]['instructions']['hit'] += 1
+            playerstats[targetip]['targets']['hit'] += 1
+            numinstructions -= 1
+            if numinstructions <= 0:
+                #Round over
+                roundOver()
+            else:
+                #Pick a new target and carry on
+                pickNewTarget(instructorip)
+            
+            del instructions[match]
+        else:
             #Suppress caring about button releases - only important in game starts
             if not (consoles[consoleip].setup['controls'][ctrlid]['type'] == 'button' and str(value) == "0"):
                 playSound(random.choice(controls.soundfiles['wrong']))
@@ -316,9 +313,12 @@ def pickNewTarget(consoleip):
     else:
         print("Unhandled type: " + ctrltype)
     #Now we have targetval and targetinstruction for this consoleip, store and publish it
-    consoles[consoleip].interface['instructions']=targetinstruction
-    consoles[consoleip].interface['target']={"console": targetconsole, "control": targetctrlid, "value": targetval, "timestamp": time.time(), "timeout": targettimeout}
-    print("Instruction: " + consoleip + '/' + targetctrlid + ' - ' + ctrltype + ' (was ' + str(curval) + ') ' + str(targetinstruction))
+    match = (targetconsole, targetctrlid, targetval)
+    instructions[match] = {
+        'instructor': consoleip,
+        'expiry':     time.time() + targettimeout,
+    }
+    print("Instruction: " + targetconsole + '/' + targetctrlid + ' - ' + ctrltype + ' (was ' + str(curval) + ') ' + str(targetinstruction))
     #update game stats
     playerstats[consoleip]['instructions']['total'] += 1
     playerstats[targetconsole]['targets']['total'] += 1
@@ -355,14 +355,8 @@ def clearLives():
 def checkTimeouts():
     """Check all targets for expired instructions"""
     global numinstructions, warningsound
-    for consoleip in players:
-        consoledef    = consoles[consoleip].interface
-        if not 'target' in consoledef:
-           continue
-        targetconsole = consoledef['target']['console']
-        targetctrlid  = consoledef['target']['control']
-        targetexpiry  = consoledef['target']['timestamp'] + consoledef['target']['timeout']
-        if time.time() > targetexpiry:
+    for target, info in instructions:
+        if time.time() > info['expiry']:
             #Expired instruction
             playSound(random.choice(controls.soundfiles['wrong']))
             playerstats[consoleip]['instructions']['missed'] += 1
@@ -384,7 +378,7 @@ def checkTimeouts():
                 if playerstats['game']['lives'] == 1 and sound:
                     warningsound = pygame.mixer.Sound("sounds/" + random.choice(controls.soundfiles['warning']))
                     warningsound.play(-1)
-                    
+
 def tellAllPlayers(consolelist, message):
     """Simple routine to broadcast a message to a list or consoles"""
     for consoleip in consolelist:
@@ -509,16 +503,16 @@ def gameOver():
     instr = controls.blurb['ending']['you']
     #stats for your instructions
     for consoleip in players:
-        instryou = instr.replace("{1}", str(playerstats[consoleip]['instructions']['hit']))
-        instryou = instryou.replace("{2}", str(playerstats[consoleip]['instructions']['missed'] + playerstats[consoleip]['instructions']['hit']))
-        instryou = instryou.replace("{3}", str(playerstats[consoleip]['instructions']['missed']))
+        instryou = instr.replace("{1}", str(playerstats[consoleip]['targets']['hit']))
+        instryou = instryou.replace("{2}", str(playerstats[consoleip]['targets']['total']))
+        instryou = instryou.replace("{3}", str(playerstats[consoleip]['targets']['missed']))
         consoles[consoleip].tellPlayer(instryou)
     time.sleep(5.0)
     #stats for your targets
     instr = controls.blurb['ending']['them']
     for consoleip in players:
-        instrthem = instr.replace("{1}", str(playerstats[consoleip]['targets']['hit']))
-        instrthem = instrthem.replace("{2}", str(playerstats[consoleip]['targets']['missed'] + playerstats[consoleip]['targets']['hit']))
+        instrthem = instr.replace("{1}", str(playerstats[consoleip]['instructions']['hit']))
+        instrthem = instrthem.replace("{2}", str(playerstats[consoleip]['instructions']['total']))
         consoles[consoleip].tellPlayer(instrthem)
     time.sleep(5.0)
     tellAllPlayers(players, controls.blurb['ending']['end'])
