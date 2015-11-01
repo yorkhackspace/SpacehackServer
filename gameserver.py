@@ -129,8 +129,7 @@ def receiveValue(consoleip, ctrlid, value):
     global nextID
     if gamestate == 'playround':
         # Record the control value
-        if 'definition' in consoles[consoleip].setup['controls'][ctrlid]:
-            consoles[consoleip].setup['controls'][ctrlid]['definition']['value'] = value
+        consoles[consoleip].recordValue(value)
         #Check posted value against current targets
         matched = False
         for targetip in players:
@@ -158,8 +157,7 @@ def receiveValue(consoleip, ctrlid, value):
             if not (consoles[consoleip].setup['controls'][ctrlid]['type'] == 'button' and str(value) == "0"):
                 playSound(random.choice(controls.soundfiles['wrong']))
     elif gamestate == 'setupround':
-        if 'definition' in consoles[consoleip].setup['controls'][ctrlid]:
-            consoles[consoleip].setup['controls'][ctrlid]['definition']['value'] = value
+        consoles[consoleip].recordValue(value)
     elif gamestate == 'waitingforplayers':
         #button push?
         if 'gamestart' in consoles[consoleip].setup['controls'][ctrlid]:

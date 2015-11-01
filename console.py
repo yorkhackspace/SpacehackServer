@@ -21,16 +21,20 @@ class Console:
     
     @property
     def startButtonID(self):
-       return next(c['id'] for c in self.interface['controls'] if 'gamestart' in c)
+        """ Retrieve the ID of the start button """
+        return next(c['id'] for c in self.interface['controls'] if 'gamestart' in c)
     
     def publish(self, subtopic, message):
+        """ Publish <message> to clients/{ip}/<subtopic> """
         self.mqtt.publish('clients/' + self.ip + '/' + subtopic, message)
     
     def subscribe(self):
+        """ Subscribe the MQTT client to this console's messages """
         for control in self.interface['controls']:
             self.mqtt.subscribe('clients/' + self.ip + '/' + control['id'] + '/value')
     
     def sendCurrentSetup(self):
+        """ Publish the current setup to the console """
         self.publish('configure', json.dumps(self.setup))
     
     def __clearControl(self, ctrlid):
@@ -41,13 +45,25 @@ class Console:
         }
     
     def clearControl(self, ctrlid):
+        """ Clear a control to blank """
         self.__clearControl(ctrlid)
         self.sendCurrentSetup
     
     def clearAllControls(self):
+        """ Clear all controls to blank """
         for control in self.interface['controls']:
             self.__clearControl(control['id'])
         self.sendCurrentSetup
+    
+    def recordControl(self, ctrlid, value):
+        """ Record a received value """
+        if 'definition' in self.setup['controls'][ctrlid]:
+            self.setup['controls'][ctrlid]['definition']['value'] = value
+    
+    def setControl(self, ctrlid, value):
+        """ Assign a current value to a control """
+        recordControl(ctrlid, value)
+        consoles[consoleip].sendCurrentSetup()
     
     # NOTE: Currently, the player's instruction screen is also set when sending current setup
     def tellPlayer(self, message):
