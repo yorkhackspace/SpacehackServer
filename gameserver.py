@@ -139,7 +139,7 @@ def receiveValue(consoleip, ctrlid, value):
                         and str(consoledef['target']['value']) == str(value)):
                 #Match
                 matched = True
-                clearCorruption(consoleip, ctrlid)
+                consoles[consoleip].fixControl(ctrlid)
                 playSound(random.choice(controls.soundfiles['right']))
 
                 #update stats
@@ -353,12 +353,17 @@ def checkTimeouts():
     """Check all targets for expired instructions"""
     global numinstructions, warningsound
     for consoleip in players:
-        consoledef = consoles[consoleip].interface
-        if 'target' in consoledef and consoledef['target']['timestamp'] + consoledef['target']['timeout'] < time.time():
+        consoledef    = consoles[consoleip].interface
+        if not 'target' in consoledef:
+           continue
+        targetconsole = consoledef['target']['console']
+        targetctrlid  = consoledef['target']['control']
+        targetexpiry  = consoledef['target']['timestamp'] + consoledef['target']['timeout']
+        if time.time() > targetexpiry:
             #Expired instruction
             playSound(random.choice(controls.soundfiles['wrong']))
             playerstats[consoleip]['instructions']['missed'] += 1
-            playerstats[consoledef['target']['console']]['targets']['missed'] += 1
+            playerstats[targetconsole]['targets']['missed'] += 1
             numinstructions -= 1
             playerstats['game']['lives'] -= 1
             showLives()
@@ -370,21 +375,13 @@ def checkTimeouts():
                 roundOver()
             else:
                 #Pick a new target and carry on
-                increaseCorruption(consoledef['target']['console'], consoledef['target']['control'])
+                consoles[targetconsole].corruptControl(targetctrlid)
                 pickNewTarget(consoleip)
                 #Start a warning sound if we're on our last life
                 if playerstats['game']['lives'] == 1 and sound:
                     warningsound = pygame.mixer.Sound("sounds/" + random.choice(controls.soundfiles['warning']))
                     warningsound.play(-1)
                     
-# NOTE: implemented in console.py
-def increaseCorruption(consoleip, ctrlid):
-    consoles[consoleip].corruptControl(ctrlid)
-        
-# NOTE: implemented in console.py
-def clearCorruption(consoleip, ctrlid):
-    consoles[consoleip].fixControl(ctrlid)
-
 def tellAllPlayers(consolelist, message):
     """Simple routine to broadcast a message to a list or consoles"""
     for consoleip in consolelist:
