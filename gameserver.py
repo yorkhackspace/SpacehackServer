@@ -551,27 +551,17 @@ def resetToWaiting():
     global gamestate
     gamestate = 'waitingforplayers'
     clearLives()
-    for consoleip in consoles:
-        consolesetup = {}
-        consolesetup['instructions'] = controls.blurb['waitingforplayers']
-        consolesetup['controls'] = {}
-        consolesetup['timeout'] = 0.0
-        config = consoles[consoleip].interface
-        for control in config['controls']:
-            ctrlid = control['id']
-            consolesetup['controls'][ctrlid]={}
-            if 'gamestart' in control:
-                consolesetup['controls'][ctrlid]['type'] = 'button'
-                consolesetup['controls'][ctrlid]['enabled'] = 1
-                consolesetup['controls'][ctrlid]['name'] = controls.blurb['startbutton']
-                consolesetup['controls'][ctrlid]['gamestart'] = True
-                consolesetup['controls'][ctrlid]['definition'] = {}
-            else:
-                consolesetup['controls'][ctrlid]['type'] = 'inactive'
-                consolesetup['controls'][ctrlid]['enabled'] = 0
-                consolesetup['controls'][ctrlid]['name'] = ""
-        consoles[consoleip].setup = consolesetup
-        consoles[consoleip].sendCurrentSetup()
+    for console in consoles.values():
+        console.reset()
+        console.tellPlayer(controls.blurb['waitingforplayers'])
+        console.setup['controls'][console.startButtonID] = {
+            'type':       'button',
+            'enabled':    1,
+            'name':       controls.blurb['startbutton'],
+            'gamestart':  True,
+            'definition': {}
+        }
+        console.sendCurrentSetup()
     global lastgenerated
     global numinstructions
     global players
