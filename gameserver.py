@@ -178,69 +178,10 @@ def receiveValue(consoleip, ctrlid, value):
 def defineControls():
     """Define a new set of controls for each client for this game round and send it to them as JSON."""
     for consoleip in players:
-        consolesetup={}
         print("Defining console " + consoleip)
         console = consoles[consoleip]
-        console.clearAllControls()
-        consolesetup['timeout'] = currenttimeout
-        #Pay attention to 'enabled' for the control as a whole
-        for control in (x for x in console.interface["controls"] if 'enabled' not in x or x['enabled'] == 1):
-            ctrlid = control['id']
-            consolesetup['controls'][ctrlid]={}
-            consolesetup['controls'][ctrlid]['enabled']=1
-            #In case LCDs fail - allow a 'fixed name' we can tape over the LCD
-            if 'fixedname' in control:
-                consolesetup['controls'][ctrlid]['name'] = str(control['fixedname'])
-            else: #Normal case - generate a new control name
-                consolesetup['controls'][ctrlid]['name']=controls.getControlName(control['width'], 2, 12)
-            #Pay attention to 'enabled' for particular supported mode
-            ctrldef = random.choice([x for x in control['supported'] if 'enabled' not in x or x['enabled'] == 1])
-            ctrltype = ctrldef['type']
-            if ctrltype in ['words', 'verbs']:
-                if ctrldef['fixed']:
-                    targetrange = ctrldef['list']
-                elif 'safe' in ctrldef and ctrldef['safe']:
-                    targetrange=controls.safewords
-                elif 'list' in ctrldef:
-                    if ctrldef['list']=='passwd':
-                        targetrange=controls.passwd
-                    elif ctrldef['list']=='verbs':
-                        targetrange=controls.verbs
-                    else:
-                        targetrange = controls.allcontrolwords
-                elif ctrltype=='verbs':
-                    targetrange = controls.verbs
-                else:
-                    targetrange = controls.allcontrolwords
-                #Create a predetermined list?
-                if not ctrldef['fixed']:
-                    finished = False
-                    while not finished:
-                        wordpool = random.sample(targetrange, ctrldef['quantity'])
-                        # A/B selectors display both words; there needs to be space for them!
-                        if ctrldef['quantity'] != 2 or len(wordpool[0]) + len(wordpool[1]) < 14:
-                            finished = True
-                    ctrldef['pool'] = sorted(wordpool)
-                else:
-                    ctrldef['pool'] = ctrldef['list']
-            #Pick a starting value
-            if 'assignable' in ctrldef and ctrldef['assignable']:
-                if ctrltype in ['words', 'verbs']:
-                    ctrldef['value']=random.choice(ctrldef['pool'])
-                elif ctrltype == 'selector':
-                    ctrldef['value'] = random.choice(range(ctrldef['min'],ctrldef['max']+1))
-                elif ctrltype == 'colour':
-                    ctrldef['value'] = random.choice(ctrldef['values'])
-                elif ctrltype == 'toggle':
-                    ctrldef['value'] = random.choice(range(2))
-                elif ctrltype == 'button':
-                    ctrldef['value'] = 0
-                elif ctrltype == 'pin':
-                    ctrldef['value'] = ''
-            consolesetup['controls'][ctrlid]['type'] = ctrltype
-            consolesetup['controls'][ctrlid]['definition']=ctrldef
-            print("Control " + ctrlid + " is " + ctrldef['type'] + ": " + consolesetup['controls'][ctrlid]['name'])
-        console.setup=consolesetup
+        console.pickNewControls()
+        console.setup['timeout'] = currenttimeout
         console.sendCurrentSetup()
 
 #Get a choice from a range that isn't the same as the old value
