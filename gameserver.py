@@ -88,17 +88,20 @@ def on_message(mosq, obj, msg):
                 print(config['controls'])
                 for control in config['controls']:
                     ctrlid = control['id']
-                    consolesetup['controls'][ctrlid]={}
                     if 'gamestart' in control:
-                        consolesetup['controls'][ctrlid]['type'] = 'button'
-                        consolesetup['controls'][ctrlid]['enabled'] = 1
-                        consolesetup['controls'][ctrlid]['name'] = controls.blurb['startbutton']
-                        consolesetup['controls'][ctrlid]['gamestart'] = True
-                        consolesetup['controls'][ctrlid]['definition'] = {}
+                        consolesetup['controls'][ctrlid] = {
+                            'type':       'button',
+                            'enabled':    1,
+                            'name':       controls.blurb['startbutton'],
+                            'gamestart':  True,
+                            'definition': {}
+                        }
                     else:
-                        consolesetup['controls'][ctrlid]['type'] = 'inactive'
-                        consolesetup['controls'][ctrlid]['enabled'] = 0
-                        consolesetup['controls'][ctrlid]['name'] = ""
+                        consolesetup['controls'][ctrlid] = {
+                            'type':    'inactive',
+                            'enabled': 0,
+                            'name':    ''
+                        }
                     client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
             else:
                 #There's a game on, but this client's late for it
@@ -115,10 +118,11 @@ def on_message(mosq, obj, msg):
                     consolesetup['controls'] = {}
                     for control in config['controls']:
                         ctrlid = control['id']
-                        consolesetup['controls'][ctrlid]={}
-                        consolesetup['controls'][ctrlid]['type'] = 'inactive'
-                        consolesetup['controls'][ctrlid]['enabled'] = 0
-                        consolesetup['controls'][ctrlid]['name'] = ""
+                        consolesetup['controls'][ctrlid] = {
+                            'type':    'inactive',
+                            'enabled': 0,
+                            'name':    ''
+                        }
                         client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
             if len(consolesetup) > 0:
                 currentsetup[consoleip] = consolesetup
