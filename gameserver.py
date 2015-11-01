@@ -251,7 +251,7 @@ def defineControls():
             print("Control " + ctrlid + " is " + ctrldef['type'] + ": " + consolesetup['controls'][ctrlid]['name'])
 
         consoles[consoleip].setup=consolesetup
-        client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
+        consoles[consoleip].sendCurrentSetup()
 
 #Get a choice from a range that isn't the same as the old value
 def getChoice(choicerange, oldval):
@@ -321,14 +321,14 @@ def pickNewTarget(consoleip):
     playerstats[consoleip]['instructions']['total'] += 1
     playerstats[targetconsole]['targets']['total'] += 1
     #publish!
-    client.publish('clients/' + consoleip + '/timeout', str(targettimeout))
-    client.publish('clients/' + consoleip + '/instructions', str(targetinstruction))
+    consoles[consoleip].publish('timeout', str(targettimeout))
+    consoles[consoleip].tellPlayer(targetinstruction)
 
 def showLives():
     if lifeDisplay:
         lives = playerstats['game']['lives']
-	print "Lives remaining: " + str(lives)
-	if 0 <= lives <= 9:
+        print "Lives remaining: " + str(lives)
+        if 0 <= lives <= 9:
             sev.displayDigit(lives)
             if lives == 0:
                 led.solid(led.CODE_Col_White)
@@ -380,43 +380,16 @@ def checkTimeouts():
                     
 # NOTE: implemented in console.py
 def increaseCorruption(consoleip, ctrlid):
-    try:
-        """Introduce text corruptions to control names as artificial 'malfunctions'"""
-        ctrldef = consoles[consoleip].setup['controls'][ctrlid]
-        if 'corruptedname' in ctrldef:
-            corruptednamelist = list(ctrldef['corruptedname'])
-        else:
-            corruptednamelist = list(ctrldef['name'])
-        count = 3
-        while count > 0:
-            #Try to get a printable character, this is different for HD44780 than Nokia but I just use the HD44780 here
-            ascii = random.choice(range(12 * 16))
-            ascii += 32
-            if ascii > 128:
-                ascii += 32
-            #Position to change - avoid spaces so corrupt name prints the same
-            pos = random.choice(range(len(corruptednamelist)))
-            if corruptednamelist[pos] != ' ':
-                corruptednamelist[pos] = chr(ascii)
-                count -= 1
-        corruptedname = ''.join(corruptednamelist)
-        ctrldef['corruptedname'] = corruptedname
-        client.publish("clients/" + consoleip + "/" + ctrlid + "/name", corruptedname)
-    except:
-        pass
+    consoles[consoleip].corruptControl(ctrlid)
         
 # NOTE: implemented in console.py
 def clearCorruption(consoleip, ctrlid):
-    """Reset the corrupted control name when the player gets it right"""
-    ctrldef = consoles[consoleip].setup['controls'][ctrlid]
-    if 'corruptedname' in ctrldef:
-        del ctrldef['corruptedname']
-        client.publish("clients/" + consoleip + "/" + ctrlid + "/name", str(ctrldef['name']))
+    consoles[consoleip].fixControl(ctrlid)
 
 def tellAllPlayers(consolelist, message):
     """Simple routine to broadcast a message to a list or consoles"""
     for consoleip in consolelist:
-        client.publish('clients/' + consoleip + '/instructions', str(message))
+        consoles[consoleip].tellPlayer(message)
         
 def initGame():
     """Kick off a new game"""
@@ -438,8 +411,9 @@ def initGame():
     print("Player IPs: %r, player IDs: %r" % (players, gsIDs))
     for consoleip in players:
         #Slight fudge in assuming control 5 is the big button
-        client.publish('clients/' + consoleip + '/5/name', "")
-        client.publish('clients/' + consoleip + '/5/name', "Get ready!")
+        console = consoles[consoleip]
+        console.publish(str(console.startButtonID) + '/name', '')
+        console.publish(str(console.startButtonID) + '/name', 'Get ready!')
     tellAllPlayers(players, controls.blurb['logo'])
     #Music
     if sound:
@@ -460,8 +434,8 @@ def initGame():
             consolesetup['controls'][ctrlid]['enabled'] = 0
             consolesetup['controls'][ctrlid]['name'] = ""
             client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
-        client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
         consoles[consoleip].setup = consolesetup
+        consoles[consoleip].sendCurrentSetup()
     #Explanatory intro blurb
     if not debugMode:
         for txt in controls.blurb['intro']:
@@ -520,7 +494,7 @@ def roundOver():
         consoledef = consoles[consoleip].interface
         if 'target' in consoledef:
             del consoledef['target']
-        client.publish('clients/' + consoleip + '/timeout', "0.0")
+        consoles[consoleip].publish('timeout', '0.0')
     #play sound?
     tellAllPlayers(players, controls.blurb['hyperspace'])
     playSound(controls.soundfiles['special']['hyperspace'])
@@ -536,7 +510,7 @@ def gameOver():
         return
     gamestate = 'gameover'
     for consoleip in players:
-        client.publish('clients/' + consoleip + '/timeout', "0.0")
+        consoles[consoleip].publish('timeout', '0.0')
     tellAllPlayers(players, controls.blurb['ending']['splash'])
     #play sound
     if sound:
@@ -546,18 +520,8 @@ def gameOver():
         playSound(controls.soundfiles['special']['explosion'])
         playSound(controls.soundfiles['special']['taps'])
     for consoleip in players:
-        config = consoles[consoleip].interface
-        consolesetup = {}
-        consolesetup['instructions'] = str(controls.blurb['ending']['start'])
-        consolesetup['timeout'] = 0.0
-        consolesetup['controls'] = {}
-        for control in config['controls']:
-            ctrlid = control['id']
-            consolesetup['controls'][ctrlid]={}
-            consolesetup['controls'][ctrlid]['type'] = 'inactive'
-            consolesetup['controls'][ctrlid]['enabled'] = 0
-            consolesetup['controls'][ctrlid]['name'] = ""
-        client.publish("clients/" + consoleip + "/configure", json.dumps(consolesetup))
+        consoles[consoleip].reset()
+        consoles[consoleip].tellPlayer(controls.blurb['ending']['start'])
     time.sleep(5.0)
     instr = controls.blurb['ending']['you']
     #stats for your instructions
@@ -565,20 +529,20 @@ def gameOver():
         instryou = instr.replace("{1}", str(playerstats[consoleip]['instructions']['hit']))
         instryou = instryou.replace("{2}", str(playerstats[consoleip]['instructions']['missed'] + playerstats[consoleip]['instructions']['hit']))
         instryou = instryou.replace("{3}", str(playerstats[consoleip]['instructions']['missed']))
-        client.publish("clients/" + consoleip + "/instructions", str(instryou))
+        consoles[consoleip].tellPlayer(instryou)
     time.sleep(5.0)
     #stats for your targets
     instr = controls.blurb['ending']['them']
     for consoleip in players:
         instrthem = instr.replace("{1}", str(playerstats[consoleip]['targets']['hit']))
         instrthem = instrthem.replace("{2}", str(playerstats[consoleip]['targets']['missed'] + playerstats[consoleip]['targets']['hit']))
-        client.publish("clients/" + consoleip + "/instructions", str(instrthem))
+        consoles[consoleip].tellPlayer(instrthem)
     time.sleep(5.0)
     tellAllPlayers(players, controls.blurb['ending']['end'])
     time.sleep(5.0)
     #medals!
     for consoleip in players:
-        client.publish("clients/" + consoleip + "/instructions", str(controls.getMedal()))
+        consoles[consoleip].tellPlayer(controls.getMedal())
     time.sleep(15.0)
     resetToWaiting()
     
@@ -607,7 +571,7 @@ def resetToWaiting():
                 consolesetup['controls'][ctrlid]['enabled'] = 0
                 consolesetup['controls'][ctrlid]['name'] = ""
         consoles[consoleip].setup = consolesetup
-        client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
+        consoles[consoleip].sendCurrentSetup()
     global lastgenerated
     global numinstructions
     global players
