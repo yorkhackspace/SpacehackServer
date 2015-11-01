@@ -40,7 +40,7 @@ client = mosquitto.Mosquitto("PiServer") #ID shown to the broker
 server = "127.0.0.1" #Mosquitto MQTT broker running locally
 
 # Clever start button handling
-gs = GameStarter(4, 1.5, 4.0)
+gs = GameStarter(4, 1.5, 4.0, 0.5)
 gsIDs = {}
 nextID = 0
 
