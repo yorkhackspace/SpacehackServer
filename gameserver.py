@@ -128,10 +128,11 @@ def receiveValue(consoleip, ctrlid, value):
     global gsIDs
     global nextID
     if gamestate == 'playround':
-        #Check posted value against current targets
-        matched = False
+        # Record the control value
         if 'definition' in consoles[consoleip].setup['controls'][ctrlid]:
             consoles[consoleip].setup['controls'][ctrlid]['definition']['value'] = value
+        #Check posted value against current targets
+        matched = False
         for targetip in players:
             consoledef = consoles[targetip].interface
             if ('target' in consoledef and consoledef['target']['console'] == consoleip 
