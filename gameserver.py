@@ -334,14 +334,9 @@ def pickNewTarget(consoleip):
         if targetinstruction=='':
             targetinstruction = controls.getWordAction(targetname, targetval)
     elif ctrltype == 'pin':
-        finished=False
-        while not finished:
-            newpin=''
-            for i in range(4):
-                newpin += str(random.choice(range(10)))
-            if newpin != curval:
-                finished=True
-        targetval=newpin
+        # Pick a new PIN, and then format it like 0987 (4 wide, leading zeroes)
+        pin = getChoice( range(10000), int(curval) )
+        targetval = "%04d" % pin
         targetinstruction = controls.getPinAction(targetname, targetval)
     else:
         print("Unhandled type: " + ctrltype)
