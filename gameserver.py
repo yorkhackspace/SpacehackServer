@@ -133,10 +133,13 @@ def receiveValue(consoleip, ctrlid, value):
         #Check posted value against current targets
         matched = False
         for targetip in players:
+            if not 'target' in consoledef:
+                continue
+            targetconsole = consoledef['target']['console']
+            targetctrlid  = consoledef['target']['control']
+            targetvalue   = consoledef['target']['value']
             consoledef = consoles[targetip].interface
-            if ('target' in consoledef and consoledef['target']['console'] == consoleip 
-                        and consoledef['target']['control'] == ctrlid
-                        and str(consoledef['target']['value']) == str(value)):
+            if ( targetconsole == consoleip  and targetctrlid == ctrlid and str(targetvalue) == str(value) ):
                 #Match
                 matched = True
                 consoles[consoleip].fixControl(ctrlid)
