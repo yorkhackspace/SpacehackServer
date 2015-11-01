@@ -177,14 +177,11 @@ def receiveValue(consoleip, ctrlid, value):
 #Define a new set of controls for each client for this game round and send it to them as JSON.
 def defineControls():
     """Define a new set of controls for each client for this game round and send it to them as JSON."""
-    emergency = controls.getEmergency()
-    print(emergency)
     for consoleip in players:
-        print("Defining console " + consoleip)
         consolesetup={}
-        consolesetup['instructions']=emergency
+        print("Defining console " + consoleip)
+        consoles[consoleip].clearAllControls()
         consolesetup['timeout'] = currenttimeout
-        consolesetup['controls']={}
         #Pay attention to 'enabled' for the control as a whole
         for control in (x for x in consoles[consoleip].interface["controls"] if 'enabled' not in x or x['enabled'] == 1):
             ctrlid = control['id']
@@ -451,6 +448,10 @@ def initRound():
     instructions = {}
     gamestate = 'setupround'
     playSound(random.choice(controls.soundfiles['atmosphere']))
+    # Set this round's opening emergency
+    emergency = controls.getEmergency()
+    print(emergency)
+    tellAllPlayers(emergency)
     #Dump another batch of random control names and action
     defineControls()
     playerstats['game']['rounds'] += 1
