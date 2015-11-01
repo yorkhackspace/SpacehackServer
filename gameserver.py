@@ -208,9 +208,7 @@ def defineControls():
                 elif 'safe' in ctrldef and ctrldef['safe']:
                     targetrange=controls.safewords
                 elif 'list' in ctrldef:
-                    if ctrldef['list']=='allcontrolwords':
-                        targetrange=controls.allcontrolwords
-                    elif ctrldef['list']=='passwd':
+                    if ctrldef['list']=='passwd':
                         targetrange=controls.passwd
                     elif ctrldef['list']=='verbs':
                         targetrange=controls.verbs
