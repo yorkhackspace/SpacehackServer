@@ -53,7 +53,7 @@ currentsetup = {}
 currenttimeout = 30.0
 lastgenerated = time.time()
 numinstructions = 0
-gamestate = 'initserver' #initserver, readytostart, waitingforplayers, initgame, setupround, playround, roundover, hyperspace, gameover
+gamestate = 'initserver' #initserver, waitingforplayers, initgame, setupround, playround, roundover, hyperspace, gameover
 warningsound = None
 
 #Show when we've connected
@@ -62,7 +62,7 @@ def on_connect(mosq, obj, rc):
     if rc == 0:
         print("Connected to MQTT")
         global gamestate
-        gamestate = 'readytostart'
+        gamestate = 'waitingforplayers'
     else:
         print("Failed - return code is " + rc)
 
@@ -80,9 +80,9 @@ def on_message(mosq, obj, msg):
                 consoles.append(consoleip)
             #set console up for game start
             consolesetup = {}
-            if gamestate in ['readytostart', 'waitingforplayers']:
+            if gamestate == 'waitingforplayers':
                 #Still waiting to start
-                consolesetup['instructions'] = controls.blurb['readytostart']
+                consolesetup['instructions'] = controls.blurb['waitingforplayers']
                 consolesetup['timeout'] = 0.0
                 consolesetup['controls'] = {}
                 print(config['controls'])
@@ -180,7 +180,7 @@ def receiveValue(consoleip, ctrlid, value):
     elif gamestate == 'setupround':
         if 'definition' in currentsetup[consoleip]['controls'][ctrlid]:
             currentsetup[consoleip]['controls'][ctrlid]['definition']['value'] = value
-    elif gamestate in ['readytostart', 'waitingforplayers']:
+    elif gamestate == 'waitingforplayers':
         #button push?
         if 'gamestart' in currentsetup[consoleip]['controls'][ctrlid]:
             if value:
@@ -194,7 +194,6 @@ def receiveValue(consoleip, ctrlid, value):
                 if consoleip in gsIDs:
                     gs.release(gsIDs[consoleip])
             #Either way, reset the clock for game start
-            gamestate = 'waitingforplayers'
             lastgenerated = time.time()
             
 #Define a new set of controls for each client for this game round and send it to them as JSON.
@@ -605,11 +604,11 @@ def gameOver():
 def resetToWaiting():
     """Reset game back to waiting for new players"""
     global gamestate
-    gamestate = 'readytostart'
+    gamestate = 'waitingforplayers'
     clearLives()
     for consoleip in consoles:
         consolesetup = {}
-        consolesetup['instructions'] = controls.blurb['readytostart']
+        consolesetup['instructions'] = controls.blurb['waitingforplayers']
         consolesetup['controls'] = {}
         consolesetup['timeout'] = 0.0
         config = console[consoleip]
