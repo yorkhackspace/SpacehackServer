@@ -49,7 +49,6 @@ nextID = 0
 consoles = {} #all registered consoles
 players = [] #all participating players
 playerstats = {}
-console = {}
 currenttimeout = 30.0
 lastgenerated = time.time()
 numinstructions = 0
@@ -75,7 +74,6 @@ def on_message(mosq, obj, msg):
         if nodes[1]=='register':
             config = json.loads(str(msg.payload))
             consoleip = config['ip']
-            console[consoleip] = config
             # Create and store an object to manage this console
             if not consoleip in consoles:
                 consoles[consoleip] = Console(mosq, config)
@@ -158,7 +156,7 @@ def receiveValue(consoleip, ctrlid, value):
         if 'definition' in consoles[consoleip].setup['controls'][ctrlid]:
             consoles[consoleip].setup['controls'][ctrlid]['definition']['value'] = value
         for targetip in players:
-            consoledef = console[targetip]
+            consoledef = consoles[targetip].interface
             if ('target' in consoledef and consoledef['target']['console'] == consoleip 
                         and consoledef['target']['control'] == ctrlid
                         and str(consoledef['target']['value']) == str(value)):
@@ -212,7 +210,7 @@ def defineControls():
         consolesetup['timeout'] = currenttimeout
         consolesetup['controls']={}
         #Pay attention to 'enabled' for the control as a whole
-        for control in (x for x in console[consoleip]["controls"] if 'enabled' not in x or x['enabled'] == 1):
+        for control in (x for x in consoles[consoleip].interface["controls"] if 'enabled' not in x or x['enabled'] == 1):
             ctrlid = control['id']
             consolesetup['controls'][ctrlid]={}
             #Pay attention to 'enabled' attribute
@@ -339,8 +337,8 @@ def pickNewTarget(consoleip):
     else:
         print("Unhandled type: " + ctrltype)
     #Now we have targetval and targetinstruction for this consoleip, store and publish it
-    console[consoleip]['instructions']=targetinstruction
-    console[consoleip]['target']={"console": targetconsole, "control": targetctrlid, "value": targetval, "timestamp": time.time(), "timeout": targettimeout}
+    consoles[consoleip].interface['instructions']=targetinstruction
+    consoles[consoleip].interface['target']={"console": targetconsole, "control": targetctrlid, "value": targetval, "timestamp": time.time(), "timeout": targettimeout}
     print("Instruction: " + consoleip + '/' + targetctrlid + ' - ' + ctrltype + ' (was ' + str(curval) + ') ' + str(targetinstruction))
     #update game stats
     playerstats[consoleip]['instructions']['total'] += 1
@@ -379,7 +377,7 @@ def checkTimeouts():
     """Check all targets for expired instructions"""
     global numinstructions, warningsound
     for consoleip in players:
-        consoledef = console[consoleip]
+        consoledef = consoles[consoleip].interface
         if 'target' in consoledef and consoledef['target']['timestamp'] + consoledef['target']['timeout'] < time.time():
             #Expired instruction
             playSound(random.choice(controls.soundfiles['wrong']))
@@ -478,7 +476,7 @@ def initGame():
         consolesetup['instructions'] = controls.blurb['gameinprogress']
         consolesetup['timeout'] = 0.0
         consolesetup['controls'] = {}
-        for control in console[consoleip]['controls']:
+        for control in consoles[consoleip].interface['controls']:
             ctrlid = control['id']
             consolesetup['controls'][ctrlid]={}
             consolesetup['controls'][ctrlid]['type'] = 'inactive'
@@ -542,7 +540,7 @@ def roundOver():
         warningsound = None
     #Zap all existing targets
     for consoleip in players:
-        consoledef = console[consoleip]
+        consoledef = consoles[consoleip].interface
         if 'target' in consoledef:
             del consoledef['target']
         client.publish('clients/' + consoleip + '/timeout', "0.0")
@@ -571,7 +569,7 @@ def gameOver():
         playSound(controls.soundfiles['special']['explosion'])
         playSound(controls.soundfiles['special']['taps'])
     for consoleip in players:
-        config = console[consoleip]
+        config = consoles[consoleip].interface
         consolesetup = {}
         consolesetup['instructions'] = str(controls.blurb['ending']['start'])
         consolesetup['timeout'] = 0.0
@@ -617,7 +615,7 @@ def resetToWaiting():
         consolesetup['instructions'] = controls.blurb['waitingforplayers']
         consolesetup['controls'] = {}
         consolesetup['timeout'] = 0.0
-        config = console[consoleip]
+        config = consoles[consoleip].interface
         for control in config['controls']:
             ctrlid = control['id']
             consolesetup['controls'][ctrlid]={}
