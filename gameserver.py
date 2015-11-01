@@ -8,9 +8,13 @@ import mosquitto
 import time
 import random
 import json
+import os
 from GameStarter.gamestart import GameStarter
 
-lifeDisplay = True
+# Best guess whether we're on a laptop or the real thing
+runningOnPi = (os.uname()[4][:3] == 'arm')
+
+lifeDisplay = runningOnPi
 sound = True #Switch this off if you don't have pyGame
 debugMode = False
 
