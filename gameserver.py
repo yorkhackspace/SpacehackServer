@@ -188,13 +188,11 @@ def receiveValue(consoleip, ctrlid, value):
                 if not consoleip in gsIDs:
                     gsIDs[consoleip] = nextID
                     nextID += 1
-                    #players.append(consoleip)
                 gs.push(gsIDs[consoleip])
             else:
                 #remove from list of players
                 if consoleip in gsIDs:
                     gs.release(gsIDs[consoleip])
-                    #players.remove(consoleip)
             #Either way, reset the clock for game start
             gamestate = 'waitingforplayers'
             lastgenerated = time.time()
