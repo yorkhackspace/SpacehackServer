@@ -153,6 +153,7 @@ def receiveValue(consoleip, ctrlid, value):
             
             del instructions[match]
         else:
+            # TODO: Make this neater.  It's inspecting very closely.
             #Suppress caring about button releases - only important in game starts
             if not (consoles[consoleip].setup['controls'][ctrlid]['type'] == 'button' and str(value) == "0"):
                 playSound(random.choice(controls.soundfiles['wrong']))
@@ -207,6 +208,7 @@ def pickNewTarget(consoleip):
     targetinstruction = ''
     #pick a new target based on the control type and current value
     ctrltype = targetcontrol['type']
+    # TODO: Move most of this type-specific code into another place
     if 'value' in targetdef:
         curval = targetdef['value']
     else:
