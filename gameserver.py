@@ -247,18 +247,12 @@ def defineControls():
                     targetrange = controls.allcontrolwords
                 #Create a predetermined list?
                 if not ctrldef['fixed']:
-                    reallyfinished = False
-                    while not reallyfinished:
-                        wordpool = []
-                        finished=False
-                        while not finished:
-                            newword = random.choice(targetrange)
-                            if not newword in wordpool:
-                                wordpool.append(newword)
-                            if len(wordpool) == ctrldef['quantity']:
-                                finished=True
+                    finished = False
+                    while not finished:
+                        wordpool = random.sample(targetrange, ctrldef['quantity'])
+                        # A/B selectors display both words; there needs to be space for them!
                         if ctrldef['quantity'] != 2 or len(wordpool[0]) + len(wordpool[1]) < 14:
-                            reallyfinished = True
+                            finished = True
                     ctrldef['pool'] = sorted(wordpool)
                 else:
                     ctrldef['pool'] = ctrldef['list']
