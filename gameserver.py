@@ -308,10 +308,7 @@ def pickNewTarget(consoleip):
         targetval=1
         targetinstruction = controls.getButtonAction(targetname)
     elif ctrltype == 'toggle':
-        if curval == 0:
-            targetval=1
-        else:
-            targetval=0
+        targetval = getChoice([0,1], curval)
         targetinstruction = controls.getToggleAction(targetname, targetval)
     elif ctrltype == 'selector':
         targetrange = range(targetdef['min'],targetdef['max']+1)
