@@ -189,11 +189,7 @@ def defineControls():
         for control in (x for x in consoles[consoleip].interface["controls"] if 'enabled' not in x or x['enabled'] == 1):
             ctrlid = control['id']
             consolesetup['controls'][ctrlid]={}
-            #Pay attention to 'enabled' attribute
-            if 'enabled' in control:
-                consolesetup['controls'][ctrlid]['enabled']=control['enabled']
-            else:
-                consolesetup['controls'][ctrlid]['enabled']=1
+            consolesetup['controls'][ctrlid]['enabled']=1
             #In case LCDs fail - allow a 'fixed name' we can tape over the LCD
             if 'fixedname' in control:
                 consolesetup['controls'][ctrlid]['name'] = str(control['fixedname'])
