@@ -80,7 +80,7 @@ def on_message(mosq, obj, msg):
                 c.subscribe()
                 consoles[consoleip] = c
             console = consoles[consoleip]
-            console.reset()
+            console.clearSetup()
             #set console up for game start
             if gamestate == 'waitingforplayers':
                 #Still waiting to start
@@ -509,7 +509,7 @@ def gameOver():
         return
     gamestate = 'gameover'
     for consoleip in players:
-        consoles[consoleip].publish('timeout', '0.0')
+        consoles[consoleip].clearSetup()
     tellAllPlayers(players, controls.blurb['ending']['splash'])
     #play sound
     if sound:
@@ -518,9 +518,7 @@ def gameOver():
         pygame.mixer.init(48000, -16, 2, 1024) #was 1024
         playSound(controls.soundfiles['special']['explosion'])
         playSound(controls.soundfiles['special']['taps'])
-    for consoleip in players:
-        consoles[consoleip].reset()
-        consoles[consoleip].tellPlayer(controls.blurb['ending']['start'])
+    tellAllPlayers(players, controls.blurb['ending']['start'])
     time.sleep(5.0)
     instr = controls.blurb['ending']['you']
     #stats for your instructions
@@ -551,7 +549,7 @@ def resetToWaiting():
     gamestate = 'waitingforplayers'
     clearLives()
     for console in consoles.values():
-        console.reset()
+        console.clearSetup()
         console.tellPlayer(controls.blurb['waitingforplayers'])
         console.setup['controls'][console.startButtonID] = {
             'type':       'button',

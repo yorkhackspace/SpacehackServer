@@ -9,10 +9,10 @@ class Console:
         self.ip        = interface['ip']
         self.interface = interface
 	self.mqtt      = mqttclient
-        self.reset()
+        self.clearSetup()
     
-    def reset(self):
-        self.setup     = {
+    def clearSetup(self):
+        self.setup = {
             'controls': {},
             'timeout': 0.0,
             'instructions': ''
