@@ -451,6 +451,8 @@ def initRound():
     global numinstructions
     global lastgenerated
     global gamestate
+    global instructions
+    instructions = {}
     gamestate = 'setupround'
     playSound(random.choice(controls.soundfiles['atmosphere']))
     #Dump another batch of random control names and action
@@ -467,6 +469,8 @@ def roundOver():
     global currenttimeout
     global lastgenerated
     global warningsound
+    global instructions
+    instructions = {}
     gamestate = 'roundover'
     if sound and not warningsound is None:
         warningsound.stop()
