@@ -479,13 +479,10 @@ def roundOver():
         warningsound = None
     #Zap all existing targets
     for consoleip in players:
-        consoledef = consoles[consoleip].interface
-        if 'target' in consoledef:
-            del consoledef['target']
-        consoles[consoleip].publish('timeout', '0.0')
-    #play sound?
+        consoles[consoleip].clearSetup()
     tellAllPlayers(players, controls.blurb['hyperspace'])
-    playSound(controls.soundfiles['special']['hyperspace'])
+    if sound:
+        playSound(controls.soundfiles['special']['hyperspace'])
     lastgenerated = time.time()
     currenttimeout *= 0.75
     gamestate = 'hyperspace'
