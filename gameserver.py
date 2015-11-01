@@ -422,19 +422,8 @@ def initGame():
         playSound(controls.soundfiles['special']['fanfare'])
     #cut off non-players from participating
     for consoleip in list(set(consoles) - set(players)):
-        consolesetup = {}
-        consolesetup['instructions'] = controls.blurb['gameinprogress']
-        consolesetup['timeout'] = 0.0
-        consolesetup['controls'] = {}
-        for control in consoles[consoleip].interface['controls']:
-            ctrlid = control['id']
-            consolesetup['controls'][ctrlid]={}
-            consolesetup['controls'][ctrlid]['type'] = 'inactive'
-            consolesetup['controls'][ctrlid]['enabled'] = 0
-            consolesetup['controls'][ctrlid]['name'] = ""
-            client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
-        consoles[consoleip].setup = consolesetup
-        consoles[consoleip].sendCurrentSetup()
+        consoles[consoleip].clearSetup()
+        consoles[consoleip].tellPlayer(controls.blurb['gameinprogress'])
     #Explanatory intro blurb
     if not debugMode:
         for txt in controls.blurb['intro']:
