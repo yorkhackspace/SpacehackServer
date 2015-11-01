@@ -76,33 +76,24 @@ def on_message(mosq, obj, msg):
             consoleip = config['ip']
             # Create and store an object to manage this console
             if not consoleip in consoles:
-                consoles[consoleip] = Console(mosq, config)
+                c = Console(mosq, config)
+                c.subscribe()
+                consoles[consoleip] = c
+            console = consoles[consoleip]
+            console.reset()
             #set console up for game start
-            consolesetup = {}
             if gamestate == 'waitingforplayers':
                 #Still waiting to start
-                consolesetup['instructions'] = controls.blurb['waitingforplayers']
-                consolesetup['timeout'] = 0.0
-                consolesetup['controls'] = {}
                 print(config['controls'])
-                for control in config['controls']:
-                    ctrlid = control['id']
-                    if 'gamestart' in control:
-                        consolesetup['controls'][ctrlid] = {
-                            'type':       'button',
-                            'enabled':    1,
-                            'name':       controls.blurb['startbutton'],
-                            'gamestart':  True,
-                            'definition': {}
-                        }
-                    else:
-                        consolesetup['controls'][ctrlid] = {
-                            'type':    'inactive',
-                            'enabled': 0,
-                            'name':    ''
-                        }
-                    # NOTE: implemented in console.py
-                    client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
+                console.setup['controls'][console.startButtonID] = {
+                    'type':       'button',
+                    'enabled':    1,
+                    'name':       controls.blurb['startbutton'],
+                    'gamestart':  True,
+                    'definition': {}
+                }
+                console.sendCurrentSetup()
+                console.tellPlayer(controls.blurb['waitingforplayers'])
             else:
                 #There's a game on, but this client's late for it
                 if consoleip in players:
@@ -114,21 +105,7 @@ def on_message(mosq, obj, msg):
                     return
                 else:
                     #Game still active - sit the rest of it out
-                    consolesetup['instructions'] = controls.blurb['gameinprogress']
-                    consolesetup['controls'] = {}
-                    # NOTE: implemented in console.py
-                    for control in config['controls']:
-                        ctrlid = control['id']
-                        consolesetup['controls'][ctrlid] = {
-                            'type':    'inactive',
-                            'enabled': 0,
-                            'name':    ''
-                        }
-                        # NOTE: implemented in console.py
-                        client.subscribe('clients/' + consoleip + '/' + ctrlid + '/value')
-            if len(consolesetup) > 0:
-                consoles[consoleip].setup = consolesetup
-                consoles[consoleip].sendCurrentSetup
+                    console.tellPlayer(controls.blurb['gameinprogress'])
     elif nodes[0] == 'clients':
         consoleip = nodes[1]
         ctrlid = nodes[2]
