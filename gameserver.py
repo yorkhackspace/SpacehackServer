@@ -296,14 +296,11 @@ def pickNewTarget(consoleip):
     elif ctrltype in ['words', 'verbs']:
         targetrange = targetdef['pool']
         targetval=getChoice(targetrange, curval)
-        if 'list' in targetdef:
-            if targetdef['list']=='passwd':
-                targetinstruction = controls.getPasswdAction(targetname, targetval)
-            elif targetdef['list']=='verbs' or ctrltype == 'verbs':
-                targetinstruction = controls.getVerbListAction(targetname, targetval)
+        if 'list' in targetdef and targetdef=='passwd':
+            targetinstruction = controls.getPasswdAction(targetname, targetval)
         elif ctrltype == 'verbs':
             targetinstruction = controls.getVerbListAction(targetname, targetval)
-        if targetinstruction=='':
+        else:
             targetinstruction = controls.getWordAction(targetname, targetval)
     elif ctrltype == 'pin':
         # Pick a new PIN, and then format it like 0987 (4 wide, leading zeroes)
