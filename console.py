@@ -120,7 +120,7 @@ class Console:
                 'definition': ctrldef,
                 'enabled': 1
             }
-            print("Control " + ctrlid + " is " + ctrltype + ": " + setupctrl['name'])
+            print("Control " + ctrlid + " is " + ctrltype + ": " + ctrlname)
         self.sendCurrentSetup()
 
     
