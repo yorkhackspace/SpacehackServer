@@ -32,7 +32,7 @@ class Console:
     def subscribe(self):
         """ Subscribe the MQTT client to this console's messages """
         for control in self.interface['controls']:
-            self.mqtt.subscribe('clients/' + self.ip + '/' + control['id'] + '/value')
+            self.mqtt.subscribe(str('clients/' + self.ip + '/' + control['id'] + '/value'))
     
     def sendCurrentSetup(self):
         """ Publish the current setup to the console """
