@@ -296,6 +296,7 @@ def checkTimeouts():
         if time.time() > info['expiry']:
             #Expired instruction
             targetconsole, targetctrlid, targetvalue = target
+            del instructions[target]
             
             playSound(random.choice(controls.soundfiles['wrong']))
             playerstats[consoleip]['instructions']['missed'] += 1
