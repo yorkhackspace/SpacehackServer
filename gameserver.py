@@ -394,7 +394,7 @@ def initRound():
     # Set this round's opening emergency
     emergency = controls.getEmergency()
     print(emergency)
-    tellAllPlayers(emergency)
+    tellAllPlayers(players, emergency)
     #Dump another batch of random control names and action
     defineControls()
     playerstats['game']['rounds'] += 1
