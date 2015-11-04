@@ -57,7 +57,7 @@ class Console:
         self.sendCurrentSetup
     
     def pickNewControls(self):
-        self.reset()
+        self.clearSetup()
         setup = self.setup
         #Pay attention to 'enabled' for the control as a whole
         for control in (x for x in self.interface["controls"] if 'enabled' not in x or x['enabled'] == 1):
