@@ -4,7 +4,7 @@
 #This runs on a Raspberry Pi
 
 import controls
-import mosquitto
+import paho.mqtt.client as paho
 import time
 import random
 import json
@@ -32,7 +32,7 @@ if sound:
     import pygame
     
 #MQTT client to allow publishing
-client = mosquitto.Mosquitto("PiServer") #ID shown to the broker
+client = paho.Client('PiServer') # ID shown to the broker
 server = "127.0.0.1" #Mosquitto MQTT broker running locally
 
 # Clever start button handling
