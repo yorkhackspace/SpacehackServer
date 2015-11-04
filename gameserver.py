@@ -291,9 +291,13 @@ def clearLives():
 def checkTimeouts():
     """Check all targets for expired instructions"""
     global numinstructions, warningsound
-    for target, info in instructions:
+    for target in instructions.keys():
+        # We need to do this to avoid getting an exception on deleting something
+        info = instructions[target]
         if time.time() > info['expiry']:
             #Expired instruction
+            targetconsole, targetctrlid, targetvalue = target
+            
             playSound(random.choice(controls.soundfiles['wrong']))
             playerstats[consoleip]['instructions']['missed'] += 1
             playerstats[targetconsole]['targets']['missed'] += 1
