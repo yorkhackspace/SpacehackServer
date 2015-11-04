@@ -4,6 +4,7 @@
 import GameStarter.gamestart
 import controls
 import json
+import random
 
 class Console:
     def __init__(self, mqttclient, interface):
