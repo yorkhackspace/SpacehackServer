@@ -493,7 +493,7 @@ def resetToWaiting():
     players = []
     lastgenerated = time.time()
     numinstructions = 0
-    
+    gs.resetAll()
 #Main loop
 
 #Connect to MQTT (final code should make this a retry loop)
