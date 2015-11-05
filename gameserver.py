@@ -142,7 +142,7 @@ def receiveValue(consoleip, ctrlid, value):
             
             #update stats
             playerstats[instructorip]['instructions']['hit'] += 1
-            playerstats[targetip]['targets']['hit'] += 1
+            playerstats[consoleip]['targets']['hit'] += 1
             numinstructions -= 1
             if numinstructions <= 0:
                 #Round over
