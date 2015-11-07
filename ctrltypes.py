@@ -62,22 +62,41 @@ class BaseControl:
     
     def pickTargetValue(self):
         return self.__pickValue(self.value)
+    
+    def cleanValue(self, value):
+        return value
+    
+    def recordValue(self, value):
+        """ Record a received value for this control """
+        clean_value = self.cleanValue(value)
+        if clean_value in self.validValues():
+            self.sctrl['value'] = clean_value
+            return true
+        else:
+            return false
 
-class ButtonControl(BaseControl):
+class IntegerControl(BaseControl):
+    def cleanValue(self, value):
+        try:
+            return int(value)
+        except ValueError:
+            return None
+
+class ButtonControl(IntegerControl):
     def archetype(self):
         return 'button'
     def validValues(self):
-        return [1]
+        return [0,1]
     def pickTargetValue(self):
         return 1
 
-class ToggleControl(BaseControl):
+class ToggleControl(IntegerControl):
     def archetype(self):
         return 'toggle'
     def validValues(self):
         return [0,1]
 
-class SelectorControl(BaseControl):
+class SelectorControl(IntegerControl):
     def archetype(self):
         return 'selector'
     def validValues(self):
