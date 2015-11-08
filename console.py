@@ -76,7 +76,7 @@ class Console:
             control = ctrltypes.pickNewControl(control, self.setup['controls'][ctrlid])
             control.randomize()
             self.ctrls[ctrlid] = control
-            print("Control " + ctrlid + " is " + control.type + ": " + control.name)
+            print("Control %s is %s: %s" % (ctrlid, control.type, control.name))
         self.sendCurrentSetup()
     
     def recordControl(self, ctrlid, value):
