@@ -47,6 +47,10 @@ class BaseControl:
         pass
     
     @property
+    def id(self):
+        return self.ictrl['id']
+    
+    @property
     def ctrldef(self):
         return self.sctrl['definition']
     
