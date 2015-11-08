@@ -182,64 +182,23 @@ def pickNewTarget(consoleip):
     """Pick a new instruction to display on a given console."""
     #pick a random console and random control from that console
     targetconsole = random.choice(players)
-    targetsetup = consoles[targetconsole].setup
-    targetctrlid = random.choice(targetsetup['controls'].keys())
-    targetcontrol = targetsetup['controls'][targetctrlid]
-    targetname = targetcontrol['name']
-    targetdef = targetcontrol['definition']
-    targettimeout = currenttimeout
-    if 'scalefactor' in targetdef:
-        targettimeout *= targetdef['scalefactor']
-    targetinstruction = ''
-    #pick a new target based on the control type and current value
-    ctrltype = targetcontrol['type']
-    # TODO: Move most of this type-specific code into another place
-    # TODO: This has been recoded in ctrltypes.py
-    if 'value' in targetdef:
-        curval = targetdef['value']
-    else:
-        curval=''
-    if ctrltype == 'button':
-        targetval=1
-        targetinstruction = controls.getButtonAction(targetname)
-    elif ctrltype == 'toggle':
-        targetval = getChoice([0,1], curval)
-        targetinstruction = controls.getToggleAction(targetname, targetval)
-    elif ctrltype == 'selector':
-        targetrange = range(targetdef['min'],targetdef['max']+1)
-        targetval = getChoice(targetrange, curval)
-        targetinstruction = controls.getSelectorAction(targetname, targetrange, targetval, curval)
-    elif ctrltype == 'colour':
-        targetrange = targetdef['values']
-        targetval = getChoice(targetrange, curval)
-        targetinstruction = controls.getColourAction(targetname, targetval)
-    elif ctrltype in ['words', 'verbs']:
-        targetrange = targetdef['pool']
-        targetval=getChoice(targetrange, curval)
-        if 'list' in targetdef:
-            if targetdef['list']=='passwd':
-                targetinstruction = controls.getPasswdAction(targetname, targetval)
-            elif targetdef['list']=='verbs':
-                targetinstruction = controls.getVerbListAction(targetname, targetval)
-            else:
-                targetinstruction = controls.getWordAction(targetname, targetval)
-        elif ctrltype == 'verbs':
-            targetinstruction = controls.getVerbListAction(targetname, targetval)
-        else:
-            targetinstruction = controls.getWordAction(targetname, targetval)
-    elif ctrltype == 'pin':
-        # Pick a new PIN, and then format it like 0987 (4 wide, leading zeroes)
-        targetval = getChoice( [format(x, '04d') for x in range(10000)], curval )
-        targetinstruction = controls.getPinAction(targetname, targetval)
-    else:
-        print("Unhandled type: " + ctrltype)
+    targetcontrol = consoles[targetconsole].randomControl()
+
+    targetctrlid  = targetcontrol.id
+    targetvalue   = targetcontrol.pickTargetValue()
+    targettimeout = currenttimeout * targetcontrol.scalefactor
+
+    targetinstruction = targetcontrol.getActionString(targetvalue)
+
     #Now we have targetval and targetinstruction for this consoleip, store and publish it
-    match = (targetconsole, targetctrlid, targetval)
+    match = (targetconsole, targetctrlid, targetvalue)
     instructions[match] = {
         'instructor': consoleip,
         'expiry':     time.time() + targettimeout,
     }
-    print("Instruction: " + targetconsole + '/' + targetctrlid + ' - ' + ctrltype + ' (was ' + str(curval) + ') ' + str(targetinstruction))
+    fields = (consoleip, targetconsole, targetctrlid, targetcontrol.type, targetvalue, targetcontrol.value, targettimeout)
+    print("Instruction: %s: %s/%d (%s) -> %s (was %s) in %.1fs" % fields)
+    print("    %s" % targetinstruction)
     #update game stats
     # TODO: Consider whether to count instructions that timed out
     playerstats[consoleip]['instructions']['total'] += 1
