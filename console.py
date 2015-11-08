@@ -73,7 +73,7 @@ class Console:
         #Pay attention to 'enabled' for the control as a whole
         for control in (x for x in self.interface["controls"] if 'enabled' not in x or x['enabled'] == 1):
             ctrlid = control['id']
-            control = ctrltypes.pickNewControl(control, self.setup[ctrlid])
+            control = ctrltypes.pickNewControl(control, self.setup['controls'][ctrlid])
             control.randomize()
             self.ctrls[ctrlid] = control
             print("Control " + ctrlid + " is " + control.type + ": " + control.name)
