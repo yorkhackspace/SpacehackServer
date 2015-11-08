@@ -138,8 +138,8 @@ def receiveValue(consoleip, ctrlid, value):
             else:
                 #Pick a new target and carry on
                 pickNewTarget(instructorip)
+                del instructions[match]
             
-            del instructions[match]
         elif changed:
             playSound(random.choice(controls.soundfiles['wrong']))
     elif gamestate == 'setupround':
