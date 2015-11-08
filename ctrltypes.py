@@ -47,6 +47,10 @@ class BaseControl:
         pass
     
     @property
+    def ctrldef(self):
+        return self.sctrl['definition']
+    
+    @property
     def name(self):
         if 'name' in self.sctrl:
             return self.sctrl['name']
@@ -55,15 +59,14 @@ class BaseControl:
     
     @property
     def value(self):
-        if 'value' in self.sctrl:
-            return self.sctrl['value']
+        if 'value' in self.ctrldef:
+            return self.ctrldef['value']
         else:
             return ''
     
     @property
     def assignable(self):
-        ctrldef = self.sctrl['definition']
-        return 'assignable' in ctrldef and ctrldef['assignable']
+        return 'assignable' in self.ctrldef and self.ctrldef['assignable']
     
     def pickName(self):
         if 'fixedname' in self.ictrl:
@@ -79,7 +82,7 @@ class BaseControl:
     def randomize(self):
         """ Randomize the current control value, if permitted """
         if self.assignable:
-            self.sctrl['value'] = self.__pickValue()
+            self.ctrldef['value'] = self.__pickValue()
     
     def pickTargetValue(self):
         return self.__pickValue(self.value)
@@ -92,7 +95,7 @@ class BaseControl:
         """ Record a received value for this control """
         """ Indicate whether the value was updated """
         if value in self.validValues() and value != self.value:
-            self.sctrl['value'] = value
+            self.ctrldef['value'] = value
             return self.acknowledgeUpdate(value)
         else:
             return false
@@ -123,10 +126,8 @@ class SelectorControl(IntegerControl):
         return 'selector'
     @property
     def range(self):
-        ctrldef = self.sctrl['definition']
-        return range(ctrldef['min'], ctrldef['max'] + 1)
+        return range(self.ctrldef['min'], self.ctrldef['max'] + 1)
     def validValues(self):
-        ctrldef = self.sctrl['definition']
         return [str(x) for x in self.range]
     def getActionString(self, targetvalue):
         return controls.getSelectorAction(self.name, self.range, int(targetvalue), int(self.value))
@@ -135,8 +136,7 @@ class ColourControl(BaseControl):
     def archetype(self):
         return 'colour'
     def validValues(self):
-        ctrldef = self.sctrl['definition']
-        return ctrldef['values']
+        return self.ctrldef['values']
     def getActionString(self, targetvalue):
         return controls.getColourAction(self.name, targetvalue)
 
@@ -144,10 +144,9 @@ class WordsControl(BaseControl):
     def archetype(self):
         return 'words'
     def validValues(self):
-        ctrldef = self.sctrl['definition']
-        return ctrldef['pool']
+        return self.ctrldef['pool']
     def getActionString(self, targetvalue):
-        ctrldef = self.sctrl['definition']
+        ctrldef = self.ctrldef
         if 'list' in ctrldef:
             if ctrldef['list'] == 'passwd':
                 return controls.getPasswdAction(self.name, targetvalue)
@@ -155,7 +154,7 @@ class WordsControl(BaseControl):
                 return controls.getVerbListAction(self.name, targetvalue)
         return controls.getWordAction(self.name, targetvalue)
     def __configure(self):
-        ctrldef = self.sctrl['definition']
+        ctrldef = self.ctrldef
         if 'fixed' in ctrldef and ctrldef['fixed']:
             ctrldef['pool'] = ctrldef['list']
         else:
@@ -174,7 +173,7 @@ class WordsControl(BaseControl):
             ctrldef['pool'] = sorted(wordpool)
     
     def __getWords(self):
-        ctrldef = self.sctrl['definition']
+        ctrldef = self.ctrldef
         # TODO: Consider making 'safe' another type of 'list'
         if 'safe' in ctrldef and ctrldef['safe']:
             return controls.safewords
@@ -199,7 +198,7 @@ class VerbsControl(WordsControl):
 
 class PinControl(BaseControl):
     def randomize(self):
-        self.sctrl['value'] = ''
+        self.ctrldef['value'] = ''
     def validValues(self):
         return [format(x,'04d') for x in range(10000)]
     def getActionString(self, targetvalue):
