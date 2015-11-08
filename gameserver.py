@@ -170,13 +170,6 @@ def defineControls():
         console.setup['timeout'] = currenttimeout
         console.sendCurrentSetup()
 
-#Get a choice from a range that isn't the same as the old value
-def getChoice(choicerange, oldval):
-    """Get a choice from a range that isn't the same as the old value."""
-    everything = set( choicerange )
-    exclude = set( [oldval] )
-    return random.choice( list( everything - exclude ) )
-
 #Pick a new instruction to display on a given console
 def pickNewTarget(consoleip):
     """Pick a new instruction to display on a given console."""
