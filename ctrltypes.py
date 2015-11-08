@@ -10,13 +10,10 @@ def getCtrlClass(ctrltype):
        'selector': SelectorControl,
        'colour':   ColourControl,
        'words':    WordsControl,
-       'verb':     VerbsControl,
+       'verbs':    VerbsControl,
        'pin':      PinControl
        }
-    if types.has_key(ctrltype):
-       return types[ctrltype]
-    else:
-       return InvalidControl
+    return types[ctrltype]
 
 def pickNewControl(ictrl, sctrl):
     """ Return an appropriate control object """
