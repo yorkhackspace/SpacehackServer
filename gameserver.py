@@ -244,10 +244,11 @@ def checkTimeouts():
         if time.time() > info['expiry']:
             #Expired instruction
             targetconsole, targetctrlid, targetvalue = target
+            instructorip = info['instructor']
             del instructions[target]
             
             playSound(random.choice(controls.soundfiles['wrong']))
-            playerstats[consoleip]['instructions']['missed'] += 1
+            playerstats[instructorip]['instructions']['missed'] += 1
             playerstats[targetconsole]['targets']['missed'] += 1
             numinstructions -= 1
             playerstats['game']['lives'] -= 1
@@ -261,7 +262,7 @@ def checkTimeouts():
             else:
                 #Pick a new target and carry on
                 consoles[targetconsole].corruptControl(targetctrlid)
-                pickNewTarget(consoleip)
+                pickNewTarget(instructorip)
                 #Start a warning sound if we're on our last life
                 if playerstats['game']['lives'] == 1 and sound:
                     warningsound = pygame.mixer.Sound("sounds/" + random.choice(controls.soundfiles['warning']))
