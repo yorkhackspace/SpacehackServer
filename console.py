@@ -8,12 +8,16 @@ import random
 
 class Console:
     def __init__(self, mqttclient, interface):
+        # IP Address of the console (or rather, it's identifier)
         self.ip        = interface['ip']
+        # Interface definition - i.e. the console's hardware capabilities
         self.interface = interface
+        # MQTT client, for things handled internally
 	self.mqtt      = mqttclient
         self.clearSetup()
     
     def clearSetup(self):
+        """ Clears the current console setup """
         self.setup = {
             'controls': {},
             'timeout': 0.0,
@@ -40,6 +44,7 @@ class Console:
         self.publish('configure', json.dumps(self.setup))
     
     def __clearControl(self, ctrlid):
+        """ Internal method for blanking a control (deferred send) """
         self.setup['controls'][ctrlid] = {
             'type':    'inactive',
             'enabled': 0,
@@ -58,6 +63,7 @@ class Console:
         self.sendCurrentSetup
     
     def pickNewControls(self):
+        """ Pick a random set of controls for this console """
         self.clearSetup()
         setup = self.setup
         #Pay attention to 'enabled' for the control as a whole
@@ -72,6 +78,7 @@ class Console:
             ctrldef = random.choice([x for x in control['supported'] if 'enabled' not in x or x['enabled'] == 1])
             ctrltype = ctrldef['type']
             # TODO: Control-specific initialization probably wants to go elsewhere
+            # e.g. in the constructor of a CtrlType
             if ctrltype in ['words', 'verbs']:
                 if ctrldef['fixed']:
                     targetrange = ctrldef['list']
@@ -100,6 +107,7 @@ class Console:
                 else:
                     ctrldef['pool'] = ctrldef['list']
             #Pick a starting value
+            # TODO: Use ctrltypes.py and the randomize method
             if 'assignable' in ctrldef and ctrldef['assignable']:
                 if ctrltype in ['words', 'verbs']:
                     ctrldef['value']=random.choice(ctrldef['pool'])
@@ -136,13 +144,11 @@ class Console:
     
     # NOTE: Currently, the player's instruction screen is also set when sending current setup
     def tellPlayer(self, message):
+        """Set the instruction panel"""
         message = str(message)
         self.publish('instructions', message)
         # FIXME: Fudge to be certain we stored this (so we can stop the client responding to this field!
         self.setup['instructions'] = message
-    
-    def on_ctrlvalue(self, ctrlid, value):
-        pass
     
     def corruptControl(self, ctrlid):
         """Introduce text corruptions to control names as artificial 'malfunctions'"""
@@ -176,3 +182,16 @@ class Console:
         if 'corruptedname' in ctrl:
             del ctrl['corruptedname']
         self.publish(ctrlid + '/name', ctrl['name'])
+    
+    def resetToWaiting(self):
+        """Reset the console setup and define the start button and instruction"""
+        self.clearSetup()
+        self.tellPlayer(controls.blurb['waitingforplayers'])
+        self.setup['controls'][self.startButtonID] = {
+            'type':       'button',
+            'enabled':    1,
+            'name':       controls.blurb['startbutton'],
+            'gamestart':  True,
+            'definition': {}
+        }
+        self.sendCurrentSetup()
