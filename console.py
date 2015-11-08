@@ -53,7 +53,7 @@ class Console:
             'name':    ''
         }
         if ctrlid in self.ctrls:
-            del self.ctrls['ctrlid']
+            del self.ctrls[ctrlid]
     
     def clearControl(self, ctrlid):
         """ Clear a control to blank """
