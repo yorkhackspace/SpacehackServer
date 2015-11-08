@@ -145,7 +145,12 @@ class SelectorControl(BaseControl):
     def validValues(self):
         return [str(x) for x in self.range]
     def getActionString(self, targetvalue):
-        return controls.getSelectorAction(self.name, self.range, int(targetvalue), int(self.value))
+        targetval = int(targetvalue)
+        try:
+            currentval = int(self.value)
+        except ValueError:
+            currentval = 0
+        return controls.getSelectorAction(self.name, self.range, targetval, currentval)
 
 class ColourControl(BaseControl):
     def archetype(self):
