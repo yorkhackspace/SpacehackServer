@@ -138,7 +138,7 @@ def receiveValue(consoleip, ctrlid, value):
             else:
                 #Pick a new target and carry on
                 pickNewTarget(instructorip)
-                del instructions[match]
+            del instructions[match]
             
         elif changed:
             playSound(random.choice(controls.soundfiles['wrong']))
@@ -360,7 +360,6 @@ def roundOver():
     global lastgenerated
     global warningsound
     global instructions
-    instructions = {}
     gamestate = 'roundover'
     if sound and not warningsound is None:
         warningsound.stop()
