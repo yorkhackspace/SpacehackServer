@@ -85,10 +85,9 @@ class Console:
             return self.ctrls[ctrlid].recordValue(value)
         return false
     
-    def setControl(self, ctrlid, value):
-        """ Assign a current value to a control """
-        recordControl(ctrlid, value)
-        consoles[consoleip].sendCurrentSetup()
+    def randomControl(self):
+        """ Return a random control on this console """
+        return random.choice(self.ctrls)
     
     # NOTE: Currently, the player's instruction screen is also set when sending current setup
     def tellPlayer(self, message):
