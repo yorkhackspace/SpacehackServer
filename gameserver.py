@@ -205,10 +205,6 @@ def pickNewTarget(consoleip):
     fields = (consoleip, targetconsole, targetctrlid, targetcontrol.type, targetvalue, targetcontrol.value, targettimeout)
     print("Instruction: %s: %s/%s (%s) -> %s (was %s) in %.1fs" % fields)
     print("    %s" % targetinstruction)
-    #update game stats
-    # TODO: Consider whether to count instructions that timed out
-    playerstats[consoleip]['instructions']['total'] += 1
-    playerstats[targetconsole]['targets']['total'] += 1
     #publish!
     consoles[consoleip].publish('timeout', str(targettimeout))
     consoles[consoleip].tellPlayer(targetinstruction)
@@ -322,10 +318,8 @@ def initGame():
         playerstats[consoleip] = {}
         playerstats[consoleip]['instructions'] = {} #stats on instructions you read out
         playerstats[consoleip]['targets'] = {} #stats on instructions you should have implemented
-        playerstats[consoleip]['instructions']['total'] = 0
         playerstats[consoleip]['instructions']['hit'] = 0
         playerstats[consoleip]['instructions']['missed'] = 0
-        playerstats[consoleip]['targets']['total'] = 0
         playerstats[consoleip]['targets']['hit'] = 0
         playerstats[consoleip]['targets']['missed'] = 0
     playerstats['game'] = {}
@@ -403,16 +397,20 @@ def gameOver():
     instr = controls.blurb['ending']['you']
     #stats for your instructions
     for consoleip in players:
-        instryou = instr.replace("{1}", str(playerstats[consoleip]['targets']['hit']))
-        instryou = instryou.replace("{2}", str(playerstats[consoleip]['targets']['total']))
-        instryou = instryou.replace("{3}", str(playerstats[consoleip]['targets']['missed']))
+        hit = playerstats[consoleip]['targets']['hit']
+        miss = playerstats[consoleip]['targets']['missed']
+        instryou = instr.replace("{1}", str(hit))
+        instryou = instryou.replace("{2}", str(hit + miss))
+        instryou = instryou.replace("{3}", str(miss))
         consoles[consoleip].tellPlayer(instryou)
     time.sleep(5.0)
     #stats for your targets
     instr = controls.blurb['ending']['them']
     for consoleip in players:
-        instrthem = instr.replace("{1}", str(playerstats[consoleip]['instructions']['hit']))
-        instrthem = instrthem.replace("{2}", str(playerstats[consoleip]['instructions']['total']))
+        hit = playerstats[consoleip]['targets']['hit']
+        miss = playerstats[consoleip]['targets']['missed']
+        instrthem = instr.replace("{1}", str(hit))
+        instrthem = instrthem.replace("{2}", str(hit + miss))
         consoles[consoleip].tellPlayer(instrthem)
     time.sleep(5.0)
     tellAllPlayers(players, controls.blurb['ending']['end'])
