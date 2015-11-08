@@ -86,15 +86,7 @@ def on_message(mosq, obj, msg):
             if gamestate == 'waitingforplayers':
                 #Still waiting to start
                 print(config['controls'])
-                console.setup['controls'][console.startButtonID] = {
-                    'type':       'button',
-                    'enabled':    1,
-                    'name':       controls.blurb['startbutton'],
-                    'gamestart':  True,
-                    'definition': {}
-                }
-                console.sendCurrentSetup()
-                console.tellPlayer(controls.blurb['waitingforplayers'])
+                console.resetToWaiting()
             else:
                 #There's a game on, but this client's late for it
                 if consoleip in players:
@@ -106,6 +98,7 @@ def on_message(mosq, obj, msg):
                     return
                 else:
                     #Game still active - sit the rest of it out
+                    console.clearSetup()
                     console.tellPlayer(controls.blurb['gameinprogress'])
     elif nodes[0] == 'clients':
         consoleip = nodes[1]
@@ -113,6 +106,7 @@ def on_message(mosq, obj, msg):
         if nodes[3] == 'value':
             value = str(msg.payload)
             if consoleip in consoles:
+                # TODO: Remove int-ifying code
                 if 'controls' in consoles[consoleip].setup:
                     if consoles[consoleip].setup['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
                         try:
@@ -209,6 +203,7 @@ def pickNewTarget(consoleip):
     #pick a new target based on the control type and current value
     ctrltype = targetcontrol['type']
     # TODO: Move most of this type-specific code into another place
+    # TODO: This has been recoded in ctrltypes.py
     if 'value' in targetdef:
         curval = targetdef['value']
     else:
@@ -255,6 +250,7 @@ def pickNewTarget(consoleip):
     }
     print("Instruction: " + targetconsole + '/' + targetctrlid + ' - ' + ctrltype + ' (was ' + str(curval) + ') ' + str(targetinstruction))
     #update game stats
+    # TODO: Consider whether to count instructions that timed out
     playerstats[consoleip]['instructions']['total'] += 1
     playerstats[targetconsole]['targets']['total'] += 1
     #publish!
@@ -477,16 +473,7 @@ def resetToWaiting():
     gamestate = 'waitingforplayers'
     clearLives()
     for console in consoles.values():
-        console.clearSetup()
-        console.tellPlayer(controls.blurb['waitingforplayers'])
-        console.setup['controls'][console.startButtonID] = {
-            'type':       'button',
-            'enabled':    1,
-            'name':       controls.blurb['startbutton'],
-            'gamestart':  True,
-            'definition': {}
-        }
-        console.sendCurrentSetup()
+        console.resetToWaiting()
     global lastgenerated
     global numinstructions
     global players
