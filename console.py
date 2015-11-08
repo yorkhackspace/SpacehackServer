@@ -45,7 +45,7 @@ class Console:
         """ Publish the current setup to the console """
         self.publish('configure', json.dumps(self.setup))
     
-    def __clearControl(self, ctrlid):
+    def _clearControl(self, ctrlid):
         """ Internal method for blanking a control (deferred send) """
         self.setup['controls'][ctrlid] = {
             'type':    'inactive',
@@ -57,13 +57,13 @@ class Console:
     
     def clearControl(self, ctrlid):
         """ Clear a control to blank """
-        self.__clearControl(ctrlid)
+        self._clearControl(ctrlid)
         self.sendCurrentSetup
     
     def clearAllControls(self):
         """ Clear all controls to blank """
         for control in self.interface['controls']:
-            self.__clearControl(control['id'])
+            self._clearControl(control['id'])
         self.sendCurrentSetup
     
     def pickNewControls(self):

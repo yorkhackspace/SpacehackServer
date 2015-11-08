@@ -37,10 +37,10 @@ class BaseControl:
         self.pickName()
         self.sctrl['type'] = ctype
         self.sctrl['definition'] = dict(imode)
-        self.__configure()
+        self._configure()
         self.sctrl['enabled'] = 1
     
-    def __configure(self):
+    def _configure(self):
         pass
     
     @property
@@ -89,7 +89,7 @@ class BaseControl:
         else:
             self.sctrl['name'] = controls.getControlName(self.ictrl['width'], 2, 12)
     
-    def __pickValue(self, exclude=None):
+    def _pickValue(self, exclude=None):
         """ Pick a value, optionally excluding the current one """
         everything = set( self.validValues() )
         return random.choice( list( everything - set([exclude]) ) )
@@ -97,10 +97,10 @@ class BaseControl:
     def randomize(self):
         """ Randomize the current control value, if permitted """
         if self.assignable:
-            self.ctrldef['value'] = self.__pickValue()
+            self.ctrldef['value'] = self._pickValue()
     
     def pickTargetValue(self):
-        return self.__pickValue(self.value)
+        return self._pickValue(self.value)
     
     def acknowledgeUpdate(self, value):
         """ Should we acknowledge updates for the given value? """
@@ -168,12 +168,12 @@ class WordsControl(BaseControl):
             elif ctrldef['list'] == 'verbs':
                 return controls.getVerbListAction(self.name, targetvalue)
         return controls.getWordAction(self.name, targetvalue)
-    def __configure(self):
+    def _configure(self):
         ctrldef = self.ctrldef
         if 'fixed' in ctrldef and ctrldef['fixed']:
             ctrldef['pool'] = ctrldef['list']
         else:
-            words = self.__getWords()
+            words = self._getWords()
             finished = False
             while not finished:
                 wordpool = random.sample(words, ctrldef['quantity'])
@@ -187,7 +187,7 @@ class WordsControl(BaseControl):
                     finished = True
             ctrldef['pool'] = sorted(wordpool)
     
-    def __getWords(self):
+    def _getWords(self):
         ctrldef = self.ctrldef
         # TODO: Consider making 'safe' another type of 'list'
         if 'safe' in ctrldef and ctrldef['safe']:
@@ -197,9 +197,9 @@ class WordsControl(BaseControl):
                 return controls.passwd
             elif ctrldef['list']=='verbs':
                 return controls.verbs
-        return self.__defaultWords()
+        return self._defaultWords()
     
-    def __defaultWords(self):
+    def _defaultWords(self):
         return controls.allcontrolwords
 
 # NOTE: It looks like 'verbs' can now be done with 'words'
@@ -208,7 +208,7 @@ class VerbsControl(WordsControl):
         return 'verbs'
     def getActionString(self, targetvalue):
         return controls.getVerbListAction(self.name, targetvalue)
-    def __defaultWords(self):
+    def _defaultWords(self):
         return controls.verbs
 
 class PinControl(BaseControl):
