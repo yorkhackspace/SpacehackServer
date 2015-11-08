@@ -72,6 +72,12 @@ class BaseControl:
     def assignable(self):
         return 'assignable' in self.ctrldef and self.ctrldef['assignable']
     
+    @property
+    def scalefactor(self):
+        if 'scalefactor' in self.ctrldef:
+            return self.ctrldef['scalefactor']
+        return 1.0
+    
     def pickName(self):
         if 'fixedname' in self.ictrl:
             self.sctrl['name'] = self.ictrl['fixedname']
