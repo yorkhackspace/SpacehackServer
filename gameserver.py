@@ -180,18 +180,24 @@ def getChoice(choicerange, oldval):
 #Pick a new instruction to display on a given console
 def pickNewTarget(consoleip):
     """Pick a new instruction to display on a given console."""
-    #pick a random console and random control from that console
-    targetconsole = random.choice(players)
-    targetcontrol = consoles[targetconsole].randomControl()
+    finished = False
+    # Retry choosing so we never have two identical instructions
+    while not finished:
+        #pick a random console and random control from that console
+        targetconsole = random.choice(players)
+        targetcontrol = consoles[targetconsole].randomControl()
 
-    targetctrlid  = targetcontrol.id
-    targetvalue   = targetcontrol.pickTargetValue()
-    targettimeout = currenttimeout * targetcontrol.scalefactor
+        targetctrlid  = targetcontrol.id
+        targetvalue   = targetcontrol.pickTargetValue()
+        targettimeout = currenttimeout * targetcontrol.scalefactor
 
-    targetinstruction = targetcontrol.getActionString(targetvalue)
+        targetinstruction = targetcontrol.getActionString(targetvalue)
 
-    #Now we have targetval and targetinstruction for this consoleip, store and publish it
-    match = (targetconsole, targetctrlid, targetvalue)
+        #Now we have targetval and targetinstruction for this consoleip, store and publish it
+        match = (targetconsole, targetctrlid, targetvalue)
+        if not match in instructions:
+            finished = True
+    
     instructions[match] = {
         'instructor': consoleip,
         'expiry':     time.time() + targettimeout,
