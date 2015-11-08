@@ -116,8 +116,9 @@ def receiveValue(consoleip, ctrlid, value):
     global gsIDs
     global nextID
     if gamestate == 'playround':
-        # Record the control value
-        consoles[consoleip].recordControl(ctrlid, value)
+        # Record the control value - 'changed' is indicative of an *interesting* change,
+        # for example everything except button releases
+        changed = consoles[consoleip].recordControl(ctrlid, value)
         #Check posted value against current instructions
         match = (consoleip, ctrlid, value)
         if match in instructions:
@@ -139,11 +140,8 @@ def receiveValue(consoleip, ctrlid, value):
                 pickNewTarget(instructorip)
             
             del instructions[match]
-        else:
-            # TODO: Make this neater.  It's inspecting very closely.
-            #Suppress caring about button releases - only important in game starts
-            if not (consoles[consoleip].setup['controls'][ctrlid]['type'] == 'button' and str(value) == "0"):
-                playSound(random.choice(controls.soundfiles['wrong']))
+        elif changed:
+            playSound(random.choice(controls.soundfiles['wrong']))
     elif gamestate == 'setupround':
         consoles[consoleip].recordControl(ctrlid, value)
     elif gamestate == 'waitingforplayers':
