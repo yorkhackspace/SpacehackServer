@@ -118,7 +118,7 @@ class BaseControl:
         else:
             return false
 
-class ButtonControl(IntegerControl):
+class ButtonControl(BaseControl):
     def archetype(self):
         return 'button'
     def validValues(self):
@@ -131,7 +131,7 @@ class ButtonControl(IntegerControl):
         """ Should we acknowledge updates for the given value? """
         return (value=='1')
 
-class ToggleControl(IntegerControl):
+class ToggleControl(BaseControl):
     def archetype(self):
         return 'toggle'
     def validValues(self):
@@ -139,7 +139,7 @@ class ToggleControl(IntegerControl):
     def getActionString(self, targetvalue):
         return controls.getToggleAction(self.name, int(targetvalue))
 
-class SelectorControl(IntegerControl):
+class SelectorControl(BaseControl):
     def archetype(self):
         return 'selector'
     @property
