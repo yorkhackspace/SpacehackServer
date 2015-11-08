@@ -32,13 +32,13 @@ class BaseControl:
         # Logical control information
         self.sctrl = sctrl
         # Basic setup
-        imodet = imode['type']
-        ctrltype = self.archetype()
-        if imodet != ctrltype:
-            raise ValueError("Incompatible imode type %s for control type %s" % [imodet, ctrltype])
+        ctype = imode['type']
+        atype = self.archetype()
+        if not ctype in self.supportedTypes():
+            raise ValueError("Incompatible control type %s for control archetype %s" % [ctype, atype])
         # Set up the name and type, copy the definition, configure, and enable the control
         self.pickName()
-        self.sctrl['type'] = self.archetype()
+        self.sctrl['type'] = ctype
         self.sctrl['definition'] = dict(imode)
         self.__configure()
         self.sctrl['enabled'] = 1
@@ -81,6 +81,10 @@ class BaseControl:
         if 'scalefactor' in self.ctrldef:
             return self.ctrldef['scalefactor']
         return 1.0
+    
+    def supportedTypes(self):
+        """ What control types are supported?  The default is just the archetype """
+        return [ self.archetype() ]
     
     def pickName(self):
         if 'fixedname' in self.ictrl:
