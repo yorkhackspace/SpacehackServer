@@ -106,14 +106,7 @@ def on_message(mosq, obj, msg):
         if nodes[3] == 'value':
             value = str(msg.payload)
             if consoleip in consoles:
-                # TODO: Remove int-ifying code
-                if 'controls' in consoles[consoleip].setup:
-                    if consoles[consoleip].setup['controls'][ctrlid]['type'] in ['button', 'toggle', 'selector']:
-                        try:
-                            value = int(value)
-                        except ValueError:
-                            return
-                    receiveValue(consoleip, ctrlid, value)
+                receiveValue(consoleip, ctrlid, value)
                 
 def receiveValue(consoleip, ctrlid, value):
     """Process a received value for a control"""
@@ -156,7 +149,7 @@ def receiveValue(consoleip, ctrlid, value):
     elif gamestate == 'waitingforplayers':
         #button push?
         if 'gamestart' in consoles[consoleip].setup['controls'][ctrlid]:
-            if value:
+            if value=='1':
                 #Add to list of players
                 if not consoleip in gsIDs:
                     gsIDs[consoleip] = nextID
