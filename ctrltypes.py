@@ -43,7 +43,7 @@ class BaseControl:
         self.__configure()
         self.sctrl['enabled'] = 1
     
-    def __configure():
+    def __configure(self):
         pass
     
     @property
