@@ -87,7 +87,8 @@ class Console:
     
     def randomControl(self):
         """ Return a random control on this console """
-        return random.choice(self.ctrls)
+        ctrlid = random.choice(self.ctrls.keys())
+        return self.ctrls[ctrlid]
     
     # NOTE: Currently, the player's instruction screen is also set when sending current setup
     def tellPlayer(self, message):
