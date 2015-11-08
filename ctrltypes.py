@@ -212,6 +212,8 @@ class VerbsControl(WordsControl):
         return controls.verbs
 
 class PinControl(BaseControl):
+    def archetype(self):
+        return 'pin'
     def randomize(self):
         self.ctrldef['value'] = ''
     def validValues(self):
