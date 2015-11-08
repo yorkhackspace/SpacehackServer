@@ -95,7 +95,7 @@ class BaseControl:
     def __pickValue(self, exclude=None):
         """ Pick a value, optionally excluding the current one """
         everything = set( self.validValues() )
-        return random.choice( list( everything - set(exclude) ) )
+        return random.choice( list( everything - set([exclude]) ) )
     
     def randomize(self):
         """ Randomize the current control value, if permitted """
