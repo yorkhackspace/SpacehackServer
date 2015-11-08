@@ -70,7 +70,7 @@ class BaseControl:
     def recordValue(self, value):
         """ Record a received value for this control """
         """ Indicate whether the value was updated """
-        if value in self.validValues() and value != self.sctrl['value']:
+        if value in self.validValues() and value != self.value:
             self.sctrl['value'] = value
             return self.acknowledgeUpdate(value)
         else:
