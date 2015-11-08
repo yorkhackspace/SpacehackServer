@@ -18,12 +18,33 @@ def getCtrlClass(ctrltype):
     else:
        return InvalidControl
 
+def pickNewControl(ictrl, sctrl):
+    """ Return an appropriate control object """
+    imodes = [x for x in ictrl['supported'] if 'enabled' not in x or x['enabled'] == 1]
+    imode = random.choice(imodes)
+    return getCtrlClass(imode['type'])(ictrl, sctrl, imode)
+
 class BaseControl:
     """ Note this can't actually be instantiated! """
-    def __init__(self, ictrl, sctrl):
+    def __init__(self, ictrl, sctrl, imode):
+        # Physical control information
+        self.ictrl = ictrl
         # Logical control information
         self.sctrl = sctrl
-        self.sctrl['definition'] = ictrl[self.archetype()]
+        # Basic setup
+        imodet = imode['type']
+        ctrltype = self.archetype()
+        if imodet != ctrltype:
+            raise ValueError("Incompatible imode type %s for control type %s" % [imodet, ctrltype])
+        # Set up the name and type, copy the definition, configure, and enable the control
+        self.pickName()
+        self.sctrl['type'] = self.archetype()
+        self.sctrl['definition'] = dict(imode)
+        self.__configure()
+        self.sctrl['enabled'] = 1
+    
+    def __configure():
+        pass
     
     @property
     def name(self):
@@ -41,14 +62,14 @@ class BaseControl:
     
     @property
     def assignable(self):
-        def = self.sctrl['definition']
-        return 'assignable' in def and def['assignable']
+        ctrldef = self.sctrl['definition']
+        return 'assignable' in ctrldef and ctrldef['assignable']
     
     def pickName(self):
-        if 'fixedname' in ictrl:
-            self.sctrl['name'] = control['fixedname']
+        if 'fixedname' in self.ictrl:
+            self.sctrl['name'] = self.ictrl['fixedname']
         else:
-            self.sctrl['name'] = controls.getControlName(control['width'], 2, 12)
+            self.sctrl['name'] = controls.getControlName(self.ictrl['width'], 2, 12)
     
     def __pickValue(self, exclude=None):
         """ Pick a value, optionally excluding the current one """
@@ -133,6 +154,39 @@ class WordsControl(BaseControl):
             elif ctrldef['list'] == 'verbs':
                 return controls.getVerbListAction(self.name, targetvalue)
         return controls.getWordAction(self.name, targetvalue)
+    def __configure(self):
+        ctrldef = self.sctrl['definition']
+        if 'fixed' in ctrldef and ctrldef['fixed']:
+            ctrldef['pool'] = ctrldef['list']
+        else:
+            words = self.__getWords()
+            finished = False
+            while not finished:
+                wordpool = random.sample(words, ctrldef['quantity'])
+                # If this control is displaying two words, ensure there's space
+                if ctrldef['quantity'] == 2:
+                    total_length = sum([len(word) for word in wordpool])
+                    max_length = self.ictrl['width']
+                    if total_length < max_length:
+                        finished = True
+                else:
+                    finished = True
+            ctrldef['pool'] = sorted(wordpool)
+    
+    def __getWords(self):
+        ctrldef = self.sctrl['definition']
+        # TODO: Consider making 'safe' another type of 'list'
+        if 'safe' in ctrldef and ctrldef['safe']:
+            return controls.safewords
+        elif 'list' in ctrldef:
+            if ctrldef['list']=='passwd':
+                return controls.passwd
+            elif ctrldef['list']=='verbs':
+                return controls.verbs
+        return self.__defaultWords()
+    
+    def __defaultWords(self):
+        return controls.allcontrolwords
 
 # NOTE: It looks like 'verbs' can now be done with 'words'
 class VerbsControl(WordsControl):
@@ -140,6 +194,8 @@ class VerbsControl(WordsControl):
         return 'verbs'
     def getActionString(self, targetvalue):
         return controls.getVerbListAction(self.name, targetvalue)
+    def __defaultWords(self):
+        return controls.verbs
 
 class PinControl(BaseControl):
     def randomize(self):
