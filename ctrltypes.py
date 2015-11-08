@@ -63,45 +63,42 @@ class BaseControl:
     def pickTargetValue(self):
         return self.__pickValue(self.value)
     
-    def cleanValue(self, value):
-        return value
+    def acknowledgeUpdate(self, value):
+        """ Should we acknowledge updates for the given value? """
+        return true
     
     def recordValue(self, value):
         """ Record a received value for this control """
-        clean_value = self.cleanValue(value)
-        if clean_value in self.validValues():
-            self.sctrl['value'] = clean_value
-            return true
+        """ Indicate whether the value was updated """
+        if value in self.validValues() and value != self.sctrl['value']:
+            self.sctrl['value'] = value
+            return self.acknowledgeUpdate(value)
         else:
             return false
-
-class IntegerControl(BaseControl):
-    def cleanValue(self, value):
-        try:
-            return int(value)
-        except ValueError:
-            return None
 
 class ButtonControl(IntegerControl):
     def archetype(self):
         return 'button'
     def validValues(self):
-        return [0,1]
+        return ['0','1']
     def pickTargetValue(self):
-        return 1
+        return '1'
+    def acknowledgeUpdate(self, value):
+        """ Should we acknowledge updates for the given value? """
+        return (value=='1')
 
 class ToggleControl(IntegerControl):
     def archetype(self):
         return 'toggle'
     def validValues(self):
-        return [0,1]
+        return ['0','1']
 
 class SelectorControl(IntegerControl):
     def archetype(self):
         return 'selector'
     def validValues(self):
         ctrldef = self.sctrl['definition']
-        return range(ctrldef['min'],ctrldef['max']+1)
+        return [str(x) for x in range(ctrldef['min'],ctrldef['max']+1)]
 
 class ColourControl(BaseControl):
     def archetype(self):
