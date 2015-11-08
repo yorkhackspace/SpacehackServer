@@ -197,7 +197,7 @@ def pickNewTarget(consoleip):
         'expiry':     time.time() + targettimeout,
     }
     fields = (consoleip, targetconsole, targetctrlid, targetcontrol.type, targetvalue, targetcontrol.value, targettimeout)
-    print("Instruction: %s: %s/%d (%s) -> %s (was %s) in %.1fs" % fields)
+    print("Instruction: %s: %s/%s (%s) -> %s (was %s) in %.1fs" % fields)
     print("    %s" % targetinstruction)
     #update game stats
     # TODO: Consider whether to count instructions that timed out
