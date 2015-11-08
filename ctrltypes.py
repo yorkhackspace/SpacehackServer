@@ -104,7 +104,7 @@ class BaseControl:
     
     def acknowledgeUpdate(self, value):
         """ Should we acknowledge updates for the given value? """
-        return true
+        return True
     
     def recordValue(self, value):
         """ Record a received value for this control """
@@ -113,7 +113,7 @@ class BaseControl:
             self.ctrldef['value'] = value
             return self.acknowledgeUpdate(value)
         else:
-            return false
+            return False
 
 class ButtonControl(BaseControl):
     def archetype(self):

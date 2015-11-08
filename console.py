@@ -83,7 +83,7 @@ class Console:
         """ Record a received value """
         if ctrlid in self.ctrls:
             return self.ctrls[ctrlid].recordValue(value)
-        return false
+        return False
     
     def randomControl(self):
         """ Return a random control on this console """
