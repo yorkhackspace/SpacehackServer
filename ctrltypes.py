@@ -62,6 +62,10 @@ class BaseControl:
             return ''
     
     @property
+    def type(self):
+        return self.sctrl['type']
+    
+    @property
     def value(self):
         if 'value' in self.ctrldef:
             return self.ctrldef['value']
