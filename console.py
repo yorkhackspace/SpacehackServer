@@ -3,6 +3,7 @@
 
 import GameStarter.gamestart
 import controls
+import ctrltypes
 import json
 import random
 
@@ -13,7 +14,8 @@ class Console:
         # Interface definition - i.e. the console's hardware capabilities
         self.interface = interface
         # MQTT client, for things handled internally
-	self.mqtt      = mqttclient
+        self.mqtt      = mqttclient
+        self.ctrls     = {}
         self.clearSetup()
     
     def clearSetup(self):
@@ -50,6 +52,8 @@ class Console:
             'enabled': 0,
             'name':    ''
         }
+        if ctrlid in self.ctrls:
+            del self.ctrls['ctrlid']
     
     def clearControl(self, ctrlid):
         """ Clear a control to blank """
@@ -69,73 +73,17 @@ class Console:
         #Pay attention to 'enabled' for the control as a whole
         for control in (x for x in self.interface["controls"] if 'enabled' not in x or x['enabled'] == 1):
             ctrlid = control['id']
-            #In case LCDs fail - allow a 'fixed name' we can tape over the LCD
-            if 'fixedname' in control:
-                ctrlname = control['fixedname']
-            else: #Normal case - generate a new control name
-                ctrlname = controls.getControlName(control['width'], 2, 12)
-            #Pay attention to 'enabled' for particular supported mode
-            ctrldef = random.choice([x for x in control['supported'] if 'enabled' not in x or x['enabled'] == 1])
-            ctrltype = ctrldef['type']
-            # TODO: Control-specific initialization probably wants to go elsewhere
-            # e.g. in the constructor of a CtrlType
-            if ctrltype in ['words', 'verbs']:
-                if ctrldef['fixed']:
-                    targetrange = ctrldef['list']
-                elif 'safe' in ctrldef and ctrldef['safe']:
-                    targetrange=controls.safewords
-                elif 'list' in ctrldef:
-                    if ctrldef['list']=='passwd':
-                        targetrange=controls.passwd
-                    elif ctrldef['list']=='verbs':
-                        targetrange=controls.verbs
-                    else:
-                        targetrange = controls.allcontrolwords
-                elif ctrltype=='verbs':
-                    targetrange = controls.verbs
-                else:
-                    targetrange = controls.allcontrolwords
-                #Create a predetermined list?
-                if not ctrldef['fixed']:
-                    finished = False
-                    while not finished:
-                        wordpool = random.sample(targetrange, ctrldef['quantity'])
-                        # A/B selectors display both words; there needs to be space for them!
-                        if ctrldef['quantity'] != 2 or len(wordpool[0]) + len(wordpool[1]) < 14:
-                            finished = True
-                    ctrldef['pool'] = sorted(wordpool)
-                else:
-                    ctrldef['pool'] = ctrldef['list']
-            #Pick a starting value
-            # TODO: Use ctrltypes.py and the randomize method
-            if 'assignable' in ctrldef and ctrldef['assignable']:
-                if ctrltype in ['words', 'verbs']:
-                    ctrldef['value']=random.choice(ctrldef['pool'])
-                elif ctrltype == 'selector':
-                    ctrldef['value'] = random.choice(range(ctrldef['min'],ctrldef['max']+1))
-                elif ctrltype == 'colour':
-                    ctrldef['value'] = random.choice(ctrldef['values'])
-                elif ctrltype == 'toggle':
-                    ctrldef['value'] = random.choice(range(2))
-                elif ctrltype == 'button':
-                    ctrldef['value'] = 0
-                elif ctrltype == 'pin':
-                    ctrldef['value'] = ''
-            # Set up the data structure
-            setup['controls'][ctrlid] = {
-                'name': ctrlname,
-                'type': ctrltype,
-                'definition': ctrldef,
-                'enabled': 1
-            }
-            print("Control " + ctrlid + " is " + ctrltype + ": " + ctrlname)
+            control = ctrltypes.pickNewControl(control, self.setup[ctrlid])
+            control.randomize()
+            self.ctrls[ctrlid] = control
+            print("Control " + ctrlid + " is " + control.archetype() + ": " + control.name)
         self.sendCurrentSetup()
-
     
     def recordControl(self, ctrlid, value):
         """ Record a received value """
-        if 'definition' in self.setup['controls'][ctrlid]:
-            self.setup['controls'][ctrlid]['definition']['value'] = value
+        if ctrlid in self.ctrls:
+            return self.ctrls[ctrlid].recordValue(value)
+        return false
     
     def setControl(self, ctrlid, value):
         """ Assign a current value to a control """
