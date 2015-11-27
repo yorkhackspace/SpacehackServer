@@ -20,7 +20,7 @@ sound = True #Switch this off if you don't have pyGame
 debugMode = False
 
 #sleep times
-blurbSleep = 1.0
+blurbSleep = 4.5
 
 if lifeDisplay:
     import seven_segment_display as sev
