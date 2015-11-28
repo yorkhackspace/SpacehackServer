@@ -147,7 +147,7 @@ def receiveValue(consoleip, ctrlid, value):
     elif gamestate == 'waitingforplayers':
         #button push?
         if 'gamestart' in consoles[consoleip].setup['controls'][ctrlid]:
-            if value=='1':
+            if value:
                 #Add to list of players
                 if not consoleip in gsIDs:
                     gsIDs[consoleip] = nextID
@@ -195,7 +195,7 @@ def pickNewTarget(consoleip):
         'instructor': consoleip,
         'expiry':     time.time() + targettimeout,
     }
-    fields = (consoleip, targetconsole, targetctrlid, targetcontrol.type, targetvalue, targetcontrol.value, targettimeout)
+    fields = (consoleip, targetconsole, targetctrlid, targetcontrol.type, str(targetvalue), str(targetcontrol.value), targettimeout)
     print("Instruction: %s: %s/%s (%s) -> %s (was %s) in %.1fs" % fields)
     print("    %s" % targetinstruction)
     #publish!
