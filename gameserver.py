@@ -378,6 +378,7 @@ def gameOver():
     gamestate = 'gameover'
     for consoleip in players:
         consoles[consoleip].clearSetup()
+    time.sleep(1.0)
     tellAllPlayers(players, controls.blurb['ending']['splash'])
     #play sound
     if sound:
