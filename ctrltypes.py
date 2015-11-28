@@ -89,10 +89,10 @@ class BaseControl:
         else:
             self.sctrl['name'] = controls.getControlName(self.ictrl['width'], 2, 12)
     
-    def _pickValue(self, exclude=None):
+    def _pickValue(self, exclude=[]):
         """ Pick a value, optionally excluding the current one """
         everything = set( self.validValues() )
-        return random.choice( list( everything - set([exclude]) ) )
+        return random.choice( list( everything - set(exclude) ) )
     
     def randomize(self):
         """ Randomize the current control value, if permitted """
@@ -100,57 +100,64 @@ class BaseControl:
             self.ctrldef['value'] = self._pickValue()
     
     def pickTargetValue(self):
-        return self._pickValue(self.value)
+        return self._pickValue([self.value])
     
     def acknowledgeUpdate(self, value):
         """ Should we acknowledge updates for the given value? """
         return True
     
+    def cleanValue(self, value):
+        return value
+    
     def recordValue(self, value):
         """ Record a received value for this control """
-        """ Indicate whether the value was updated """
-        if value in self.validValues() and value != self.value:
-            self.ctrldef['value'] = value
+        clean_value = self.cleanValue(value)
+        if clean_value in self.validValues() and clean_value != self.value:
+            self.sctrl['value'] = clean_value
             return self.acknowledgeUpdate(value)
         else:
             return False
 
-class ButtonControl(BaseControl):
+class NumericControl(BaseControl):
+    def cleanValue(self, value):
+        try:
+            return int(value)
+        except ValueError:
+            return None
+
+class ButtonControl(NumericControl):
     def archetype(self):
         return 'button'
     def validValues(self):
-        return ['0','1']
+        return [0,1]
     def pickTargetValue(self):
-        return '1'
+        return 1
     def getActionString(self, targetvalue):
         return controls.getButtonAction(self.name)
     def acknowledgeUpdate(self, value):
         """ Should we acknowledge updates for the given value? """
-        return (value=='1')
+        return (value==1)
 
-class ToggleControl(BaseControl):
+class ToggleControl(NumericControl):
     def archetype(self):
         return 'toggle'
+    def pickTargetValue(self):
+        return self._pickValue([self.value, 2])
     def validValues(self):
-        return ['0','1']
+        return [0,1,2]
     def getActionString(self, targetvalue):
-        return controls.getToggleAction(self.name, int(targetvalue))
+        return controls.getToggleAction(self.name, targetvalue)
 
-class SelectorControl(BaseControl):
+class SelectorControl(NumericControl):
     def archetype(self):
         return 'selector'
     @property
     def range(self):
         return range(self.ctrldef['min'], self.ctrldef['max'] + 1)
     def validValues(self):
-        return [str(x) for x in self.range]
+        return self.range
     def getActionString(self, targetvalue):
-        targetval = int(targetvalue)
-        try:
-            currentval = int(self.value)
-        except ValueError:
-            currentval = 0
-        return controls.getSelectorAction(self.name, self.range, targetval, currentval)
+        return controls.getSelectorAction(self.name, self.range, targetvalue, self.value)
 
 class ColourControl(BaseControl):
     def archetype(self):
