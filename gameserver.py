@@ -335,12 +335,13 @@ def initRound():
     instructions = {}
     gamestate = 'setupround'
     playSound(random.choice(controls.soundfiles['atmosphere']))
+    #Dump another batch of random control names and action
+    defineControls()
     # Set this round's opening emergency
     emergency = controls.getEmergency()
     print(emergency)
     tellAllPlayers(players, emergency)
-    #Dump another batch of random control names and action
-    defineControls()
+    # Set up the round variables
     playerstats['game']['rounds'] += 1
     playerstats['game']['lives'] = 5
     showLives()
