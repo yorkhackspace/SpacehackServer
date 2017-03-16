@@ -84,12 +84,13 @@ def process_command_message(msg):
         command = msg.topic.split('/')[1]
     except IndexError:
         log.error("Command: Failed to find command in %s", msg.topic)
-    if command == "exit":
-        game_exit()
-    elif command == "skip_intro":
-        skip_introduction()
     else:
-        log.warning("Bad command: %s", command)
+        if command == "exit":
+            game_exit()
+        elif command == "skip_intro":
+            skip_introduction()
+        else:
+            log.warning("Bad command: %s", command)
 
 
 def on_message(mosq, obj, msg):
