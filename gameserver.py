@@ -696,6 +696,7 @@ client.connect(server)
 
 #Main topic subscription point for clients to register their configurations to
 client.subscribe('server/register')
+client.subscribe('command')
 
 client.publish('server/ready', 'started')
 
