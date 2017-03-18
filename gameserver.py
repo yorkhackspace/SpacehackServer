@@ -10,7 +10,7 @@ import random
 import json
 from GameStarter.gamestart import GameStarter
 
-lifeDisplay = True
+lifeDisplay = False
 sound = True #Switch this off if you don't have pyGame
 debugMode = False
 
