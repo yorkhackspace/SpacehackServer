@@ -8,6 +8,7 @@ import paho.mqtt.client as paho
 import time
 import random
 import json
+import logging as log
 from GameStarter.gamestart import GameStarter
 
 lifeDisplay = False
@@ -51,6 +52,9 @@ lastgenerated = time.time()
 numinstructions = 0
 gamestate = 'initserver' #initserver, readytostart, waitingforplayers, initgame, setupround, playround, roundover, hyperspace, gameover
 warningsound = None
+game_state = {
+    "skip_intro": False
+}
 
 #Show when we've connected
 def on_connect(mosq, obj, rc):
@@ -62,9 +66,37 @@ def on_connect(mosq, obj, rc):
     else:
         print("Failed - return code is " + rc)
 
-#MQTT message arrived
+
+def game_exit():
+    """It's harsh right now but we should probably clean up a bit here."""
+    log.info("Quitting the Game at game exit")
+    sys.exit(0)
+
+
+def skip_introduction():
+    log.info("Setting game state to be skipped")
+    game_state['skip_intro'] = True
+
+
+def process_command_message(msg):
+    log.info('Command Received. Topic: %s Message: %s', msg.topic, msg.payload)
+    try:
+        command = msg.topic.split('/')[1]
+    except IndexError:
+        log.error("Command: Failed to find command in %s", msg.topic)
+    else:
+        if command == "exit":
+            game_exit()
+        elif command == "skip_intro":
+            skip_introduction()
+        else:
+            log.warning("Bad command: %s", command)
+
+
 def on_message(mosq, obj, msg):
     """Receive and process incoming MQTT published message"""
+    if msg.topic.startswith('command/'):
+        process_command_message(msg)
     nodes = msg.topic.split('/')
     print(gamestate + ' - ' + msg.topic + " - " + str(msg.payload))
     if nodes[0]=='server':
@@ -448,7 +480,18 @@ def tellAllPlayers(consolelist, message):
     """Simple routine to broadcast a message to a list or consoles"""
     for consoleip in consolelist:
         client.publish('clients/' + consoleip + '/instructions', str(message))
-        
+
+
+def send_intro_text():
+    if not debugMode:
+        for txt in controls.blurb['intro']:
+            if game_state['skip_intro']:
+                break
+            tellAllPlayers(players, txt)
+            time.sleep(blurbSleep)
+    game_state['skip_intro'] = False
+
+
 def initGame():
     """Kick off a new game"""
     #Start game!
@@ -456,6 +499,7 @@ def initGame():
     global currenttimeout
     global nextID
     gamestate = 'initgame'
+    game_state['skip_intro'] = False
     clearLives()
     currenttimeout = 15.0
     # get game players from GameStarter
@@ -494,10 +538,7 @@ def initGame():
         client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
         currentsetup[consoleip] = consolesetup
     #Explanatory intro blurb
-    if not debugMode:
-        for txt in controls.blurb['intro']:
-            tellAllPlayers(players, txt)
-            time.sleep(blurbSleep)
+    send_intro_text()
     #Setup initial game params
     global playerstats
     playerstats = {}
@@ -655,6 +696,7 @@ client.connect(server)
 
 #Main topic subscription point for clients to register their configurations to
 client.subscribe('server/register')
+client.subscribe('command/#')
 
 client.publish('server/ready', 'started')
 
