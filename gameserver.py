@@ -390,11 +390,12 @@ def pickNewTarget(consoleip):
     client.publish('clients/' + consoleip + '/timeout', str(targettimeout))
     client.publish('clients/' + consoleip + '/instructions', str(targetinstruction))
 
+
 def showLives():
     if lifeDisplay:
         lives = playerstats['game']['lives']
-    log.info("Lives remaining: %s", lives)
-    if 0 <= lives <= 9:
+        log.info("Lives remaining: %s", lives)
+        if 0 <= lives <= 9:
             sev.displayDigit(lives)
             if lives == 0:
                 led.solid(led.CODE_Col_White)
