@@ -50,9 +50,9 @@ currentsetup = {}
 currenttimeout = 30.0
 lastgenerated = time.time()
 numinstructions = 0
-gamestate = 'initserver' #initserver, readytostart, waitingforplayers, initgame, setupround, playround, roundover, hyperspace, gameover
 warningsound = None
 game_state = {
+    "stage": 'initserver',
     "skip_intro": False
 }
 
@@ -61,8 +61,7 @@ def on_connect(mosq, obj, rc):
     """Receive MQTT connection notification"""
     if rc == 0:
         print("Connected to MQTT")
-        global gamestate
-        gamestate = 'readytostart'
+        game_state['stage'] = 'readytostart'
     else:
         print("Failed - return code is " + rc)
 
@@ -98,7 +97,7 @@ def on_message(mosq, obj, msg):
     if msg.topic.startswith('command/'):
         process_command_message(msg)
     nodes = msg.topic.split('/')
-    print(gamestate + ' - ' + msg.topic + " - " + str(msg.payload))
+    log.info("message: state=%s, topic:%s payload:%s", game_state['stage'], msg.topic ,msg.payload)
     if nodes[0]=='server':
         if nodes[1]=='register':
             config = json.loads(str(msg.payload))
@@ -108,7 +107,7 @@ def on_message(mosq, obj, msg):
                 consoles.append(consoleip)
             #set console up for game start
             consolesetup = {}
-            if gamestate in ['readytostart', 'waitingforplayers']:
+            if game_state['stage'] in ['readytostart', 'waitingforplayers']:
                 #Still waiting to start
                 consolesetup['instructions'] = controls.blurb['readytostart']
                 consolesetup['timeout'] = 0.0
@@ -168,11 +167,10 @@ def on_message(mosq, obj, msg):
 def receiveValue(consoleip, ctrlid, value):
     """Process a received value for a control"""
     global lastgenerated
-    global gamestate
     global numinstructions
     global gsIDs
     global nextID
-    if gamestate == 'playround':
+    if game_state['stage'] == 'playround':
         #Check posted value against current targets
         matched = False
         if 'definition' in currentsetup[consoleip]['controls'][ctrlid]:
@@ -201,10 +199,10 @@ def receiveValue(consoleip, ctrlid, value):
             #Suppress caring about button releases - only important in game starts
             if not (currentsetup[consoleip]['controls'][ctrlid]['type'] == 'button' and str(value) == "0"):
                 playSound(random.choice(controls.soundfiles['wrong']))
-    elif gamestate == 'setupround':
+    elif game_state['stage'] == 'setupround':
         if 'definition' in currentsetup[consoleip]['controls'][ctrlid]:
             currentsetup[consoleip]['controls'][ctrlid]['definition']['value'] = value
-    elif gamestate in ['readytostart', 'waitingforplayers']:
+    elif game_state['stage'] in ['readytostart', 'waitingforplayers']:
         #button push?
         if 'gamestart' in currentsetup[consoleip]['controls'][ctrlid]:
             if value:
@@ -220,7 +218,7 @@ def receiveValue(consoleip, ctrlid, value):
                     gs.release(gsIDs[consoleip])
                     #players.remove(consoleip)
             #Either way, reset the clock for game start
-            gamestate = 'waitingforplayers'
+            game_state['stage'] = 'waitingforplayers'
             lastgenerated = time.time()
             
 #Define a new set of controls for each client for this game round and send it to them as JSON.
@@ -495,10 +493,9 @@ def send_intro_text():
 def initGame():
     """Kick off a new game"""
     #Start game!
-    global gamestate
     global currenttimeout
     global nextID
-    gamestate = 'initgame'
+    game_state['stage'] = 'initgame'
     game_state['skip_intro'] = False
     clearLives()
     currenttimeout = 15.0
@@ -566,8 +563,7 @@ def initRound():
     """Kick off a new round"""
     global numinstructions
     global lastgenerated
-    global gamestate
-    gamestate = 'setupround'
+    game_state['stage'] = 'setupround'
     playSound(random.choice(controls.soundfiles['atmosphere']))
     #Dump another batch of random control names and action
     defineControls()
@@ -579,11 +575,10 @@ def initRound():
     
 def roundOver():
     """End the round and jump to Hyperspace"""
-    global gamestate
     global currenttimeout
     global lastgenerated
     global warningsound
-    gamestate = 'roundover'
+    game_state['stage'] = 'roundover'
     if sound and not warningsound is None:
         warningsound.stop()
         warningsound = None
@@ -598,15 +593,14 @@ def roundOver():
     playSound(controls.soundfiles['special']['hyperspace'])
     lastgenerated = time.time()
     currenttimeout *= 0.75
-    gamestate = 'hyperspace'
+    game_state['stage'] = 'hyperspace'
     
 def gameOver():
     """End the current game and dole out the medals"""
-    global gamestate
     #Check we're not already here (fixes issue #4)
-    if gamestate != 'playround':
+    if game_state['stage'] != 'playround':
         return
-    gamestate = 'gameover'
+    game_state['stage'] = 'gameover'
     for consoleip in players:
         client.publish('clients/' + consoleip + '/timeout', "0.0")
     tellAllPlayers(players, controls.blurb['ending']['splash'])
@@ -656,8 +650,7 @@ def gameOver():
     
 def resetToWaiting():
     """Reset game back to waiting for new players"""
-    global gamestate
-    gamestate = 'readytostart'
+    game_state['stage'] = 'readytostart'
     clearLives()
     for consoleip in consoles:
         consolesetup = {}
@@ -709,17 +702,17 @@ while(client.loop(0) == 0):
     if time.time() - lastReady > 3.0:
         lastReady = time.time()
         client.publish('server/ready', 'ready')
-    #if gamestate == 'waitingforplayers' and len(players) >= 1 and time.time() - lastgenerated > 5.0:
-    if gamestate == 'waitingforplayers' and gs.shouldStart():
+    #if game_state['stage'] == 'waitingforplayers' and len(players) >= 1 and time.time() - lastgenerated > 5.0:
+    if game_state['stage'] == 'waitingforplayers' and gs.shouldStart():
         initGame()        
-    elif gamestate == 'setupround' and time.time() - lastgenerated > 10.0:
-        gamestate = 'playround'
+    elif game_state['stage'] == 'setupround' and time.time() - lastgenerated > 10.0:
+        game_state['stage'] = 'playround'
         for consoleip in players:
             pickNewTarget(consoleip)
-    elif gamestate == 'playround':
+    elif game_state['stage'] == 'playround':
         checkTimeouts()
        
-    elif gamestate == 'hyperspace' and time.time() - lastgenerated > 4.0:
+    elif game_state['stage'] == 'hyperspace' and time.time() - lastgenerated > 4.0:
         initRound()
 
 #If client.loop() returns non-zero, loop drops out to here.
