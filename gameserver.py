@@ -115,7 +115,7 @@ def on_message(mosq, obj, msg):
                 consolesetup['instructions'] = controls.blurb['readytostart']
                 consolesetup['timeout'] = 0.0
                 consolesetup['controls'] = {}
-                log.debug(config['controls'])
+                log.debug("Controls: %s", config['controls'])
                 for control in config['controls']:
                     ctrlid = control['id']
                     consolesetup['controls'][ctrlid]={}
@@ -209,21 +209,23 @@ def receiveValue(consoleip, ctrlid, value):
         #button push?
         if 'gamestart' in currentsetup[consoleip]['controls'][ctrlid]:
             if value:
-                #Add to list of players
-                if not consoleip in gsIDs:
+                # Add to list of players
+                if consoleip not in gsIDs:
                     gsIDs[consoleip] = nextID
                     nextID += 1
-                    #players.append(consoleip)
+                    # players.append(consoleip)
+                log.debug('Joining the game: %s', consoleip)
                 gs.push(gsIDs[consoleip])
             else:
-                #remove from list of players
+                # remove from list of players
                 if consoleip in gsIDs:
                     gs.release(gsIDs[consoleip])
-                    #players.remove(consoleip)
-            #Either way, reset the clock for game start
+                    # players.remove(consoleip)
+                log.debug('Leaving the game: %s', consoleip)
+            # Either way, reset the clock for game start
             game_state['stage'] = 'waitingforplayers'
             lastgenerated = time.time()
-            
+
 #Define a new set of controls for each client for this game round and send it to them as JSON.
 def defineControls():
     """Define a new set of controls for each client for this game round and send it to them as JSON."""
@@ -409,7 +411,8 @@ def showLives():
                 led.solid(led.CODE_Col_Yellow)
             elif lives == 5:
                 led.solid(led.CODE_Col_Green)
-            
+
+
 def clearLives():
     if lifeDisplay:
         sev.clear()
