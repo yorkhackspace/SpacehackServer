@@ -11,6 +11,9 @@ import json
 import logging as log
 from GameStarter.gamestart import GameStarter
 
+logger = log.getLogger()
+logger.setLevel(log.DEBUG)
+
 lifeDisplay = False
 sound = True #Switch this off if you don't have pyGame
 debugMode = False
@@ -60,10 +63,10 @@ game_state = {
 def on_connect(mosq, obj, rc):
     """Receive MQTT connection notification"""
     if rc == 0:
-        print("Connected to MQTT")
+        log.info("Connected to MQTT")
         game_state['stage'] = 'readytostart'
     else:
-        print("Failed - return code is " + rc)
+        log.error("Failed - return code is " + rc)
 
 
 def game_exit():
@@ -112,7 +115,7 @@ def on_message(mosq, obj, msg):
                 consolesetup['instructions'] = controls.blurb['readytostart']
                 consolesetup['timeout'] = 0.0
                 consolesetup['controls'] = {}
-                print(config['controls'])
+                log.debug(config['controls'])
                 for control in config['controls']:
                     ctrlid = control['id']
                     consolesetup['controls'][ctrlid]={}
@@ -225,9 +228,9 @@ def receiveValue(consoleip, ctrlid, value):
 def defineControls():
     """Define a new set of controls for each client for this game round and send it to them as JSON."""
     emergency = controls.getEmergency()
-    print(emergency)
+    log.info("Controls Emergency: %s", emergency)
     for consoleip in players:
-        print("Defining console " + consoleip)
+        log.info("Defining console %s", consoleip)
         consolesetup={}
         consolesetup['instructions']=emergency
         consolesetup['timeout'] = currenttimeout
@@ -299,8 +302,8 @@ def defineControls():
                 elif ctrltype == 'pin':
                     ctrldef['value'] = ''
             consolesetup['controls'][ctrlid]['type'] = ctrltype
-            consolesetup['controls'][ctrlid]['definition']=ctrldef
-            print("Control " + ctrlid + " is " + ctrldef['type'] + ": " + consolesetup['controls'][ctrlid]['name'])
+            consolesetup['controls'][ctrlid]['definition'] = ctrldef
+            log.info("New control: id=%s, type=%s, name=%s", ctrlid, ctrldef['type'], consolesetup['controls'][ctrlid]['name'])
 
         currentsetup[consoleip]=consolesetup
         client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
@@ -375,11 +378,11 @@ def pickNewTarget(consoleip):
         targetval=newpin
         targetinstruction = controls.getPinAction(targetname, targetval)
     else:
-        print("Unhandled type: " + ctrltype)
+        log.warning("Unhandled type: %s", ctrltype)
     #Now we have targetval and targetinstruction for this consoleip, store and publish it
     console[consoleip]['instructions']=targetinstruction
     console[consoleip]['target']={"console": targetconsole, "control": targetctrlid, "value": targetval, "timestamp": time.time(), "timeout": targettimeout}
-    print("Instruction: " + consoleip + '/' + targetctrlid + ' - ' + ctrltype + ' (was ' + str(curval) + ') ' + str(targetinstruction))
+    log.info("Instruction: ip=%s, id=%s, type=%s target=%s", consoleip, targetctrlid, ctrltype, curval, targetinstruction)
     #update game stats
     playerstats[consoleip]['instructions']['total'] += 1
     playerstats[targetconsole]['targets']['total'] += 1
@@ -390,8 +393,8 @@ def pickNewTarget(consoleip):
 def showLives():
     if lifeDisplay:
         lives = playerstats['game']['lives']
-	print "Lives remaining: " + str(lives)
-	if 0 <= lives <= 9:
+    log.info("Lives remaining: %s", lives)
+    if 0 <= lives <= 9:
             sev.displayDigit(lives)
             if lives == 0:
                 led.solid(led.CODE_Col_White)
@@ -502,12 +505,12 @@ def initGame():
     # get game players from GameStarter
     for key, value in gsIDs.iteritems():
         if gs.isStartablePlayer(value):
-            print("Player %d (%s) startable" % (value, key))
+            log.info("Player %d (%s) startable", value, key)
             players.append(key)
         else:
-            print("Player %d (%s) not startable" % (value, key))
+            log.info("Player %d (%s) not startable", value, key)
 
-    print("Player IPs: %r, player IDs: %r" % (players, gsIDs))
+    log.info("Player IPs: %r, player IDs: %r", players, gsIDs)
     for consoleip in players:
         #Slight fudge in assuming control 5 is the big button
         client.publish('clients/' + consoleip + '/5/name', "")
