@@ -28,6 +28,12 @@ def playSound(filename):
     if sound:
         snd = pygame.mixer.Sound("sounds/48k/" + filename)
         snd.play()
+        return snd
+
+def resetSound():
+    if sound:
+        pygame.mixer.quit()
+        pygame.mixer.init(48000, -16, 2, 1024) #was 1024
         
 if sound:
     import pygame
@@ -37,7 +43,11 @@ client = paho.Client('PiServer') # ID shown to the broker
 server = "127.0.0.1" #Mosquitto MQTT broker running locally
 
 # Clever start button handling
-gs = GameStarter(4, 1.5, 4.0)
+gs = None
+def initGameStarter():
+    global gs
+    gs = GameStarter(4, 1.5, 4.0)
+initGameStarter()
 gsIDs = {}
 nextID = 0
 
@@ -78,6 +88,11 @@ def skip_introduction():
     game_state['skip_intro'] = True
 
 
+def stop_game():
+    resetToWaiting()
+    resetSound()
+
+
 def process_command_message(msg):
     log.info('Command Received. Topic: %s Message: %s', msg.topic, msg.payload)
     try:
@@ -89,6 +104,8 @@ def process_command_message(msg):
             game_exit()
         elif command == "skip_intro":
             skip_introduction()
+        elif command == "stop_game":
+            stop_game()
         else:
             log.warning("Bad command: %s", command)
 
@@ -389,7 +406,11 @@ def pickNewTarget(consoleip):
     client.publish('clients/' + consoleip + '/timeout', str(targettimeout))
     client.publish('clients/' + consoleip + '/instructions', str(targetinstruction))
 
+def showRound():
+    client.publish('status/round', str(playerstats['game']['rounds']))
+
 def showLives():
+    client.publish('status/lives', str(playerstats['game']['lives']))
     if lifeDisplay:
         lives = playerstats['game']['lives']
 	print "Lives remaining: " + str(lives)
@@ -409,6 +430,7 @@ def showLives():
                 led.solid(led.CODE_Col_Green)
             
 def clearLives():
+    client.publish('status/lives', '')
     if lifeDisplay:
         sev.clear()
         led.solid(led.CODE_Display_Fade)
@@ -480,13 +502,16 @@ def tellAllPlayers(consolelist, message):
     """Simple routine to broadcast a message to a list or consoles"""
     for consoleip in consolelist:
         client.publish('clients/' + consoleip + '/instructions', str(message))
+        client.loop(0)
 
 
 def send_intro_text():
     if not debugMode:
         for txt in controls.blurb['intro']:
+            client.loop(0)
             if game_state['skip_intro']:
-                break
+                game_state['skip_intro'] = False
+                return 'skip'
             tellAllPlayers(players, txt)
             time.sleep(blurbSleep)
     game_state['skip_intro'] = False
@@ -510,6 +535,7 @@ def initGame():
         else:
             print("Player %d (%s) not startable" % (value, key))
 
+    initGameStarter()
     print("Player IPs: %r, player IDs: %r" % (players, gsIDs))
     for consoleip in players:
         #Slight fudge in assuming control 5 is the big button
@@ -517,11 +543,11 @@ def initGame():
         client.publish('clients/' + consoleip + '/5/name', "Get ready!")
     tellAllPlayers(players, controls.blurb['logo'])
     #Music
+    introSound=None
     if sound:
         #Pygame for sounds
-        pygame.mixer.quit()
-        pygame.mixer.init(48000, -16, 2, 1024) #was 1024
-        playSound(controls.soundfiles['special']['fanfare'])
+        resetSound()
+        introSound = playSound(controls.soundfiles['special']['fanfare'])
     #cut off non-players from participating
     for consoleip in list(set(consoles) - set(players)):
         consolesetup = {}
@@ -538,7 +564,9 @@ def initGame():
         client.publish('clients/' + consoleip + '/configure', json.dumps(consolesetup))
         currentsetup[consoleip] = consolesetup
     #Explanatory intro blurb
-    send_intro_text()
+    if send_intro_text() == 'skip':
+        if introSound:
+            introSound.stop()
     #Setup initial game params
     global playerstats
     playerstats = {}
@@ -554,6 +582,7 @@ def initGame():
         playerstats[consoleip]['targets']['missed'] = 0
     playerstats['game'] = {}
     playerstats['game']['rounds'] = 0
+    showRound()
     #continuous spaceship mix
     if sound:
         for fn in controls.soundfiles['continuous']:
@@ -574,6 +603,7 @@ def initRound():
     playerstats['game']['rounds'] += 1
     playerstats['game']['lives'] = 5
     showLives()
+    showRound()
     numinstructions = 10
     lastgenerated = time.time()
     
@@ -613,8 +643,7 @@ def gameOver():
     #play sound
     if sound:
         #Pygame for sounds
-        pygame.mixer.quit()
-        pygame.mixer.init(48000, -16, 2, 1024) #was 1024
+        resetSound()
         playSound(controls.soundfiles['special']['explosion'])
         playSound(controls.soundfiles['special']['taps'])
     for consoleip in players:
