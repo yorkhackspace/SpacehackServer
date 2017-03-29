@@ -26,7 +26,7 @@ if lifeDisplay:
 def playSound(filename):
     """Play a sound, if enabled"""
     if sound:
-        snd = pygame.mixer.Sound("sounds/" + filename)
+        snd = pygame.mixer.Sound("sounds/48k/" + filename)
         snd.play()
         
 if sound:
@@ -440,7 +440,7 @@ def checkTimeouts():
                 pickNewTarget(consoleip)
                 #Start a warning sound if we're on our last life
                 if playerstats['game']['lives'] == 1 and sound:
-                    warningsound = pygame.mixer.Sound("sounds/" + random.choice(controls.soundfiles['warning']))
+                    warningsound = pygame.mixer.Sound("sounds/48k/" + random.choice(controls.soundfiles['warning']))
                     warningsound.play(-1)
                     
 def increaseCorruption(consoleip, ctrlid):
@@ -557,7 +557,7 @@ def initGame():
     #continuous spaceship mix
     if sound:
         for fn in controls.soundfiles['continuous']:
-            snd = pygame.mixer.Sound("sounds/" + fn)
+            snd = pygame.mixer.Sound("sounds/48k/" + fn)
             snd.play(-1)
     #start first round
     initRound()

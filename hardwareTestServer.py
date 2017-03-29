@@ -23,7 +23,7 @@ if lifeDisplay:
 def playSound(filename):
     """Play a sound, if enabled"""
     if sound:
-        snd = pygame.mixer.Sound("sounds/" + filename)
+        snd = pygame.mixer.Sound("sounds/48k/" + filename)
         snd.play()
         
 if sound:
