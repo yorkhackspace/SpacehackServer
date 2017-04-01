@@ -93,6 +93,11 @@ def stop_game():
     resetSound()
 
 
+def add_life():
+    playerstats['game']['lives'] += 1
+    showLives()
+
+
 def process_command_message(msg):
     log.info('Command Received. Topic: %s Message: %s', msg.topic, msg.payload)
     try:
@@ -106,6 +111,8 @@ def process_command_message(msg):
             skip_introduction()
         elif command == "stop_game":
             stop_game()
+        elif command == "add_life":
+            add_life()
         else:
             log.warning("Bad command: %s", command)
 
