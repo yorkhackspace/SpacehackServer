@@ -533,7 +533,7 @@ def initGame():
     gamestate = 'initgame'
     game_state['skip_intro'] = False
     clearLives()
-    currenttimeout = 10.0 + (5.0 * len(players))
+    currenttimeout = 5.0 * ( 1 + len(players) )
     # get game players from GameStarter
     for key, value in gsIDs.iteritems():
         if gs.isStartablePlayer(value):
