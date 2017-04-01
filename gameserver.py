@@ -57,7 +57,7 @@ players = [] #all participating players
 playerstats = {}
 console = {}
 currentsetup = {}
-currenttimeout = 30.0
+currenttimeout = 30.0 #TODO: Is this needed here?  We set it in initGame()
 lastgenerated = time.time()
 numinstructions = 0
 gamestate = 'initserver' #initserver, readytostart, waitingforplayers, initgame, setupround, playround, roundover, hyperspace, gameover
@@ -533,7 +533,6 @@ def initGame():
     gamestate = 'initgame'
     game_state['skip_intro'] = False
     clearLives()
-    currenttimeout = 5.0 * ( 1 + len(players) )
     # get game players from GameStarter
     for key, value in gsIDs.iteritems():
         if gs.isStartablePlayer(value):
@@ -542,6 +541,7 @@ def initGame():
         else:
             print("Player %d (%s) not startable" % (value, key))
 
+    currenttimeout = 5.0 * ( 1 + len(players) )
     initGameStarter()
     print("Player IPs: %r, player IDs: %r" % (players, gsIDs))
     for consoleip in players:
