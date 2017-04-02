@@ -285,7 +285,8 @@
     "hitch-hikers",
     "dihydrogen monoxide",
     "crew effluent",
-    "buckyballs"
+    "buckyballs",
+    "Ethernet cables"
   ],
   "cliches": [
     "The engines cannae take it any more",
